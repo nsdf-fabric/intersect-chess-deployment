@@ -61,9 +61,7 @@ services:
   # Monitors the NEW HDF5 file via SWMR polling and emits
   # new_measurement events into INTERSECT when data changes.
   chess-data-service:
-    build:
-      context: ../intersect-chess-data-service
-      dockerfile: Dockerfile
+    image: ghcr.io/nsdf-fabric/intersect-chess-data-service:0.1.3
     volumes:
       - shared-data:/data:ro
       - ./conf/data-service.json:/app/local-conf.json:ro
@@ -88,9 +86,7 @@ services:
   # Receives next-point recommendations and writes locNNN.txt files
   # that the informer watches and processes.
   chess-instrument-control-service:
-    build:
-      context: ../intersect-chess-instrument-control-service
-      dockerfile: Dockerfile
+    image: ghcr.io/nsdf-fabric/intersect-chess-instrument-control-service:0.1.1
     volumes:
       - shared-data:/data
       - ./conf/instrument-control-service.json:/app/local-conf.json:ro
