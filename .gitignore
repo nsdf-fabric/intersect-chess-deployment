@@ -1,0 +1,5 @@
+#config files directory - holds secrets!
+conf/
+
+# large data
+strain_map.nxs

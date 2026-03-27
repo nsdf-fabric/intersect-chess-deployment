@@ -1,0 +1,14 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+RUN pip install --no-cache-dir \
+    "intersect_sdk[amqp]>=0.8.0,<0.9.0" \
+    fastapi \
+    uvicorn
+
+COPY campaign_orchestrator.py /app/campaign_orchestrator.py
+
+EXPOSE 8000
+
+CMD ["python", "campaign_orchestrator.py", "--host", "0.0.0.0", "--port", "8000"]

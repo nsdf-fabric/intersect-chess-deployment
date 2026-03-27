@@ -1,0 +1,124 @@
+# CHESS Autonomous Experiment — Full Stack
+#
+# Usage:
+#   docker compose up
+#
+# This spins up:
+#   1. RabbitMQ broker (AMQP message bus for INTERSECT)
+#   2. MongoDB (state store for Dial active learning)
+#   3. chess-instrument-control-informer (Full HDF5 → New HDF5 + watch for loc files)
+#   4. chess-data-egress-service (monitors New HDF5, emits INTERSECT events)
+#   5. dial-service (Bayesian optimization / active learning)
+#   6. chess-instrument-control-service (writes motor position files for SPEC)
+#   7. campaign-orchestrator (coordinates the loop + serves dashboard on :8000)
+#
+# The strain_map.nxs in this directory is used as the FULL HDF5 source file.
+# A shared volume simulates the NFS mount between services.
+
+services:
+  # ── Message Broker ──────────────────────────────────────────────
+  broker:
+    image: bitnamilegacy/rabbitmq:3.13.3
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_PLUGINS: "rabbitmq_management rabbitmq_mqtt"
+      RABBITMQ_USERNAME: "intersect_username"
+      RABBITMQ_PASSWORD: "intersect_password"
+      RABBITMQ_MANAGEMENT_ALLOW_WEB_ACCESS: "yes"
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 10s
+      retries: 5
+      start_period: 15s
+      timeout: 10s
+
+  # ── MongoDB (Dial state store) ──────────────────────────────────
+  mongodb:
+    image: bitnamilegacy/mongodb:8.0
+    ports:
+      - "27017:27017"
+    volumes:
+      - dial_mongodb_data:/bitnami/mongodb
+
+  # ── Chess Instrument Control Informer ───────────────────────────
+  # Reads the FULL HDF5 (strain_map.nxs), creates a NEW HDF5 with
+  # cloned structure + initial random points, then watches loc_dir
+  # for new location files and appends interpolated data.
+  informer:
+    image: ghcr.io/nsdf-fabric/chess-instrument-control-informer:0.1.0
+    volumes:
+      - shared-data:/data
+      - ./strain_map.nxs:/data/strain_map.nxs:ro
+      - ./conf/informer-config.yaml:/app/config.yaml:ro
+    command: ["sh", "-c", "mkdir -p /data/autonomous_experiment/experiment1 && chess-instrument-control-informer --config /app/config.yaml"]
+    depends_on:
+      broker:
+        condition: service_healthy
+
+  # ── INTERSECT Data Egress Service ───────────────────────────────
+  # Monitors the NEW HDF5 file via SWMR polling and emits
+  # new_measurement events into INTERSECT when data changes.
+  chess-data-service:
+    build:
+      context: ../intersect-chess-data-service
+      dockerfile: Dockerfile
+    volumes:
+      - shared-data:/data:ro
+      - ./conf/data-service.json:/app/local-conf.json:ro
+    depends_on:
+      broker:
+        condition: service_healthy
+
+  # ── Dial Active Learning Service ────────────────────────────────
+  # Bayesian optimization: receives measurement data, recommends
+  # next point to measure via expected improvement.
+  dial:
+    image: ghcr.io/intersect-dial/dial:main
+    volumes:
+      - ./conf/dial-service.json:/app/local-conf.json:ro
+    depends_on:
+      broker:
+        condition: service_healthy
+      mongodb:
+        condition: service_started
+
+  # ── INTERSECT Instrument Control Service ────────────────────────
+  # Receives next-point recommendations and writes locNNN.txt files
+  # that the informer watches and processes.
+  chess-instrument-control-service:
+    build:
+      context: ../intersect-chess-instrument-control-service
+      dockerfile: Dockerfile
+    volumes:
+      - shared-data:/data
+      - ./conf/instrument-control-service.json:/app/local-conf.json:ro
+    depends_on:
+      broker:
+        condition: service_healthy
+
+  # ── Campaign Orchestrator + Dashboard ───────────────────────────
+  # Coordinates the autonomous experiment loop across all services.
+  # Serves a live web dashboard at http://localhost:8000
+  orchestrator:
+    build:
+      context: ./orchestrator
+      dockerfile: Dockerfile.orchestrator
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./conf/campaign-conf.json:/app/campaign-conf.json:ro
+    environment:
+      CAMPAIGN_CONFIG_PATH: /app/campaign-conf.json
+    depends_on:
+      broker:
+        condition: service_healthy
+      mongodb:
+        condition: service_started
+
+volumes:
+  shared-data:
+    driver: local
+  dial_mongodb_data:
+    driver: local
