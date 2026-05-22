@@ -10,7 +10,8 @@
 #   4. chess-data-egress-service (monitors New HDF5, emits INTERSECT events)
 #   5. dial-service (Bayesian optimization / active learning)
 #   6. chess-instrument-control-service (writes motor position files for SPEC)
-#   7. campaign-orchestrator (coordinates the loop + serves dashboard on :8000)
+#   7. campaign-orchestrator (REST API on :8000)
+#   8. submit-campaign (one-shot campaign POST to orchestrator)
 #
 # The strain_map.nxs in this directory is used as the FULL HDF5 source file.
 # A shared volume simulates the NFS mount between services.
@@ -47,7 +48,7 @@ services:
   # cloned structure + initial random points, then watches loc_dir
   # for new location files and appends interpolated data.
   informer:
-    image: ghcr.io/nsdf-fabric/chess-instrument-control-informer:0.1.0
+    image: ghcr.io/nsdf-fabric/chess-instrument-control-informer:0.2.0
     volumes:
       - shared-data:/data
       - ./strain_map.nxs:/data/strain_map.nxs:ro
@@ -61,7 +62,7 @@ services:
   # Monitors the NEW HDF5 file via SWMR polling and emits
   # new_measurement events into INTERSECT when data changes.
   chess-data-service:
-    image: ghcr.io/nsdf-fabric/intersect-chess-data-service:0.1.3
+    image: ghcr.io/nsdf-fabric/intersect-chess-data-service:0.1.5
     volumes:
       - shared-data:/data:ro
       - ./conf/data-service.json:/app/local-conf.json:ro
@@ -73,7 +74,7 @@ services:
   # Bayesian optimization: receives measurement data, recommends
   # next point to measure via expected improvement.
   dial:
-    image: ghcr.io/intersect-dial/dial:main
+    image: ghcr.io/intersect-dial/dial:develop
     volumes:
       - ./conf/dial-service.json:/app/local-conf.json:ro
     depends_on:
@@ -86,7 +87,7 @@ services:
   # Receives next-point recommendations and writes locNNN.txt files
   # that the informer watches and processes.
   chess-instrument-control-service:
-    image: ghcr.io/nsdf-fabric/intersect-chess-instrument-control-service:0.1.1
+    image: ghcr.io/nsdf-fabric/intersect-chess-instrument-control-service:0.1.2
     volumes:
       - shared-data:/data
       - ./conf/instrument-control-service.json:/app/local-conf.json:ro
@@ -94,23 +95,53 @@ services:
       broker:
         condition: service_healthy
 
-  # ── Campaign Orchestrator + Dashboard ───────────────────────────
-  # Coordinates the autonomous experiment loop across all services.
-  # Serves a live web dashboard at http://localhost:8000
+  # ── Campaign Orchestrator (REST API) ────────────────────────────
+  # Generic INTERSECT campaign orchestrator with REST API.
+  # OpenAPI docs at http://localhost:8000/docs
   orchestrator:
-    build:
-      context: ./orchestrator
-      dockerfile: Dockerfile.orchestrator
+    image: ghcr.io/intersect-sdk/campaign-orchestrator:latest
     ports:
       - "8000:8000"
-    volumes:
-      - ./conf/campaign-conf.json:/app/campaign-conf.json:ro
     environment:
-      CAMPAIGN_CONFIG_PATH: /app/campaign-conf.json
+      PRODUCTION: "true"
+      API_KEY: "1234567890abcdef1234567890abcdef"
+      BROKER_HOST: broker
+      BROKER_PORT: 5672
+      BROKER_PROTOCOL: amqp0.9.1
+      BROKER_USERNAME: intersect_username
+      BROKER_PASSWORD: intersect_password
+      SYSTEM_NAME: campaign-system
+      CAMPAIGN_REPOSITORY_BACKEND: memory
     depends_on:
       broker:
         condition: service_healthy
       mongodb:
+        condition: service_started
+
+  # ── One-shot campaign submission ────────────────────────────────
+  # Waits for orchestrator REST API and submits the campaign JSON once.
+  submit-campaign:
+    image: curlimages/curl:8.8.0
+    restart: "no"
+    environment:
+      CAMPAIGN_ORCHESTRATOR_API_KEY: "1234567890abcdef1234567890abcdef"
+    volumes:
+      - ./conf/chess-autonomous-bootstrap.campaign.json:/campaign/chess-autonomous-bootstrap.campaign.json:ro
+    command:
+      - sh
+      - -ec
+      - |
+        until curl -fsS http://orchestrator:8000/v1/ping >/dev/null; do
+          echo "waiting for orchestrator REST API..."
+          sleep 2
+        done
+
+        curl -fsS -X POST http://orchestrator:8000/v1/orchestrator/start_campaign \
+          -H "Authorization: $${CAMPAIGN_ORCHESTRATOR_API_KEY}" \
+          -H "Content-Type: application/json" \
+          --data-binary @/campaign/chess-autonomous-bootstrap.campaign.json
+    depends_on:
+      orchestrator:
         condition: service_started
 
 volumes:
