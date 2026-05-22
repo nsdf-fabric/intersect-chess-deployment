@@ -125,6 +125,11 @@ docker logs deployment-orchestrator-1 --tail 3000 | rg "STEP_START|STEP_COMPLETE
 
 ## Configuration Files
 
+Note: The `conf/` directory is intentionally committed. It contains only test/local
+credentials used by this Docker Compose deployment (for example,
+`intersect_username` / `intersect_password`) and is not intended for production
+secrets.
+
 - Informer config: [conf/informer-config.yaml](conf/informer-config.yaml)
 - Data service config: [conf/data-service.json](conf/data-service.json)
 - Dial config: [conf/dial-service.json](conf/dial-service.json)

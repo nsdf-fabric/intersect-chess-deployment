@@ -1,0 +1,220 @@
+{
+  "id": "2ed4f84a-1d96-4d82-90aa-c85dc34d4db8",
+  "name": "chess-autonomous-bootstrap",
+  "user": "system",
+  "description": "Bootstrap CHESS services for autonomous workflow with REST campaign orchestrator.",
+  "task_groups": [
+    {
+      "id": "27c127a5-4bde-46fa-9bfc-c7ddcd2c2be1",
+      "group_dependencies": [],
+      "tasks": [
+        {
+          "id": "5f788ebd-e537-4a95-b6de-a3e1b6e5ccb4",
+          "hierarchy": "chess.chess-facility.instrument-control-system.instrument-control-subsystem.chess-instrument-control-service",
+          "capability": "chess_instrument_control",
+          "operation_id": "initialize_experiment",
+          "event_name": null,
+          "output": null,
+          "input": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "experiment_name": {
+                  "type": "string",
+                  "default": "experiment1"
+                },
+                "base_dir": {
+                  "type": "string",
+                  "default": "/data"
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "c6c7bd48-af36-4f26-94a0-596adfdfa22d",
+                "var": "experiment_name"
+              },
+              {
+                "id": "42a6dfe4-f3ee-4ed8-b22a-1ab6a457f552",
+                "var": "base_dir"
+              }
+            ]
+          },
+          "task_dependencies": [],
+          "task_objectives": null
+        },
+        {
+          "id": "0122ed73-b04b-4d3d-bbbc-cf24d0ac95d4",
+          "hierarchy": "chess.chess-facility.data-egress-system.data-egress-subsystem.chess-data-egress-service",
+          "capability": "chess_data_egress",
+          "operation_id": "start_monitoring",
+          "event_name": null,
+          "output": null,
+          "input": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "filename": {
+                  "type": "string",
+                  "default": "/data/new_strain_map.nxs"
+                },
+                "source_format": {
+                  "type": "string",
+                  "default": "hdf5"
+                },
+                "dataset_path": {
+                  "type": "string",
+                  "default": "v8-p3-10s-0deg_dataset1_strainanalysis/0/uniform_fit/2_2_2/centers"
+                },
+                "dataset_names": {
+                  "type": "array",
+                  "default": [
+                    "labx",
+                    "labz",
+                    "values"
+                  ]
+                },
+                "poll_interval": {
+                  "type": "number",
+                  "default": 0.5
+                },
+                "swmr": {
+                  "type": "boolean",
+                  "default": true
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "ae729f76-c0f4-463f-a5f0-f5005670e717",
+                "var": "filename"
+              },
+              {
+                "id": "8f59f47a-fa59-4e9e-a847-1fe43ecef6ad",
+                "var": "source_format"
+              },
+              {
+                "id": "d9ac9f3b-3d4a-4778-a791-e14570d7a76f",
+                "var": "dataset_path"
+              },
+              {
+                "id": "7d4f9634-c955-4365-a30f-37ffecb4f2d1",
+                "var": "dataset_names"
+              },
+              {
+                "id": "74179056-c24f-4236-87b4-fb97639de8ee",
+                "var": "poll_interval"
+              },
+              {
+                "id": "b0714b36-9524-4bbf-b6d4-ca37357e7dc9",
+                "var": "swmr"
+              }
+            ]
+          },
+          "task_dependencies": [],
+          "task_objectives": null
+        },
+        {
+          "id": "e99f78a2-2de7-4e24-a75e-28aa37d4fe36",
+          "hierarchy": "ornl.intersect.dial-system.dial-subsystem.dial-service",
+          "capability": "dial",
+          "operation_id": "initialize_workflow",
+          "event_name": null,
+          "output": null,
+          "input": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "dataset_x": {
+                  "type": "array",
+                  "default": [
+                    [-47.33, -255.3],
+                    [-47.33, -242.3],
+                    [26.17, -255.3],
+                    [26.17, -242.3],
+                    [-10.58, -248.8]
+                  ]
+                },
+                "dataset_y": {
+                  "type": "array",
+                  "default": [
+                    85.817171,
+                    85.817171,
+                    85.227413,
+                    85.87497,
+                    85.5
+                  ]
+                },
+                "bounds": {
+                  "type": "array",
+                  "default": [
+                    [-47.33, 26.17],
+                    [-255.3, -242.3]
+                  ]
+                },
+                "dim_x": {
+                  "type": "integer",
+                  "default": 2
+                },
+                "kernel": {
+                  "type": "string",
+                  "default": "rbf"
+                },
+                "y_is_good": {
+                  "type": "boolean",
+                  "default": true
+                },
+                "backend": {
+                  "type": "string",
+                  "default": "sklearn"
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "867a69d1-f35f-45e9-bf5a-8f8a539dc5e5",
+                "var": "dataset_x"
+              },
+              {
+                "id": "f0eb6d3e-cb52-4845-aac0-6e1ceca5e6b8",
+                "var": "dataset_y"
+              },
+              {
+                "id": "a2a68f28-f00d-4e86-8cb5-c4f958fa4cec",
+                "var": "bounds"
+              },
+              {
+                "id": "2de356f9-4997-4f6f-baf5-7f4423bf8b4e",
+                "var": "dim_x"
+              },
+              {
+                "id": "d8f8f130-f23d-49b8-af0b-54d191fe3a26",
+                "var": "kernel"
+              },
+              {
+                "id": "a8d524f1-2f5d-4370-949f-bf7d58ae10ca",
+                "var": "y_is_good"
+              },
+              {
+                "id": "1cbcd7ca-fbc6-493b-a4e3-a515362f1238",
+                "var": "backend"
+              }
+            ]
+          },
+          "task_dependencies": [],
+          "task_objectives": null
+        }
+      ],
+      "objectives": [
+        {
+          "id": "f4caa47c-9318-4ace-bec3-468d462151cd",
+          "type": "iterate",
+          "iterations": 1
+        }
+      ]
+    }
+  ],
+  "objectives": null,
+  "inputs": [],
+  "outputs": []
+}

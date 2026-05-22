@@ -1,0 +1,28 @@
+{
+  "intersect": {
+    "brokers": [
+      {
+        "username": "intersect_username",
+        "password": "intersect_password",
+        "host": "broker",
+        "port": 5672,
+        "protocol": "amqp0.9.1"
+      }
+    ]
+  },
+  "intersect-hierarchy": {
+    "organization": "ornl",
+    "facility": "intersect",
+    "system": "dial-system",
+    "subsystem": "dial-subsystem",
+    "service": "dial-service"
+  },
+  "dial": {
+    "mongo": {
+      "username": null,
+      "password": null,
+      "host": "mongodb",
+      "port": 27017
+    }
+  }
+}

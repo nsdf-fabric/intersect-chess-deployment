@@ -1,0 +1,20 @@
+{
+  "intersect": {
+    "brokers": [
+      {
+        "username": "intersect_username",
+        "password": "intersect_password",
+        "host": "broker",
+        "port": 5672,
+        "protocol": "amqp0.9.1"
+      }
+    ]
+  },
+  "intersect-hierarchy": {
+    "organization": "chess",
+    "facility": "chess-facility",
+    "system": "instrument-control-system",
+    "subsystem": "instrument-control-subsystem",
+    "service": "chess-instrument-control-service"
+  }
+}
