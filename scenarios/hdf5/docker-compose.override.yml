@@ -1,0 +1,4 @@
+services:
+  submit-campaign:
+    volumes:
+      - ./scenarios/hdf5/chess-autonomous-bootstrap.campaign.json:/campaign/chess-autonomous-bootstrap.campaign.json:ro

@@ -1,0 +1,10 @@
+services:
+  informer:
+    volumes:
+      - shared-data:/data
+      - ./.local-data/strain_map.nxs:/data/strain_map.nxs:ro
+      - ./conf/informer-config.yaml:/app/config.yaml:ro
+
+  submit-campaign:
+    volumes:
+      - ./scenarios/hdf5-full/chess-autonomous-bootstrap.campaign.json:/campaign/chess-autonomous-bootstrap.campaign.json:ro

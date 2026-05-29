@@ -1,0 +1,13 @@
+services:
+  informer:
+    profiles: ["hdf5-only"]
+
+  chess-data-service:
+    volumes:
+      - shared-data:/data:ro
+      - ./conf/data-service.json:/app/local-conf.json:ro
+      - ./datasets/strain_map.reduced.json:/app/fixtures/strain_map.reduced.json:ro
+
+  submit-campaign:
+    volumes:
+      - ./scenarios/json/chess-autonomous-bootstrap.campaign.json:/campaign/chess-autonomous-bootstrap.campaign.json:ro

@@ -1,0 +1,130 @@
+name: Compose Scenario Validation
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  compose-scenarios:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        scenario:
+          - name: hdf5
+            compose_args: -f docker-compose.yml -f scenarios/hdf5/docker-compose.override.yml
+          - name: json
+            compose_args: -f docker-compose.yml -f scenarios/json/docker-compose.override.yml
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Show Docker versions
+        run: |
+          docker --version
+          docker compose version
+
+      - name: Validate merged Compose config
+        run: docker compose ${{ matrix.scenario.compose_args }} config > /tmp/compose-${{ matrix.scenario.name }}.yaml
+
+      - name: Start scenario
+        run: docker compose ${{ matrix.scenario.compose_args }} up -d --force-recreate
+
+      - name: Wait for submit-campaign to finish successfully
+        run: |
+          set -euo pipefail
+
+          cid="$(docker compose ${{ matrix.scenario.compose_args }} ps -q submit-campaign)"
+          if [[ -z "$cid" ]]; then
+            echo "submit-campaign container not found"
+            docker compose ${{ matrix.scenario.compose_args }} ps
+            exit 1
+          fi
+
+          deadline=$((SECONDS + 300))
+          while true; do
+            state="$(docker inspect -f '{{.State.Status}} {{.State.ExitCode}}' "$cid")"
+            status="${state%% *}"
+            exit_code="${state##* }"
+
+            if [[ "$status" == "exited" ]]; then
+              echo "submit-campaign exited with code ${exit_code}"
+              if [[ "$exit_code" != "0" ]]; then
+                docker compose ${{ matrix.scenario.compose_args }} logs --no-color submit-campaign orchestrator broker
+                exit 1
+              fi
+              break
+            fi
+
+            if (( SECONDS > deadline )); then
+              echo "Timed out waiting for submit-campaign to exit"
+              docker compose ${{ matrix.scenario.compose_args }} ps -a
+              docker compose ${{ matrix.scenario.compose_args }} logs --no-color submit-campaign orchestrator broker
+              exit 1
+            fi
+
+            sleep 2
+          done
+
+      - name: Check service states
+        run: |
+          docker compose ${{ matrix.scenario.compose_args }} ps -a
+          for svc in broker orchestrator chess-data-service; do
+            cid="$(docker compose ${{ matrix.scenario.compose_args }} ps -q "$svc")"
+            if [[ -z "$cid" ]]; then
+              echo "Missing service container: $svc"
+              exit 1
+            fi
+            running="$(docker inspect -f '{{.State.Running}}' "$cid")"
+            if [[ "$running" != "true" ]]; then
+              echo "Service is not running: $svc"
+              docker compose ${{ matrix.scenario.compose_args }} logs --no-color "$svc"
+              exit 1
+            fi
+          done
+
+      - name: Validate orchestrator campaign markers
+        run: |
+          set -euo pipefail
+
+          deadline=$((SECONDS + 600))
+          while true; do
+            logs="$(docker compose ${{ matrix.scenario.compose_args }} logs --no-color orchestrator 2>/dev/null || true)"
+
+            if echo "$logs" | grep -Eq "CAMPAIGN_ERROR|UNKNOWN_ERROR|SCHEMA_ERROR"; then
+              echo "Found campaign error marker in orchestrator logs"
+              echo "$logs"
+              exit 1
+            fi
+
+            if echo "$logs" | grep -Eq "CAMPAIGN_COMPLETE"; then
+              echo "Found campaign completion marker in orchestrator logs"
+              echo "$logs" | grep -E "CAMPAIGN_COMPLETE|STEP_COMPLETE" | tail -n 10
+              break
+            fi
+
+            if (( SECONDS > deadline )); then
+              echo "Timed out waiting for CAMPAIGN_COMPLETE marker"
+              echo "$logs" | tail -n 200
+              exit 1
+            fi
+
+            sleep 2
+          done
+
+      - name: Dump logs on failure
+        if: failure()
+        run: |
+          docker compose ${{ matrix.scenario.compose_args }} ps -a
+          docker compose ${{ matrix.scenario.compose_args }} logs --no-color
+
+      - name: Tear down scenario
+        if: always()
+        run: docker compose ${{ matrix.scenario.compose_args }} down --remove-orphans
