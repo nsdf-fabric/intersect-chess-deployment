@@ -76,6 +76,97 @@ Run full stack including automatic one-shot campaign submission:
 docker compose up -d --force-recreate
 ```
 
+## CI Validation
+
+GitHub Actions validates compose scenarios on pull requests and pushes
+to `main`:
+
+- HDF5 reduced fixture scenario
+- JSON reduced fixture scenario
+
+The `hdf5-full` scenario is validated locally only because the full
+`strain_map.nxs` input is not available to GitHub-hosted runners.
+
+Workflow file:
+
+- [.github/workflows/compose-scenarios.yml](.github/workflows/compose-scenarios.yml)
+
+## Scenario-Based Test Modes
+
+This repository now supports explicit scenario selection via Compose override files.
+This keeps each test mode isolated and makes it easier to add future datasets and
+service combinations.
+
+### HDF5 Scenario (current/default behavior)
+
+Uses the informer pipeline: reduced fixture `datasets/strain_map.small.nxs` -> derived
+`/data/new_strain_map.nxs`, then monitors HDF5 updates.
+
+```bash
+docker compose -f docker-compose.yml -f scenarios/hdf5/docker-compose.override.yml up -d --force-recreate
+```
+
+Campaign payload:
+
+- `scenarios/hdf5/chess-autonomous-bootstrap.campaign.json`
+
+### HDF5 Full Dataset Scenario (optional realism mode)
+
+Use this mode only when you explicitly want the full-size dataset.
+The full file is not public and must be obtained from the CHESS team.
+Keep it local and out of git.
+
+```bash
+mkdir -p .local-data
+# Copy the full file to the path expected by scenarios/hdf5-full/docker-compose.override.yml
+cp /path/to/strain_map.nxs .local-data/strain_map.nxs
+docker compose -f docker-compose.yml -f scenarios/hdf5-full/docker-compose.override.yml up -d --force-recreate
+```
+
+Campaign payload:
+
+- `scenarios/hdf5-full/chess-autonomous-bootstrap.campaign.json`
+
+### JSON Scenario (new)
+
+Skips informer and points `chess-data-service` at a reduced JSON file mounted
+directly into the container.
+
+```bash
+docker compose -f docker-compose.yml -f scenarios/json/docker-compose.override.yml up -d --force-recreate
+```
+
+Campaign payload:
+
+- `scenarios/json/chess-autonomous-bootstrap.campaign.json`
+
+### Generate/Refresh Reduced Fixtures
+
+Create deterministic reduced HDF5 fixture from a local full file:
+
+```bash
+python scripts/reduce_strain_map_hdf5.py --input strain_map.nxs --output datasets/strain_map.small.nxs --max-rows 64
+```
+
+Then export the reduced JSON fixture:
+
+Use the conversion script to export a reduced JSON dataset from the source
+HDF5 fixture:
+
+```bash
+python scripts/export_strain_map_to_json.py
+```
+
+Default output:
+
+- `datasets/strain_map.small.nxs`
+- `datasets/strain_map.reduced.json`
+
+Recommended committed fixture sizes:
+
+- HDF5 fixture target: 1 MB to 10 MB
+- JSON fixture target: less than 1 MB
+
 Open API docs:
 
 - http://localhost:8000/docs
@@ -117,7 +208,7 @@ docker logs deployment-orchestrator-1 --tail 3000 | rg "STEP_START|STEP_COMPLETE
 
 ## Data Flow
 
-1. Informer reads [strain_map.nxs](strain_map.nxs), creates/updates a derived HDF5 file in `/data`, and watches for location updates.
+1. Informer reads [datasets/strain_map.small.nxs](datasets/strain_map.small.nxs) by default, creates/updates a derived HDF5 file in `/data`, and watches for location updates.
 2. Data egress monitors the derived HDF5 and emits new measurement events.
 3. Campaign orchestrator executes request/reply tasks from [conf/chess-autonomous-bootstrap.campaign.json](conf/chess-autonomous-bootstrap.campaign.json).
 4. Instrument-control and Dial process their tasks and return replies.
@@ -135,6 +226,11 @@ secrets.
 - Dial config: [conf/dial-service.json](conf/dial-service.json)
 - Instrument control config: [conf/instrument-control-service.json](conf/instrument-control-service.json)
 - Campaign payload: [conf/chess-autonomous-bootstrap.campaign.json](conf/chess-autonomous-bootstrap.campaign.json)
+- HDF5 campaign payload: [scenarios/hdf5/chess-autonomous-bootstrap.campaign.json](scenarios/hdf5/chess-autonomous-bootstrap.campaign.json)
+- HDF5 full campaign payload: [scenarios/hdf5-full/chess-autonomous-bootstrap.campaign.json](scenarios/hdf5-full/chess-autonomous-bootstrap.campaign.json)
+- JSON campaign payload: [scenarios/json/chess-autonomous-bootstrap.campaign.json](scenarios/json/chess-autonomous-bootstrap.campaign.json)
+- Reduced HDF5 fixture generator: [scripts/reduce_strain_map_hdf5.py](scripts/reduce_strain_map_hdf5.py)
+- Reduced JSON fixture generator: [scripts/export_strain_map_to_json.py](scripts/export_strain_map_to_json.py)
 
 ## Troubleshooting
 

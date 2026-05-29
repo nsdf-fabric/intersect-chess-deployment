@@ -1,2 +1,4 @@
 # large data
 strain_map.nxs
+.local-data/
+datasets/full/

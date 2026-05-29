@@ -13,7 +13,7 @@
 #   7. campaign-orchestrator (REST API on :8000)
 #   8. submit-campaign (one-shot campaign POST to orchestrator)
 #
-# The strain_map.nxs in this directory is used as the FULL HDF5 source file.
+# The committed reduced fixture is used as default HDF5 source file.
 # A shared volume simulates the NFS mount between services.
 
 services:
@@ -44,14 +44,14 @@ services:
       - dial_mongodb_data:/bitnami/mongodb
 
   # ── Chess Instrument Control Informer ───────────────────────────
-  # Reads the FULL HDF5 (strain_map.nxs), creates a NEW HDF5 with
+  # Reads the source HDF5 fixture, creates a NEW HDF5 with
   # cloned structure + initial random points, then watches loc_dir
   # for new location files and appends interpolated data.
   informer:
     image: ghcr.io/nsdf-fabric/chess-instrument-control-informer:0.2.0
     volumes:
       - shared-data:/data
-      - ./strain_map.nxs:/data/strain_map.nxs:ro
+      - ./datasets/strain_map.small.nxs:/data/strain_map.nxs:ro
       - ./conf/informer-config.yaml:/app/config.yaml:ro
     command: ["sh", "-c", "mkdir -p /data/autonomous_experiment/experiment1 && chess-instrument-control-informer --config /app/config.yaml"]
     depends_on:
@@ -125,6 +125,7 @@ services:
     restart: "no"
     environment:
       CAMPAIGN_ORCHESTRATOR_API_KEY: "1234567890abcdef1234567890abcdef"
+      CAMPAIGN_SUBMIT_STARTUP_GRACE_SECONDS: "12"
     volumes:
       - ./conf/chess-autonomous-bootstrap.campaign.json:/campaign/chess-autonomous-bootstrap.campaign.json:ro
     command:
@@ -135,6 +136,9 @@ services:
           echo "waiting for orchestrator REST API..."
           sleep 2
         done
+
+        echo "orchestrator is up; waiting $${CAMPAIGN_SUBMIT_STARTUP_GRACE_SECONDS}s for service subscriptions..."
+        sleep "$${CAMPAIGN_SUBMIT_STARTUP_GRACE_SECONDS}"
 
         curl -fsS -X POST http://orchestrator:8000/v1/orchestrator/start_campaign \
           -H "Authorization: $${CAMPAIGN_ORCHESTRATOR_API_KEY}" \
