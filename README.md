@@ -140,6 +140,20 @@ Campaign payload:
 
 - `scenarios/json/chess-autonomous-bootstrap.campaign.json`
 
+### JSON + Storage Scenario
+
+Adds the NSDF storage container alongside the reduced JSON workflow. The storage
+service subscribes to the DIAL workflow messages and persists `data.json`,
+`next_x.json`, and `surrogate.json` under a writable local directory.
+
+```bash
+docker compose -f docker-compose.yml -f scenarios/json-storage/docker-compose.override.yml up -d --force-recreate
+```
+
+Campaign payload:
+
+- `scenarios/json-storage/chess-autonomous-bootstrap.campaign.json`
+
 ### Generate/Refresh Reduced Fixtures
 
 Create deterministic reduced HDF5 fixture from a local full file:
@@ -229,6 +243,7 @@ secrets.
 - HDF5 campaign payload: [scenarios/hdf5/chess-autonomous-bootstrap.campaign.json](scenarios/hdf5/chess-autonomous-bootstrap.campaign.json)
 - HDF5 full campaign payload: [scenarios/hdf5-full/chess-autonomous-bootstrap.campaign.json](scenarios/hdf5-full/chess-autonomous-bootstrap.campaign.json)
 - JSON campaign payload: [scenarios/json/chess-autonomous-bootstrap.campaign.json](scenarios/json/chess-autonomous-bootstrap.campaign.json)
+- JSON + storage campaign payload: [scenarios/json-storage/chess-autonomous-bootstrap.campaign.json](scenarios/json-storage/chess-autonomous-bootstrap.campaign.json)
 - Reduced HDF5 fixture generator: [scripts/reduce_strain_map_hdf5.py](scripts/reduce_strain_map_hdf5.py)
 - Reduced JSON fixture generator: [scripts/export_strain_map_to_json.py](scripts/export_strain_map_to_json.py)
 
