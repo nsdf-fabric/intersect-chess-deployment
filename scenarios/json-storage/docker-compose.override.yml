@@ -1,0 +1,58 @@
+services:
+  informer:
+    profiles: ["hdf5-only"]
+
+  chess-data-service:
+    volumes:
+      - shared-data:/data:ro
+      - ./conf/data-service.json:/app/local-conf.json:ro
+      - ./datasets/strain_map.reduced.json:/app/fixtures/strain_map.reduced.json:ro
+
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - ./.local-data/minio:/data
+
+  minio-init:
+    image: minio/mc:latest
+    depends_on:
+      minio:
+        condition: service_started
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+      MINIO_BUCKET: nsdf-storage
+    entrypoint:
+      - sh
+      - -ec
+      - |
+        until mc alias set local http://minio:9000 "$${MINIO_ROOT_USER}" "$${MINIO_ROOT_PASSWORD}"; do
+          echo "waiting for minio..."
+          sleep 1
+        done
+
+        mc mb -p "local/$${MINIO_BUCKET}" || true
+        mc anonymous set none "local/$${MINIO_BUCKET}" || true
+        echo "minio bucket ready: $${MINIO_BUCKET}"
+
+  nsdf-storage-service:
+    image: ghcr.io/nsdf-fabric/nsdf-storage-service:0.0.1
+    volumes:
+      - ./scenarios/json-storage/nsdf-storage-local-conf.json:/app/local-conf.json:ro
+      - ./.local-data/nsdf-storage-service:/app/data
+    depends_on:
+      broker:
+        condition: service_healthy
+      minio-init:
+        condition: service_completed_successfully
+
+  submit-campaign:
+    volumes:
+      - ./scenarios/json-storage/chess-autonomous-bootstrap.campaign.json:/campaign/chess-autonomous-bootstrap.campaign.json:ro

@@ -1,0 +1,541 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Campaign Control UI</title>
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+    <script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
+    <script type="module">
+      import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+
+      window._mermaidPanZoom = window._mermaidPanZoom || [];
+      window._workflowVizState = window._workflowVizState || {
+        ws: null,
+        activeCampaignId: "",
+        eventsUrl: "",
+        taskMap: {},
+        taskStatus: {},
+        recentEvents: [],
+        reconnectTimer: null,
+      };
+
+      const normalizeId = (value) => (value || "").toString().trim().toLowerCase();
+
+      const setConnectionBadge = (status, text) => {
+        const badge = document.getElementById("live-conn-badge");
+        if (!badge) {
+          return;
+        }
+        badge.classList.remove("is-idle", "is-connecting", "is-connected", "is-reconnecting", "is-disconnected");
+        badge.classList.add(`is-${status}`);
+        badge.textContent = text;
+      };
+
+      const syncGraphMeta = () => {
+        const meta = document.getElementById("graph-meta");
+        if (!meta) {
+          return;
+        }
+
+        const nextCampaignId = normalizeId(meta.dataset.activeCampaignId || "");
+        const nextEventsUrl = (meta.dataset.eventsUrl || "").trim();
+        let nextTaskMap = {};
+
+        try {
+          const rawTaskMap = JSON.parse(meta.dataset.taskMap || "{}");
+          nextTaskMap = Object.fromEntries(
+            Object.entries(rawTaskMap).map(([taskId, nodeId]) => [normalizeId(taskId), nodeId]),
+          );
+        } catch (_) {
+          nextTaskMap = {};
+        }
+
+        const state = window._workflowVizState;
+        const campaignChanged = state.activeCampaignId !== nextCampaignId;
+        if (campaignChanged) {
+          state.taskStatus = {};
+          state.recentEvents = [];
+          if (state.reconnectTimer) {
+            clearTimeout(state.reconnectTimer);
+            state.reconnectTimer = null;
+          }
+          if (state.ws) {
+            try {
+              state.ws.close();
+            } catch (_) {
+              // Ignore best-effort close errors.
+            }
+            state.ws = null;
+          }
+        }
+
+        state.activeCampaignId = nextCampaignId;
+        state.eventsUrl = nextEventsUrl;
+        state.taskMap = nextTaskMap;
+
+        if (!state.activeCampaignId) {
+          setConnectionBadge("idle", "Live events: idle");
+        }
+
+        renderRecentEvents();
+      };
+
+      const destroyPanZoom = () => {
+        for (const instance of window._mermaidPanZoom) {
+          try {
+            instance.destroy();
+          } catch (_) {
+            // Ignore stale instance cleanup failures.
+          }
+        }
+        window._mermaidPanZoom = [];
+      };
+
+      const resolveTaskNodeElement = (nodeId) => {
+        if (!nodeId) {
+          return null;
+        }
+        const selectors = [
+          `.graph-wrap .mermaid svg g[id^="flowchart-${nodeId}"]`,
+          `.graph-wrap .mermaid svg g[id*="-${nodeId}-"]`,
+        ];
+        for (const selector of selectors) {
+          const match = document.querySelector(selector);
+          if (match) {
+            return match;
+          }
+        }
+        return null;
+      };
+
+      const renderRecentEvents = () => {
+        const state = window._workflowVizState;
+        const list = document.getElementById("recent-events");
+        if (!list) {
+          return;
+        }
+
+        list.innerHTML = "";
+        for (const item of state.recentEvents) {
+          const li = document.createElement("li");
+          li.textContent = item;
+          list.appendChild(li);
+        }
+      };
+
+      const resetNodeVisualState = (nodeElement) => {
+        nodeElement.querySelectorAll("rect, polygon, path").forEach((shape) => {
+          shape.style.removeProperty("fill");
+          shape.style.removeProperty("stroke");
+          shape.style.removeProperty("stroke-width");
+        });
+      };
+
+      const applyNodeVisualState = (nodeElement, status) => {
+        const palette =
+          status === "running"
+            ? { fill: "#ffedd5", stroke: "#ea580c" }
+            : status === "complete"
+              ? { fill: "#dcfce7", stroke: "#16a34a" }
+              : null;
+
+        if (!palette) {
+          return;
+        }
+
+        nodeElement.querySelectorAll("rect, polygon, path").forEach((shape) => {
+          shape.style.setProperty("fill", palette.fill, "important");
+          shape.style.setProperty("stroke", palette.stroke, "important");
+          shape.style.setProperty("stroke-width", "2.6px", "important");
+        });
+      };
+
+      const applyTaskStatuses = () => {
+        const state = window._workflowVizState;
+        document.querySelectorAll(".graph-wrap .mermaid svg g.node").forEach((node) => {
+          node.classList.remove("task-running", "task-complete");
+          resetNodeVisualState(node);
+        });
+
+        for (const [taskId, status] of Object.entries(state.taskStatus)) {
+          const nodeId = state.taskMap[normalizeId(taskId)];
+          const nodeElement = resolveTaskNodeElement(nodeId);
+          if (!nodeElement) {
+            continue;
+          }
+          if (status === "running") {
+            nodeElement.classList.add("task-running");
+            applyNodeVisualState(nodeElement, "running");
+          } else if (status === "complete") {
+            nodeElement.classList.add("task-complete");
+            applyNodeVisualState(nodeElement, "complete");
+          }
+        }
+      };
+
+      const connectLiveEvents = () => {
+        const state = window._workflowVizState;
+        if (!state.activeCampaignId || !state.eventsUrl || state.ws) {
+          if (!state.activeCampaignId) {
+            setConnectionBadge("idle", "Live events: idle");
+          }
+          return;
+        }
+
+        setConnectionBadge("connecting", "Live events: connecting...");
+
+        const ws = new WebSocket(state.eventsUrl);
+        state.ws = ws;
+
+        ws.onopen = () => {
+          if (window._workflowVizState.ws === ws) {
+            setConnectionBadge("connected", "Live events: connected");
+          }
+        };
+
+        ws.onmessage = (event) => {
+          let payload;
+          try {
+            payload = JSON.parse(event.data);
+          } catch (_) {
+            return;
+          }
+
+          const runId = normalizeId(payload.run_id || payload.campaign_id);
+          if (runId !== state.activeCampaignId) {
+            return;
+          }
+
+          const eventType = payload?.event?.event_type;
+          const stepId = normalizeId(payload?.event?.step_id);
+          if (!stepId) {
+            return;
+          }
+
+          if (eventType === "STEP_START") {
+            state.taskStatus[stepId] = "running";
+          } else if (eventType === "STEP_COMPLETE") {
+            state.taskStatus[stepId] = "complete";
+          }
+
+          const when = new Date().toLocaleTimeString();
+          state.recentEvents.unshift(`${when} ${eventType} ${stepId.slice(0, 8)}`);
+          state.recentEvents = state.recentEvents.slice(0, 20);
+
+          applyTaskStatuses();
+          renderRecentEvents();
+        };
+
+        ws.onclose = () => {
+          const currentState = window._workflowVizState;
+          if (currentState.ws === ws) {
+            currentState.ws = null;
+            if (currentState.activeCampaignId && currentState.eventsUrl) {
+              setConnectionBadge("reconnecting", "Live events: reconnecting...");
+              currentState.reconnectTimer = setTimeout(() => {
+                currentState.reconnectTimer = null;
+                connectLiveEvents();
+              }, 2000);
+            } else {
+              setConnectionBadge("idle", "Live events: idle");
+            }
+          }
+        };
+
+        ws.onerror = () => {
+          if (window._workflowVizState.ws === ws) {
+            setConnectionBadge("disconnected", "Live events: disconnected");
+            try {
+              ws.close();
+            } catch (_) {
+              // Ignore close failure.
+            }
+          }
+        };
+      };
+
+      const initPanZoom = () => {
+        const svgs = document.querySelectorAll(".graph-wrap .mermaid svg");
+        svgs.forEach((svg, index) => {
+          if (!svg.id) {
+            svg.id = `workflow-mermaid-${index}`;
+          }
+          const instance = window.svgPanZoom(svg, {
+            zoomEnabled: true,
+            controlIconsEnabled: true,
+            fit: true,
+            center: true,
+            minZoom: 0.2,
+            maxZoom: 12,
+            dblClickZoomEnabled: true,
+            mouseWheelZoomEnabled: true,
+          });
+          instance.zoomBy(1.2);
+          window._mermaidPanZoom.push(instance);
+        });
+      };
+
+      window.renderMermaid = async () => {
+        destroyPanZoom();
+        mermaid.initialize({
+          startOnLoad: false,
+          securityLevel: "loose",
+          theme: "neutral",
+          flowchart: {
+            useMaxWidth: false,
+            nodeSpacing: 80,
+            rankSpacing: 95,
+          },
+          themeVariables: {
+            fontSize: "18px",
+          },
+        });
+        await mermaid.run({ querySelector: ".mermaid" });
+        initPanZoom();
+        syncGraphMeta();
+        applyTaskStatuses();
+        renderRecentEvents();
+        connectLiveEvents();
+      };
+
+      document.addEventListener("DOMContentLoaded", () => {
+        window.renderMermaid();
+      });
+
+      document.body.addEventListener("htmx:afterSwap", (event) => {
+        if (event.target && event.target.id === "workspace") {
+          window.renderMermaid();
+        }
+      });
+    </script>
+    <style>
+      :root {
+        --bg: #f4f1ea;
+        --panel: #fffdf7;
+        --ink: #1d1f23;
+        --ink-soft: #5f646d;
+        --line: #d8d2c4;
+        --accent: #154c79;
+        --accent-2: #da5b34;
+        --ok: #1f7a45;
+        --warn: #a86c00;
+        --error: #9e1a1a;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 12% 20%, rgba(21, 76, 121, 0.18), transparent 40%),
+          radial-gradient(circle at 86% 12%, rgba(218, 91, 52, 0.15), transparent 38%),
+          var(--bg);
+      }
+
+      main {
+        width: min(1280px, 96vw);
+        margin: 2rem auto;
+        display: grid;
+        gap: 1rem;
+      }
+
+      .hero {
+        background: linear-gradient(120deg, #0f3554, #18466c 45%, #9f3f22);
+        color: #fff;
+        border-radius: 16px;
+        padding: 1.2rem 1.4rem;
+      }
+
+      .hero h1 {
+        margin: 0;
+        font-family: "Alegreya Sans SC", "Trebuchet MS", sans-serif;
+        font-size: 1.5rem;
+        letter-spacing: 0.03em;
+      }
+
+      .hero p {
+        margin: 0.4rem 0 0;
+        opacity: 0.9;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 360px 1fr;
+        gap: 1rem;
+      }
+
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 1rem;
+      }
+
+      .controls h2,
+      .preview h2 {
+        margin-top: 0;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--ink-soft);
+      }
+
+      label {
+        display: block;
+        margin: 0.7rem 0 0.3rem;
+        font-weight: 600;
+      }
+
+      select,
+      textarea,
+      input[type="text"],
+      input[type="file"] {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 0.55rem 0.7rem;
+        font: inherit;
+        background: #fff;
+      }
+
+      textarea {
+        min-height: 260px;
+        resize: vertical;
+        font-family: "IBM Plex Mono", "Consolas", monospace;
+        font-size: 0.84rem;
+      }
+
+      .actions {
+        display: flex;
+        gap: 0.55rem;
+        flex-wrap: wrap;
+        margin-top: 0.8rem;
+      }
+
+      button {
+        border: 0;
+        border-radius: 999px;
+        padding: 0.55rem 0.95rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        cursor: pointer;
+      }
+
+      .btn-primary { background: var(--accent); color: #fff; }
+      .btn-danger { background: var(--error); color: #fff; }
+      .btn-ghost { background: #ebe6da; color: #222; }
+
+      .status {
+        margin: 0.8rem 0;
+        padding: 0.7rem 0.8rem;
+        border-radius: 8px;
+        font-size: 0.92rem;
+      }
+
+      .status.info { background: #e5edf3; color: #1b3f5a; }
+      .status.success { background: #e6f5ed; color: var(--ok); }
+      .status.warning { background: #fff3d9; color: var(--warn); }
+      .status.error { background: #fbe7e7; color: var(--error); }
+
+      .graph-wrap {
+        overflow: hidden;
+        min-height: 620px;
+        border: 1px dashed var(--line);
+        border-radius: 10px;
+        background: #fff;
+        padding: 0;
+      }
+
+      .graph-wrap .mermaid {
+        margin: 0;
+        width: 100%;
+        min-height: 620px;
+      }
+
+      .graph-wrap .mermaid svg {
+        width: 100% !important;
+        height: 620px !important;
+      }
+
+      .graph-wrap .svg-pan-zoom-control {
+        opacity: 0.85;
+      }
+
+      .graph-wrap .mermaid svg g.task-running rect,
+      .graph-wrap .mermaid svg g.task-running polygon,
+      .graph-wrap .mermaid svg g.task-running path {
+        fill: #ffedd5 !important;
+        stroke: #ea580c !important;
+        stroke-width: 2.6px !important;
+      }
+
+      .graph-wrap .mermaid svg g.task-complete rect,
+      .graph-wrap .mermaid svg g.task-complete polygon,
+      .graph-wrap .mermaid svg g.task-complete path {
+        fill: #dcfce7 !important;
+        stroke: #16a34a !important;
+        stroke-width: 2.6px !important;
+      }
+
+      .live-conn-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.2rem 0.6rem;
+        border-radius: 999px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        border: 1px solid transparent;
+      }
+
+      .live-conn-badge.is-idle {
+        background: #f3f4f6;
+        color: #374151;
+        border-color: #d1d5db;
+      }
+
+      .live-conn-badge.is-connecting,
+      .live-conn-badge.is-reconnecting {
+        background: #fff7ed;
+        color: #9a3412;
+        border-color: #fdba74;
+      }
+
+      .live-conn-badge.is-connected {
+        background: #ecfdf3;
+        color: #166534;
+        border-color: #86efac;
+      }
+
+      .live-conn-badge.is-disconnected {
+        background: #fef2f2;
+        color: #991b1b;
+        border-color: #fca5a5;
+      }
+
+      .hint {
+        color: var(--ink-soft);
+        font-size: 0.86rem;
+      }
+
+      @media (max-width: 960px) {
+        .grid { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="hero">
+        <h1>Campaign Control UI</h1>
+        <p>Load scenario campaigns, inspect the workflow graph, and start/stop orchestrator campaigns.</p>
+      </section>
+      <section id="workspace">
+        {% include "partials/workspace.html" %}
+      </section>
+    </main>
+  </body>
+</html>

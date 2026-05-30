@@ -224,15 +224,46 @@
           },
           "task_dependencies": [],
           "task_objectives": null
+        },
+        {
+          "id": "41c7a5f8-f06b-4a42-8f9d-ec0ecfb2c352",
+          "hierarchy": "chess.chess-facility.data-egress-system.data-egress-subsystem.chess-data-egress-service",
+          "capability": "chess_data_egress",
+          "operation_id": null,
+          "event_name": "new_measurement",
+          "output": null,
+          "input": null,
+          "task_dependencies": [],
+          "task_objectives": null
         }
       ],
       "objectives": [
         {
           "id": "f4caa47c-9318-4ace-bec3-468d462151cd",
           "type": "iterate",
-          "iterations": 2
+          "iterations": 1
         }
       ]
+    },
+    {
+      "id": "86af6832-6e89-434a-a34d-c43f8f766176",
+      "group_dependencies": [
+        "27c127a5-4bde-46fa-9bfc-c7ddcd2c2be1"
+      ],
+      "tasks": [
+        {
+          "id": "7fd1f8fc-a6dc-4ca8-81f5-66a26711f128",
+          "hierarchy": "chess.chess-facility.data-egress-system.data-egress-subsystem.chess-data-egress-service",
+          "capability": "chess_data_egress",
+          "operation_id": "stop_monitoring",
+          "event_name": null,
+          "output": null,
+          "input": null,
+          "task_dependencies": [],
+          "task_objectives": null
+        }
+      ],
+      "objectives": []
     }
   ],
   "objectives": null,

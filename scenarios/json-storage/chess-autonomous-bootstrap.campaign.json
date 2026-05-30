@@ -1,8 +1,8 @@
 {
-  "id": "2ed4f84a-1d96-4d82-90aa-c85dc34d4db8",
-  "name": "chess-autonomous-bootstrap",
+  "id": "9a1b7f9d-3e2c-4dd5-95ce-f7d7d0dbd2c4",
+  "name": "chess-autonomous-bootstrap-json-storage",
   "user": "system",
-  "description": "Bootstrap CHESS services for autonomous workflow with REST campaign orchestrator.",
+  "description": "Bootstrap CHESS services for autonomous workflow with NSDF storage enabled.",
   "task_groups": [
     {
       "id": "27c127a5-4bde-46fa-9bfc-c7ddcd2c2be1",
@@ -56,29 +56,29 @@
               "properties": {
                 "filename": {
                   "type": "string",
-                  "default": "/data/new_strain_map.nxs"
+                  "default": "/app/fixtures/strain_map.reduced.json"
                 },
                 "source_format": {
                   "type": "string",
-                  "default": "hdf5"
+                  "default": "json"
                 },
-                "dataset_path": {
+                "labx_key": {
                   "type": "string",
-                  "default": "v8-p3-10s-0deg_dataset1_strainanalysis/0/uniform_fit/2_2_2/centers"
+                  "default": "labx"
                 },
-                "dataset_names": {
-                  "type": "array",
-                  "default": [
-                    "labx",
-                    "labz",
-                    "values"
-                  ]
+                "labz_key": {
+                  "type": "string",
+                  "default": "labz"
+                },
+                "value_key": {
+                  "type": "string",
+                  "default": "0/data/uniform_strain"
                 },
                 "poll_interval": {
                   "type": "number",
                   "default": 0.5
                 },
-                "swmr": {
+                "skip_invalid_values": {
                   "type": "boolean",
                   "default": true
                 }
@@ -94,20 +94,24 @@
                 "var": "source_format"
               },
               {
-                "id": "d9ac9f3b-3d4a-4778-a791-e14570d7a76f",
-                "var": "dataset_path"
+                "id": "a41da10a-ef95-4afb-b9e4-bfda72f6f6f1",
+                "var": "labx_key"
               },
               {
-                "id": "7d4f9634-c955-4365-a30f-37ffecb4f2d1",
-                "var": "dataset_names"
+                "id": "db6f8ea7-a798-4b99-9dc8-a6c9ef9aa281",
+                "var": "labz_key"
+              },
+              {
+                "id": "8cb36f5e-2757-4fd0-84d0-5fe0f56f25bb",
+                "var": "value_key"
               },
               {
                 "id": "74179056-c24f-4236-87b4-fb97639de8ee",
                 "var": "poll_interval"
               },
               {
-                "id": "b0714b36-9524-4bbf-b6d4-ca37357e7dc9",
-                "var": "swmr"
+                "id": "4eb233b3-b191-47e6-b86d-0eef7af326ab",
+                "var": "skip_invalid_values"
               }
             ]
           },
@@ -128,11 +132,26 @@
                 "dataset_x": {
                   "type": "array",
                   "default": [
-                    [-47.33, -255.3],
-                    [-47.33, -242.3],
-                    [26.17, -255.3],
-                    [26.17, -242.3],
-                    [-10.58, -248.8]
+                    [
+                      -47.33,
+                      -255.3
+                    ],
+                    [
+                      -47.33,
+                      -242.3
+                    ],
+                    [
+                      26.17,
+                      -255.3
+                    ],
+                    [
+                      26.17,
+                      -242.3
+                    ],
+                    [
+                      -10.58,
+                      -248.8
+                    ]
                   ]
                 },
                 "dataset_y": {
@@ -148,8 +167,14 @@
                 "bounds": {
                   "type": "array",
                   "default": [
-                    [-47.33, 26.17],
-                    [-255.3, -242.3]
+                    [
+                      -47.33,
+                      26.17
+                    ],
+                    [
+                      -255.3,
+                      -242.3
+                    ]
                   ]
                 },
                 "dim_x": {

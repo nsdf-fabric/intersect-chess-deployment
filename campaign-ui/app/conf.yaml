@@ -1,0 +1,4 @@
+orchestrator_base_url: http://orchestrator:8000
+orchestrator_events_url: ws://localhost:8000/v1/orchestrator/events
+orchestrator_api_key: 1234567890abcdef1234567890abcdef
+preload_root: /campaigns

@@ -11,7 +11,7 @@
 #   5. dial-service (Bayesian optimization / active learning)
 #   6. chess-instrument-control-service (writes motor position files for SPEC)
 #   7. campaign-orchestrator (REST API on :8000)
-#   8. submit-campaign (one-shot campaign POST to orchestrator)
+#   8. campaign-ui (web UI for campaign load/visualize/start/stop)
 #
 # The committed reduced fixture is used as default HDF5 source file.
 # A shared volume simulates the NFS mount between services.
@@ -48,7 +48,9 @@ services:
   # cloned structure + initial random points, then watches loc_dir
   # for new location files and appends interpolated data.
   informer:
-    image: ghcr.io/nsdf-fabric/chess-instrument-control-informer:0.2.0
+    image: ghcr.io/nsdf-fabric/chess-instrument-control-informer:0.2.1
+    environment:
+      CHESS_MEASUREMENT_DELAY_SECONDS: "${CHESS_MEASUREMENT_DELAY_SECONDS:-1.0}"
     volumes:
       - shared-data:/data
       - ./datasets/strain_map.small.nxs:/data/strain_map.nxs:ro
@@ -99,7 +101,7 @@ services:
   # Generic INTERSECT campaign orchestrator with REST API.
   # OpenAPI docs at http://localhost:8000/docs
   orchestrator:
-    image: ghcr.io/intersect-sdk/campaign-orchestrator:latest
+    image: ghcr.io/intersect-sdk/campaign-orchestrator:v0.1.4
     ports:
       - "8000:8000"
     environment:
@@ -118,32 +120,21 @@ services:
       mongodb:
         condition: service_started
 
-  # ── One-shot campaign submission ────────────────────────────────
-  # Waits for orchestrator REST API and submits the campaign JSON once.
-  submit-campaign:
-    image: curlimages/curl:8.8.0
-    restart: "no"
+  # ── Campaign UI (FastAPI + HTMX) ────────────────────────────────
+  # Web UI for loading campaigns, visualizing workflow graphs,
+  # and submitting/stopping campaigns through the orchestrator API.
+  campaign-ui:
+    build:
+      context: ./campaign-ui
+    ports:
+      - "8081:8080"
     environment:
-      CAMPAIGN_ORCHESTRATOR_API_KEY: "1234567890abcdef1234567890abcdef"
-      CAMPAIGN_SUBMIT_STARTUP_GRACE_SECONDS: "12"
+      CAMPAIGN_UI_API_KEY: "1234567890abcdef1234567890abcdef"
+      CAMPAIGN_UI_ORCH_BASE_URL: "http://orchestrator:8000"
+      CAMPAIGN_PRELOAD_DIR: "/campaigns"
     volumes:
-      - ./conf/chess-autonomous-bootstrap.campaign.json:/campaign/chess-autonomous-bootstrap.campaign.json:ro
-    command:
-      - sh
-      - -ec
-      - |
-        until curl -fsS http://orchestrator:8000/v1/ping >/dev/null; do
-          echo "waiting for orchestrator REST API..."
-          sleep 2
-        done
-
-        echo "orchestrator is up; waiting $${CAMPAIGN_SUBMIT_STARTUP_GRACE_SECONDS}s for service subscriptions..."
-        sleep "$${CAMPAIGN_SUBMIT_STARTUP_GRACE_SECONDS}"
-
-        curl -fsS -X POST http://orchestrator:8000/v1/orchestrator/start_campaign \
-          -H "Authorization: $${CAMPAIGN_ORCHESTRATOR_API_KEY}" \
-          -H "Content-Type: application/json" \
-          --data-binary @/campaign/chess-autonomous-bootstrap.campaign.json
+      - ./conf:/campaigns/conf:ro
+      - ./scenarios:/campaigns/scenarios:ro
     depends_on:
       orchestrator:
         condition: service_started

@@ -1,0 +1,401 @@
+{
+  "id": "6c2cf730-0f6e-4d1b-b149-7c1708bb7a5d",
+  "name": "chess-autonomous-legacy-callback-flow",
+  "user": "system",
+  "description": "Reference graph that mirrors the legacy IntersectClient callback loop (initialize → monitor → initialize workflow → new_measurement → update_workflow_with_data → get_next_point / get_surrogate_values → write_motor_position → stop_monitoring). Group 1 runs setup tasks in parallel. Group 2 runs the measurement-to-recommendation chain sequentially via task_dependencies. Group 3 stops monitoring.",
+  "task_groups": [
+    {
+      "id": "f9d45034-a410-4e22-a1d7-0f93d78df6b0",
+      "group_dependencies": [],
+      "tasks": [
+        {
+          "id": "a3b17875-93ca-4e70-b0d2-0667d4b70bd0",
+          "hierarchy": "chess.chess-facility.instrument-control-system.instrument-control-subsystem.chess-instrument-control-service",
+          "capability": "chess_instrument_control",
+          "operation_id": "initialize_experiment",
+          "event_name": null,
+          "output": null,
+          "input": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "experiment_name": {
+                  "type": "string",
+                  "default": "experiment1"
+                },
+                "base_dir": {
+                  "type": "string",
+                  "default": "/data"
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "d8f5f3e8-c0f3-4811-b206-f4bf66e695cb",
+                "var": "experiment_name"
+              },
+              {
+                "id": "85d08db4-eb9f-4f8e-b00e-9e2ec1654264",
+                "var": "base_dir"
+              }
+            ]
+          },
+          "task_dependencies": [],
+          "task_objectives": null
+        },
+        {
+          "id": "95af6f8d-f7f6-4f84-86f2-0cc31fce50fb",
+          "hierarchy": "chess.chess-facility.data-egress-system.data-egress-subsystem.chess-data-egress-service",
+          "capability": "chess_data_egress",
+          "operation_id": "start_monitoring",
+          "event_name": null,
+          "output": null,
+          "input": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "filename": {
+                  "type": "string",
+                  "default": "/data/new_strain_map.nxs"
+                },
+                "source_format": {
+                  "type": "string",
+                  "default": "hdf5"
+                },
+                "dataset_path": {
+                  "type": "string",
+                  "default": "v8-p3-10s-0deg_dataset1_strainanalysis/0/uniform_fit/2_2_2/centers"
+                },
+                "dataset_names": {
+                  "type": "array",
+                  "default": [
+                    "labx",
+                    "labz",
+                    "values"
+                  ]
+                },
+                "poll_interval": {
+                  "type": "number",
+                  "default": 0.5
+                },
+                "swmr": {
+                  "type": "boolean",
+                  "default": true
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "9a7bbf89-5a1a-40ec-a6db-5b25805f5c3f",
+                "var": "filename"
+              },
+              {
+                "id": "4b1f2b6b-6422-447d-b9d7-3962f7b6f6bb",
+                "var": "source_format"
+              },
+              {
+                "id": "00a83ea1-6b94-40a0-83ec-bb6d77f72e4d",
+                "var": "dataset_path"
+              },
+              {
+                "id": "f6118206-e5a6-4c39-b486-aa0e198f7a97",
+                "var": "dataset_names"
+              },
+              {
+                "id": "fed03f8f-3eb2-46b9-bb9e-0d66df7b3f10",
+                "var": "poll_interval"
+              },
+              {
+                "id": "31aa6d6f-1e3d-4a3c-bab5-c66f41659fb9",
+                "var": "swmr"
+              }
+            ]
+          },
+          "task_dependencies": [],
+          "task_objectives": null
+        },
+        {
+          "id": "01d05790-44bb-47a6-8aea-af86ddbf0514",
+          "hierarchy": "ornl.intersect.dial-system.dial-subsystem.dial-service",
+          "capability": "dial",
+          "operation_id": "initialize_workflow",
+          "event_name": null,
+          "output": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "workflow_id": {
+                  "type": "string"
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "f1234567-0000-4000-8000-000000000001",
+                "var": "workflow_id"
+              }
+            ]
+          },
+          "input": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "dataset_x": {
+                  "type": "array",
+                  "default": [
+                    [-47.33, -255.3],
+                    [-47.33, -242.3],
+                    [26.17, -255.3],
+                    [26.17, -242.3],
+                    [-10.58, -248.8]
+                  ]
+                },
+                "dataset_y": {
+                  "type": "array",
+                  "default": [85.817171, 85.817171, 85.227413, 85.87497, 85.5]
+                },
+                "bounds": {
+                  "type": "array",
+                  "default": [[-47.33, 26.17], [-255.3, -242.3]]
+                },
+                "dim_x": {
+                  "type": "integer",
+                  "default": 2
+                },
+                "kernel": {
+                  "type": "string",
+                  "default": "rbf"
+                },
+                "y_is_good": {
+                  "type": "boolean",
+                  "default": true
+                },
+                "backend": {
+                  "type": "string",
+                  "default": "sklearn"
+                }
+              }
+            },
+            "values": [
+              {"id": "7a9d3b2b-a24f-4b57-b496-7fbaa7826d8b", "var": "dataset_x"},
+              {"id": "f59d3133-0d2e-41b5-ba40-ccd9d5644f3f", "var": "dataset_y"},
+              {"id": "80a59175-c4b2-48be-a267-e37eec6d3737", "var": "bounds"},
+              {"id": "78af7e4e-0b15-4f62-b45d-81e2ec26d524", "var": "dim_x"},
+              {"id": "09ef13e4-f754-4caf-9e1f-03fd75f73f78", "var": "kernel"},
+              {"id": "4e817a36-4014-4ce3-ab2f-7f0e28ab81d1", "var": "y_is_good"},
+              {"id": "1083ad66-9011-4db7-9923-7ef5e846e266", "var": "backend"}
+            ]
+          },
+          "task_dependencies": [],
+          "task_objectives": null
+        }
+      ],
+      "objectives": []
+    },
+    {
+      "id": "c7e18a2b-5b30-4f11-9ec2-1a2b3c4d5e6f",
+      "group_dependencies": ["f9d45034-a410-4e22-a1d7-0f93d78df6b0"],
+      "tasks": [
+        {
+          "id": "2f7a0e1b-6a8c-4f91-9b35-a7d26d9c0f11",
+          "hierarchy": "chess.chess-facility.instrument-control-system.instrument-control-subsystem.chess-instrument-control-service",
+          "capability": "chess_instrument_control",
+          "operation_id": "write_motor_position",
+          "event_name": null,
+          "output": null,
+          "input": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "labx": {
+                  "type": "number",
+                  "default": -47.33
+                },
+                "labz": {
+                  "type": "number",
+                  "default": -255.3
+                }
+              }
+            },
+            "values": [
+              {"id": "b4100001-0000-4000-8000-000000000001", "var": "labx"},
+              {"id": "b4100001-0000-4000-8000-000000000002", "var": "labz"}
+            ]
+          },
+          "task_dependencies": [],
+          "task_objectives": null
+        },
+        {
+          "id": "6e5008c2-a12a-45de-b86f-e6775f40663b",
+          "hierarchy": "chess.chess-facility.data-egress-system.data-egress-subsystem.chess-data-egress-service",
+          "capability": "chess_data_egress",
+          "operation_id": null,
+          "event_name": "new_measurement",
+          "output": null,
+          "input": null,
+          "task_dependencies": [],
+          "task_objectives": null
+        },
+        {
+          "id": "be4a5c6d-7e8f-4091-a2b3-c4d5e6f70819",
+          "hierarchy": "ornl.intersect.dial-system.dial-subsystem.dial-service",
+          "capability": "dial",
+          "operation_id": "update_workflow_with_data",
+          "event_name": null,
+          "output": null,
+          "input": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "workflow_id": {
+                  "type": "string",
+                  "default": "000000000000000000000001"
+                },
+                "next_x": {
+                  "type": "array",
+                  "default": [-10.58, -248.8]
+                },
+                "next_y": {
+                  "type": "number",
+                  "default": 85.656041
+                }
+              }
+            },
+            "values": [
+              {"id": "f1234567-0000-4000-8000-000000000001", "var": "workflow_id"},
+              {"id": "ab020001-0000-4000-8000-000000000002", "var": "next_x"},
+              {"id": "ab030001-0000-4000-8000-000000000003", "var": "next_y"}
+            ]
+          },
+          "task_dependencies": ["6e5008c2-a12a-45de-b86f-e6775f40663b"],
+          "task_objectives": null
+        },
+        {
+          "id": "cf5b6d7e-8f90-4102-b3c4-d5e6f708192a",
+          "hierarchy": "ornl.intersect.dial-system.dial-subsystem.dial-service",
+          "capability": "dial",
+          "operation_id": "get_next_point",
+          "event_name": null,
+          "output": null,
+          "input": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "workflow_id": {
+                  "type": "string",
+                  "default": "000000000000000000000001"
+                },
+                "strategy": {
+                  "type": "string",
+                  "default": "expected_improvement"
+                },
+                "y_is_good": {
+                  "type": "boolean",
+                  "default": true
+                },
+                "bounds": {
+                  "type": "array",
+                  "default": [[-47.33, 26.17], [-255.3, -242.3]]
+                }
+              }
+            },
+            "values": [
+              {"id": "f1234567-0000-4000-8000-000000000001", "var": "workflow_id"},
+              {"id": "ac020001-0000-4000-8000-000000000002", "var": "strategy"},
+              {"id": "ac030001-0000-4000-8000-000000000003", "var": "y_is_good"},
+              {"id": "ac040001-0000-4000-8000-000000000004", "var": "bounds"}
+            ]
+          },
+          "task_dependencies": ["be4a5c6d-7e8f-4091-a2b3-c4d5e6f70819"],
+          "task_objectives": null
+        },
+        {
+          "id": "da6c7e8f-9001-4213-c4d5-e6f708192a3b",
+          "hierarchy": "ornl.intersect.dial-system.dial-subsystem.dial-service",
+          "capability": "dial",
+          "operation_id": "get_surrogate_values",
+          "event_name": null,
+          "output": null,
+          "input": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "workflow_id": {
+                  "type": "string",
+                  "default": "000000000000000000000001"
+                },
+                "points_to_predict": {
+                  "type": "array",
+                  "default": [[-10.58, -248.8], [-47.33, -255.3], [26.17, -242.3]]
+                }
+              }
+            },
+            "values": [
+              {"id": "f1234567-0000-4000-8000-000000000001", "var": "workflow_id"},
+              {"id": "ad020001-0000-4000-8000-000000000002", "var": "points_to_predict"}
+            ]
+          },
+          "task_dependencies": ["be4a5c6d-7e8f-4091-a2b3-c4d5e6f70819"],
+          "task_objectives": null
+        },
+        {
+          "id": "afef1f16-29b3-4f8a-a958-0c629e84c208",
+          "hierarchy": "chess.chess-facility.instrument-control-system.instrument-control-subsystem.chess-instrument-control-service",
+          "capability": "chess_instrument_control",
+          "operation_id": "write_motor_position",
+          "event_name": null,
+          "output": null,
+          "input": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "labx": {
+                  "type": "number",
+                  "default": -10.58
+                },
+                "labz": {
+                  "type": "number",
+                  "default": -248.8
+                }
+              }
+            },
+            "values": [
+              {"id": "d50bcfbe-2ccd-458e-88ef-bb6ff8e824b5", "var": "labx"},
+              {"id": "84efa845-f6b4-462b-8cad-ef8ce497393e", "var": "labz"}
+            ]
+          },
+          "task_dependencies": ["cf5b6d7e-8f90-4102-b3c4-d5e6f708192a"],
+          "task_objectives": null
+        }
+      ],
+      "objectives": [
+        {
+          "id": "53aac358-f92e-4432-a5d6-da9b2c68915d",
+          "type": "iterate",
+          "iterations": 100
+        }
+      ]
+    },
+    {
+      "id": "889f5b00-cf87-4f95-b77f-4bced6bbf3dc",
+      "group_dependencies": ["c7e18a2b-5b30-4f11-9ec2-1a2b3c4d5e6f"],
+      "tasks": [
+        {
+          "id": "f2127f03-49e4-4e65-a211-aae72cc83804",
+          "hierarchy": "chess.chess-facility.data-egress-system.data-egress-subsystem.chess-data-egress-service",
+          "capability": "chess_data_egress",
+          "operation_id": "stop_monitoring",
+          "event_name": null,
+          "output": null,
+          "input": null,
+          "task_dependencies": [],
+          "task_objectives": null
+        }
+      ],
+      "objectives": []
+    }
+  ],
+  "objectives": null,
+  "inputs": [],
+  "outputs": []
+}

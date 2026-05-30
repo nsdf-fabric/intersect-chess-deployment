@@ -10,7 +10,7 @@ This repository runs:
 - Informer + CHESS data egress + CHESS instrument-control services
 - Dial active-learning service
 - Campaign Orchestrator REST API
-- Optional one-shot campaign submitter
+- Campaign Control UI (FastAPI + HTMX)
 
 ## Verified Working State
 
@@ -66,15 +66,27 @@ Observed successful outcome:
 | dial | ghcr.io/intersect-dial/dial:develop | - | Active learning |
 | chess-instrument-control-service | ghcr.io/nsdf-fabric/intersect-chess-instrument-control-service:0.1.2 | - | Instrument control requests |
 | orchestrator | ghcr.io/intersect-sdk/campaign-orchestrator:latest | 8000 | Campaign REST API |
-| submit-campaign | curlimages/curl:8.8.0 | - | One-shot startup submission |
+| campaign-ui | Local build (`./campaign-ui`) | 8081 | Load/visualize/submit/stop campaigns |
 
 ## Quick Start
 
-Run full stack including automatic one-shot campaign submission:
+Run full stack including the campaign web UI:
 
 ```bash
 docker compose up -d --force-recreate
 ```
+
+Campaign UI:
+
+- http://localhost:8081
+
+UI features:
+
+- Preloads all `*.campaign.json` files under `conf/` and `scenarios/`
+- Uploads additional campaign JSON files
+- Renders workflow graph visualization from task groups/dependencies
+- Submits campaign payloads to orchestrator
+- Sends stop campaign requests
 
 ## CI Validation
 
@@ -140,6 +152,20 @@ Campaign payload:
 
 - `scenarios/json/chess-autonomous-bootstrap.campaign.json`
 
+### JSON + Storage Scenario
+
+Adds the NSDF storage container alongside the reduced JSON workflow. The storage
+service subscribes to the DIAL workflow messages and persists `data.json`,
+`next_x.json`, and `surrogate.json` under a writable local directory.
+
+```bash
+docker compose -f docker-compose.yml -f scenarios/json-storage/docker-compose.override.yml up -d --force-recreate
+```
+
+Campaign payload:
+
+- `scenarios/json-storage/chess-autonomous-bootstrap.campaign.json`
+
 ### Generate/Refresh Reduced Fixtures
 
 Create deterministic reduced HDF5 fixture from a local full file:
@@ -176,7 +202,7 @@ Open API docs:
 Use this when you want a clean, repeatable test run and explicit campaign ID
 control.
 
-1. Start core services without the auto submitter:
+1. Start core services without the UI:
 
 ```bash
 docker compose up -d --force-recreate broker mongodb informer chess-data-service dial chess-instrument-control-service orchestrator
@@ -226,9 +252,11 @@ secrets.
 - Dial config: [conf/dial-service.json](conf/dial-service.json)
 - Instrument control config: [conf/instrument-control-service.json](conf/instrument-control-service.json)
 - Campaign payload: [conf/chess-autonomous-bootstrap.campaign.json](conf/chess-autonomous-bootstrap.campaign.json)
+- Legacy callback-flow reference payload (visual comparison): [conf/chess-autonomous-legacy-callback-flow.campaign.json](conf/chess-autonomous-legacy-callback-flow.campaign.json)
 - HDF5 campaign payload: [scenarios/hdf5/chess-autonomous-bootstrap.campaign.json](scenarios/hdf5/chess-autonomous-bootstrap.campaign.json)
 - HDF5 full campaign payload: [scenarios/hdf5-full/chess-autonomous-bootstrap.campaign.json](scenarios/hdf5-full/chess-autonomous-bootstrap.campaign.json)
 - JSON campaign payload: [scenarios/json/chess-autonomous-bootstrap.campaign.json](scenarios/json/chess-autonomous-bootstrap.campaign.json)
+- JSON + storage campaign payload: [scenarios/json-storage/chess-autonomous-bootstrap.campaign.json](scenarios/json-storage/chess-autonomous-bootstrap.campaign.json)
 - Reduced HDF5 fixture generator: [scripts/reduce_strain_map_hdf5.py](scripts/reduce_strain_map_hdf5.py)
 - Reduced JSON fixture generator: [scripts/export_strain_map_to_json.py](scripts/export_strain_map_to_json.py)
 
