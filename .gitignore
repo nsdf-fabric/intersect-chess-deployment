@@ -2,3 +2,7 @@
 strain_map.nxs
 .local-data/
 datasets/full/
+
+# Python bytecode caches
+__pycache__/
+*.py[cod]

@@ -99,7 +99,8 @@ services:
   # Generic INTERSECT campaign orchestrator with REST API.
   # OpenAPI docs at http://localhost:8000/docs
   orchestrator:
-    image: ghcr.io/intersect-sdk/campaign-orchestrator:v0.1.3
+    build:
+      context: ./repos/campaign-orchestrator
     ports:
       - "8000:8000"
     environment:

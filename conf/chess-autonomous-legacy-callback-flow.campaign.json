@@ -120,7 +120,22 @@
           "capability": "dial",
           "operation_id": "initialize_workflow",
           "event_name": null,
-          "output": null,
+          "output": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "workflow_id": {
+                  "type": "string"
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "f1234567-0000-4000-8000-000000000001",
+                "var": "workflow_id"
+              }
+            ]
+          },
           "input": {
             "schema": {
               "type": "object",
@@ -182,6 +197,35 @@
       "group_dependencies": ["f9d45034-a410-4e22-a1d7-0f93d78df6b0"],
       "tasks": [
         {
+          "id": "2f7a0e1b-6a8c-4f91-9b35-a7d26d9c0f11",
+          "hierarchy": "chess.chess-facility.instrument-control-system.instrument-control-subsystem.chess-instrument-control-service",
+          "capability": "chess_instrument_control",
+          "operation_id": "write_motor_position",
+          "event_name": null,
+          "output": null,
+          "input": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "labx": {
+                  "type": "number",
+                  "default": -47.33
+                },
+                "labz": {
+                  "type": "number",
+                  "default": -255.3
+                }
+              }
+            },
+            "values": [
+              {"id": "b4100001-0000-4000-8000-000000000001", "var": "labx"},
+              {"id": "b4100001-0000-4000-8000-000000000002", "var": "labz"}
+            ]
+          },
+          "task_dependencies": [],
+          "task_objectives": null
+        },
+        {
           "id": "6e5008c2-a12a-45de-b86f-e6775f40663b",
           "hierarchy": "chess.chess-facility.data-egress-system.data-egress-subsystem.chess-data-egress-service",
           "capability": "chess_data_egress",
@@ -218,7 +262,7 @@
               }
             },
             "values": [
-              {"id": "ab010001-0000-4000-8000-000000000001", "var": "workflow_id"},
+              {"id": "f1234567-0000-4000-8000-000000000001", "var": "workflow_id"},
               {"id": "ab020001-0000-4000-8000-000000000002", "var": "next_x"},
               {"id": "ab030001-0000-4000-8000-000000000003", "var": "next_y"}
             ]
@@ -256,7 +300,7 @@
               }
             },
             "values": [
-              {"id": "ac010001-0000-4000-8000-000000000001", "var": "workflow_id"},
+              {"id": "f1234567-0000-4000-8000-000000000001", "var": "workflow_id"},
               {"id": "ac020001-0000-4000-8000-000000000002", "var": "strategy"},
               {"id": "ac030001-0000-4000-8000-000000000003", "var": "y_is_good"},
               {"id": "ac040001-0000-4000-8000-000000000004", "var": "bounds"}
@@ -287,7 +331,7 @@
               }
             },
             "values": [
-              {"id": "ad010001-0000-4000-8000-000000000001", "var": "workflow_id"},
+              {"id": "f1234567-0000-4000-8000-000000000001", "var": "workflow_id"},
               {"id": "ad020001-0000-4000-8000-000000000002", "var": "points_to_predict"}
             ]
           },

@@ -332,11 +332,15 @@ async def submit_campaign(
         return await _render_workspace(request, status_code=400)
 
     if regenerate_id == "on":
-        campaign["id"] = str(uuid.uuid4())
+        new_id = str(uuid.uuid4())
+        campaign["id"] = new_id
+        # Keep id and run_id aligned for simpler stop/debug workflows.
+        campaign["run_id"] = new_id
 
     # Newer orchestrator builds require run_id in the campaign payload.
+    # If caller did not provide one, default run_id to id for consistency.
     if not campaign.get("run_id"):
-        campaign["run_id"] = str(uuid.uuid4())
+        campaign["run_id"] = str(campaign.get("id") or uuid.uuid4())
 
     state.campaign_json = json.dumps(campaign, indent=2)
     state.graph_mermaid, task_node_map = _build_mermaid(campaign)
