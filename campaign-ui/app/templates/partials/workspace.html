@@ -90,6 +90,8 @@
       <span id="live-conn-badge" class="live-conn-badge is-idle">Live events: idle</span>
     </p>
     <p class="hint">Task groups are boxed. Orange thick arrows show group dependencies. Blue dashed arrows show in-group task dependencies. Live status colors: running=orange, complete=green. Use mouse wheel to zoom and drag to pan.</p>
+    <p class="hint"><strong>Recent step events</strong></p>
+    <ul id="recent-events" class="hint" style="margin-top:0.3rem; max-height: 8rem; overflow:auto; padding-left: 1.1rem;"></ul>
     <div class="graph-wrap">
       <pre class="mermaid">{{ state.graph_mermaid }}</pre>
     </div>

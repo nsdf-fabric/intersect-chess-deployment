@@ -48,7 +48,9 @@ services:
   # cloned structure + initial random points, then watches loc_dir
   # for new location files and appends interpolated data.
   informer:
-    image: ghcr.io/nsdf-fabric/chess-instrument-control-informer:0.2.0
+    image: ghcr.io/nsdf-fabric/chess-instrument-control-informer:0.2.1
+    environment:
+      CHESS_MEASUREMENT_DELAY_SECONDS: "${CHESS_MEASUREMENT_DELAY_SECONDS:-1.0}"
     volumes:
       - shared-data:/data
       - ./datasets/strain_map.small.nxs:/data/strain_map.nxs:ro
@@ -99,8 +101,7 @@ services:
   # Generic INTERSECT campaign orchestrator with REST API.
   # OpenAPI docs at http://localhost:8000/docs
   orchestrator:
-    build:
-      context: ./repos/campaign-orchestrator
+    image: ghcr.io/intersect-sdk/campaign-orchestrator:v0.1.4
     ports:
       - "8000:8000"
     environment:

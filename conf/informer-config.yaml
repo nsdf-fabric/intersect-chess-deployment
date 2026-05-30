@@ -22,3 +22,6 @@ dataset_names:
 loc_dir: /data/autonomous_experiment/experiment1
 initial_count: 5
 seed: 42
+
+# Optional simulated measurement delay per location file (seconds)
+measurement_delay_seconds: 1.0

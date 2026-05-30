@@ -16,6 +16,7 @@
         eventsUrl: "",
         taskMap: {},
         taskStatus: {},
+        recentEvents: [],
         reconnectTimer: null,
       };
 
@@ -54,6 +55,7 @@
         const campaignChanged = state.activeCampaignId !== nextCampaignId;
         if (campaignChanged) {
           state.taskStatus = {};
+          state.recentEvents = [];
           if (state.reconnectTimer) {
             clearTimeout(state.reconnectTimer);
             state.reconnectTimer = null;
@@ -75,6 +77,8 @@
         if (!state.activeCampaignId) {
           setConnectionBadge("idle", "Live events: idle");
         }
+
+        renderRecentEvents();
       };
 
       const destroyPanZoom = () => {
@@ -105,10 +109,53 @@
         return null;
       };
 
+      const renderRecentEvents = () => {
+        const state = window._workflowVizState;
+        const list = document.getElementById("recent-events");
+        if (!list) {
+          return;
+        }
+
+        list.innerHTML = "";
+        for (const item of state.recentEvents) {
+          const li = document.createElement("li");
+          li.textContent = item;
+          list.appendChild(li);
+        }
+      };
+
+      const resetNodeVisualState = (nodeElement) => {
+        nodeElement.querySelectorAll("rect, polygon, path").forEach((shape) => {
+          shape.style.removeProperty("fill");
+          shape.style.removeProperty("stroke");
+          shape.style.removeProperty("stroke-width");
+        });
+      };
+
+      const applyNodeVisualState = (nodeElement, status) => {
+        const palette =
+          status === "running"
+            ? { fill: "#ffedd5", stroke: "#ea580c" }
+            : status === "complete"
+              ? { fill: "#dcfce7", stroke: "#16a34a" }
+              : null;
+
+        if (!palette) {
+          return;
+        }
+
+        nodeElement.querySelectorAll("rect, polygon, path").forEach((shape) => {
+          shape.style.setProperty("fill", palette.fill, "important");
+          shape.style.setProperty("stroke", palette.stroke, "important");
+          shape.style.setProperty("stroke-width", "2.6px", "important");
+        });
+      };
+
       const applyTaskStatuses = () => {
         const state = window._workflowVizState;
         document.querySelectorAll(".graph-wrap .mermaid svg g.node").forEach((node) => {
           node.classList.remove("task-running", "task-complete");
+          resetNodeVisualState(node);
         });
 
         for (const [taskId, status] of Object.entries(state.taskStatus)) {
@@ -119,8 +166,10 @@
           }
           if (status === "running") {
             nodeElement.classList.add("task-running");
+            applyNodeVisualState(nodeElement, "running");
           } else if (status === "complete") {
             nodeElement.classList.add("task-complete");
+            applyNodeVisualState(nodeElement, "complete");
           }
         }
       };
@@ -170,7 +219,12 @@
             state.taskStatus[stepId] = "complete";
           }
 
+          const when = new Date().toLocaleTimeString();
+          state.recentEvents.unshift(`${when} ${eventType} ${stepId.slice(0, 8)}`);
+          state.recentEvents = state.recentEvents.slice(0, 20);
+
           applyTaskStatuses();
+          renderRecentEvents();
         };
 
         ws.onclose = () => {
@@ -241,6 +295,7 @@
         initPanZoom();
         syncGraphMeta();
         applyTaskStatuses();
+        renderRecentEvents();
         connectLiveEvents();
       };
 
