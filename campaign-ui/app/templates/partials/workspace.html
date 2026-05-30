@@ -1,0 +1,97 @@
+<section class="grid">
+  <div
+    id="graph-meta"
+    data-active-campaign-id="{{ state.active_campaign_id }}"
+    data-task-map='{{ state.task_node_map_json | e }}'
+    data-events-url="{{ orchestrator_events_url }}"
+    hidden
+  ></div>
+
+  <article class="panel controls">
+    <h2>Campaign Input</h2>
+
+    {% if state.status_message %}
+      <div class="status {{ state.status_kind }}">{{ state.status_message }}</div>
+    {% endif %}
+
+    <form
+      hx-post="/ui/select-preloaded"
+      hx-target="#workspace"
+      hx-swap="innerHTML"
+    >
+      <label for="campaign_name">Preloaded Campaign</label>
+      <select id="campaign_name" name="campaign_name">
+        {% for campaign_name in preloaded_campaigns.keys() %}
+          <option
+            value="{{ campaign_name }}"
+            {% if campaign_name == state.selected_name %}selected{% endif %}
+          >
+            {{ campaign_name }}
+          </option>
+        {% endfor %}
+      </select>
+      <div class="actions">
+        <button type="submit" class="btn-ghost">Load Selected</button>
+      </div>
+    </form>
+
+    <form
+      hx-post="/ui/upload"
+      hx-target="#workspace"
+      hx-swap="innerHTML"
+      enctype="multipart/form-data"
+    >
+      <label for="campaign_file">Upload Campaign JSON</label>
+      <input id="campaign_file" name="campaign_file" type="file" accept="application/json,.json" />
+      <div class="actions">
+        <button type="submit" class="btn-ghost">Upload</button>
+      </div>
+    </form>
+
+    <form
+      hx-post="/ui/submit"
+      hx-target="#workspace"
+      hx-swap="innerHTML"
+    >
+      <label for="campaign_json">Campaign JSON</label>
+      <textarea id="campaign_json" name="campaign_json">{{ state.campaign_json }}</textarea>
+
+      <label>
+        <input type="checkbox" name="regenerate_id" checked /> Regenerate campaign ID before submit
+      </label>
+
+      <div class="actions">
+        <button type="submit" class="btn-primary">Submit Campaign</button>
+      </div>
+    </form>
+
+    <form
+      hx-post="/ui/stop"
+      hx-target="#workspace"
+      hx-swap="innerHTML"
+    >
+      <label for="campaign_id">Campaign ID To Stop</label>
+      <input
+        id="campaign_id"
+        type="text"
+        name="campaign_id"
+        value="{{ state.active_campaign_id }}"
+        placeholder="defaults to last submitted ID"
+      />
+      <div class="actions">
+        <button type="submit" class="btn-danger">Stop Campaign</button>
+      </div>
+    </form>
+  </article>
+
+  <article class="panel preview">
+    <h2>Workflow Graph</h2>
+    <p>
+      <span id="live-conn-badge" class="live-conn-badge is-idle">Live events: idle</span>
+    </p>
+    <p class="hint">Task groups are boxed. Orange thick arrows show group dependencies. Blue dashed arrows show in-group task dependencies. Live status colors: running=orange, complete=green. Use mouse wheel to zoom and drag to pan.</p>
+    <div class="graph-wrap">
+      <pre class="mermaid">{{ state.graph_mermaid }}</pre>
+    </div>
+  </article>
+</section>

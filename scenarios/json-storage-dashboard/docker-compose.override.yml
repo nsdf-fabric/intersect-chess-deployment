@@ -1,0 +1,75 @@
+services:
+  dashboard-seed:
+    image: minio/mc:latest
+    depends_on:
+      minio:
+        condition: service_started
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+      MINIO_BUCKET: scientistcloud
+    volumes:
+      - ./datasets/strain_map.reduced.json:/seed/reduced_data.json:ro
+    entrypoint:
+      - sh
+      - -ec
+      - |
+        until mc alias set local http://minio:9000 "$${MINIO_ROOT_USER}" "$${MINIO_ROOT_PASSWORD}"; do
+          echo "waiting for minio..."
+          sleep 1
+        done
+
+        mc mb -p "local/$${MINIO_BUCKET}" || true
+        # Seed the static reference copy
+        mc cp /seed/reduced_data.json "local/$${MINIO_BUCKET}/IDX_TEST/ORNL_strain/reduced_data.json"
+        # Seed an initial live_data.json so the dashboard has something to show
+        # before the campaign produces DIAL data.  The transform will overwrite it.
+        mc cp /seed/reduced_data.json "local/$${MINIO_BUCKET}/IDX_TEST/ORNL_strain/live_data.json"
+        echo "seeded MinIO objects in $${MINIO_BUCKET}"
+
+  # Polls nsdf-storage/data.json and converts DIAL-shaped output to strain JSON
+  # that the dashboard understands.  Writes to scientistcloud/IDX_TEST/ORNL_strain/live_data.json.
+  nsdf-strain-transform:
+    image: python:3.11-slim
+    restart: on-failure
+    volumes:
+      - ./scenarios/json-storage-dashboard/nsdf_to_strain_transform.py:/app/transform.py:ro
+    environment:
+      MINIO_ENDPOINT_URL: http://minio:9000
+      AWS_ACCESS_KEY_ID: minioadmin
+      AWS_SECRET_ACCESS_KEY: minioadmin
+      SRC_BUCKET: nsdf-storage
+      SRC_KEY: nsdf-storage/data.json
+      SRC_SURROGATE_KEY: nsdf-storage/surrogate.json
+      DST_BUCKET: scientistcloud
+      DST_KEY: IDX_TEST/ORNL_strain/live_data.json
+      TRANSFORM_POLL_INTERVAL_S: "5"
+    command:
+      - sh
+      - -ec
+      - |
+        pip install boto3 -q
+        python /app/transform.py
+    depends_on:
+      dashboard-seed:
+        condition: service_completed_successfully
+
+  dashboard:
+    build:
+      context: ./repos/scientist-cloud-dashboards
+    image: scientist-cloud-dashboards:local
+    ports:
+      - "8059:8059"
+    environment:
+      AWS_ACCESS_KEY_ID: minioadmin
+      AWS_SECRET_ACCESS_KEY: minioadmin
+      AWS_DEFAULT_REGION: us-east-1
+      ORNL_STRAIN_RESOLVE_MODE: cli
+      ORNL_STRAIN_SOURCE_ORDER: env_url
+      # Points at the live object that the transform keeps up to date
+      ORNL_STRAIN_JSON_URL: "http://minio:9000/scientistcloud/IDX_TEST/ORNL_strain/live_data.json?access_key=minioadmin&secret_key=minioadmin"
+      # Auto-refresh every 10 seconds
+      ORNL_STRAIN_REFRESH_INTERVAL_MS: "10000"
+    depends_on:
+      dashboard-seed:
+        condition: service_completed_successfully
