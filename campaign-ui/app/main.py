@@ -65,7 +65,7 @@ class UIState:
 
 state = UIState()
 preloaded_campaigns: dict[str, str] = {}
-DEFAULT_PRELOADED_CAMPAIGN = "conf/chess-autonomous-legacy-callback-flow.campaign.json"
+DEFAULT_PRELOADED_CAMPAIGN = "conf/campaign.json"
 
 
 def _escape_mermaid_label(value: str) -> str:
@@ -203,7 +203,10 @@ def _load_preloaded_campaigns() -> dict[str, str]:
     if not config.preload_root.exists():
         return campaigns
 
-    for campaign_file in sorted(config.preload_root.rglob("*.campaign.json")):
+    campaign_files = set(config.preload_root.rglob("campaign.json"))
+    campaign_files.update(config.preload_root.rglob("*.campaign.json"))
+
+    for campaign_file in sorted(campaign_files):
         relative_name = str(campaign_file.relative_to(config.preload_root))
         try:
             content = campaign_file.read_text(encoding="utf-8")

@@ -1,0 +1,28 @@
+{
+  "intersect": {
+    "brokers": [
+      {
+        "username": "intersect_username",
+        "password": "intersect_password",
+        "host": "broker",
+        "port": 5672,
+        "protocol": "amqp0.9.1"
+      }
+    ]
+  },
+  "intersect-hierarchy": {
+    "organization": "chess",
+    "facility": "chess-facility",
+    "system": "storage-system",
+    "subsystem": "storage-subsystem",
+    "service": "nsdf-storage-service"
+  },
+  "s3": {
+    "aws_access_key_id": "minioadmin",
+    "aws_secret_access_key": "minioadmin",
+    "endpoint_url": "http://minio:9000",
+    "bucket": "nsdf-storage",
+    "prefix": "nsdf-storage",
+    "data_dir": "/app/data"
+  }
+}
