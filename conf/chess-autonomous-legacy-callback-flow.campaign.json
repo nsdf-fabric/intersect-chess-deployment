@@ -2,7 +2,7 @@
   "id": "6c2cf730-0f6e-4d1b-b149-7c1708bb7a5d",
   "name": "chess-autonomous-legacy-callback-flow",
   "user": "system",
-  "description": "Executable 3-group debugging variant of the legacy callback flow. This avoids dynamic workflow_id handoff tasks that current REST orchestrator cannot wire at runtime.",
+  "description": "Reference graph that mirrors the legacy IntersectClient callback loop (initialize → monitor → initialize workflow → new_measurement → update_workflow_with_data → get_next_point / get_surrogate_values → write_motor_position → stop_monitoring). Group 1 runs setup tasks in parallel. Group 2 runs the measurement-to-recommendation chain sequentially via task_dependencies. Group 3 stops monitoring.",
   "task_groups": [
     {
       "id": "f9d45034-a410-4e22-a1d7-0f93d78df6b0",
@@ -128,50 +128,20 @@
                 "dataset_x": {
                   "type": "array",
                   "default": [
-                    [
-                      -47.33,
-                      -255.3
-                    ],
-                    [
-                      -47.33,
-                      -242.3
-                    ],
-                    [
-                      26.17,
-                      -255.3
-                    ],
-                    [
-                      26.17,
-                      -242.3
-                    ],
-                    [
-                      -10.58,
-                      -248.8
-                    ]
+                    [-47.33, -255.3],
+                    [-47.33, -242.3],
+                    [26.17, -255.3],
+                    [26.17, -242.3],
+                    [-10.58, -248.8]
                   ]
                 },
                 "dataset_y": {
                   "type": "array",
-                  "default": [
-                    85.817171,
-                    85.817171,
-                    85.227413,
-                    85.87497,
-                    85.5
-                  ]
+                  "default": [85.817171, 85.817171, 85.227413, 85.87497, 85.5]
                 },
                 "bounds": {
                   "type": "array",
-                  "default": [
-                    [
-                      -47.33,
-                      26.17
-                    ],
-                    [
-                      -255.3,
-                      -242.3
-                    ]
-                  ]
+                  "default": [[-47.33, 26.17], [-255.3, -242.3]]
                 },
                 "dim_x": {
                   "type": "integer",
@@ -192,39 +162,25 @@
               }
             },
             "values": [
-              {
-                "id": "7a9d3b2b-a24f-4b57-b496-7fbaa7826d8b",
-                "var": "dataset_x"
-              },
-              {
-                "id": "f59d3133-0d2e-41b5-ba40-ccd9d5644f3f",
-                "var": "dataset_y"
-              },
-              {
-                "id": "80a59175-c4b2-48be-a267-e37eec6d3737",
-                "var": "bounds"
-              },
-              {
-                "id": "78af7e4e-0b15-4f62-b45d-81e2ec26d524",
-                "var": "dim_x"
-              },
-              {
-                "id": "09ef13e4-f754-4caf-9e1f-03fd75f73f78",
-                "var": "kernel"
-              },
-              {
-                "id": "4e817a36-4014-4ce3-ab2f-7f0e28ab81d1",
-                "var": "y_is_good"
-              },
-              {
-                "id": "1083ad66-9011-4db7-9923-7ef5e846e266",
-                "var": "backend"
-              }
+              {"id": "7a9d3b2b-a24f-4b57-b496-7fbaa7826d8b", "var": "dataset_x"},
+              {"id": "f59d3133-0d2e-41b5-ba40-ccd9d5644f3f", "var": "dataset_y"},
+              {"id": "80a59175-c4b2-48be-a267-e37eec6d3737", "var": "bounds"},
+              {"id": "78af7e4e-0b15-4f62-b45d-81e2ec26d524", "var": "dim_x"},
+              {"id": "09ef13e4-f754-4caf-9e1f-03fd75f73f78", "var": "kernel"},
+              {"id": "4e817a36-4014-4ce3-ab2f-7f0e28ab81d1", "var": "y_is_good"},
+              {"id": "1083ad66-9011-4db7-9923-7ef5e846e266", "var": "backend"}
             ]
           },
           "task_dependencies": [],
           "task_objectives": null
-        },
+        }
+      ],
+      "objectives": []
+    },
+    {
+      "id": "c7e18a2b-5b30-4f11-9ec2-1a2b3c4d5e6f",
+      "group_dependencies": ["f9d45034-a410-4e22-a1d7-0f93d78df6b0"],
+      "tasks": [
         {
           "id": "6e5008c2-a12a-45de-b86f-e6775f40663b",
           "hierarchy": "chess.chess-facility.data-egress-system.data-egress-subsystem.chess-data-egress-service",
@@ -235,22 +191,109 @@
           "input": null,
           "task_dependencies": [],
           "task_objectives": null
-        }
-      ],
-      "objectives": [
+        },
         {
-          "id": "53aac358-f92e-4432-a5d6-da9b2c68915d",
-          "type": "iterate",
-          "iterations": 1
-        }
-      ]
-    },
-    {
-      "id": "2d0336a8-2a15-4df8-a314-59d3f66057eb",
-      "group_dependencies": [
-        "f9d45034-a410-4e22-a1d7-0f93d78df6b0"
-      ],
-      "tasks": [
+          "id": "be4a5c6d-7e8f-4091-a2b3-c4d5e6f70819",
+          "hierarchy": "ornl.intersect.dial-system.dial-subsystem.dial-service",
+          "capability": "dial",
+          "operation_id": "update_workflow_with_data",
+          "event_name": null,
+          "output": null,
+          "input": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "workflow_id": {
+                  "type": "string",
+                  "default": "000000000000000000000001"
+                },
+                "next_x": {
+                  "type": "array",
+                  "default": [-10.58, -248.8]
+                },
+                "next_y": {
+                  "type": "number",
+                  "default": 85.656041
+                }
+              }
+            },
+            "values": [
+              {"id": "ab010001-0000-4000-8000-000000000001", "var": "workflow_id"},
+              {"id": "ab020001-0000-4000-8000-000000000002", "var": "next_x"},
+              {"id": "ab030001-0000-4000-8000-000000000003", "var": "next_y"}
+            ]
+          },
+          "task_dependencies": ["6e5008c2-a12a-45de-b86f-e6775f40663b"],
+          "task_objectives": null
+        },
+        {
+          "id": "cf5b6d7e-8f90-4102-b3c4-d5e6f708192a",
+          "hierarchy": "ornl.intersect.dial-system.dial-subsystem.dial-service",
+          "capability": "dial",
+          "operation_id": "get_next_point",
+          "event_name": null,
+          "output": null,
+          "input": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "workflow_id": {
+                  "type": "string",
+                  "default": "000000000000000000000001"
+                },
+                "strategy": {
+                  "type": "string",
+                  "default": "expected_improvement"
+                },
+                "y_is_good": {
+                  "type": "boolean",
+                  "default": true
+                },
+                "bounds": {
+                  "type": "array",
+                  "default": [[-47.33, 26.17], [-255.3, -242.3]]
+                }
+              }
+            },
+            "values": [
+              {"id": "ac010001-0000-4000-8000-000000000001", "var": "workflow_id"},
+              {"id": "ac020001-0000-4000-8000-000000000002", "var": "strategy"},
+              {"id": "ac030001-0000-4000-8000-000000000003", "var": "y_is_good"},
+              {"id": "ac040001-0000-4000-8000-000000000004", "var": "bounds"}
+            ]
+          },
+          "task_dependencies": ["be4a5c6d-7e8f-4091-a2b3-c4d5e6f70819"],
+          "task_objectives": null
+        },
+        {
+          "id": "da6c7e8f-9001-4213-c4d5-e6f708192a3b",
+          "hierarchy": "ornl.intersect.dial-system.dial-subsystem.dial-service",
+          "capability": "dial",
+          "operation_id": "get_surrogate_values",
+          "event_name": null,
+          "output": null,
+          "input": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "workflow_id": {
+                  "type": "string",
+                  "default": "000000000000000000000001"
+                },
+                "points_to_predict": {
+                  "type": "array",
+                  "default": [[-10.58, -248.8], [-47.33, -255.3], [26.17, -242.3]]
+                }
+              }
+            },
+            "values": [
+              {"id": "ad010001-0000-4000-8000-000000000001", "var": "workflow_id"},
+              {"id": "ad020001-0000-4000-8000-000000000002", "var": "points_to_predict"}
+            ]
+          },
+          "task_dependencies": ["be4a5c6d-7e8f-4091-a2b3-c4d5e6f70819"],
+          "task_objectives": null
+        },
         {
           "id": "afef1f16-29b3-4f8a-a958-0c629e84c208",
           "hierarchy": "chess.chess-facility.instrument-control-system.instrument-control-subsystem.chess-instrument-control-service",
@@ -273,27 +316,25 @@
               }
             },
             "values": [
-              {
-                "id": "d50bcfbe-2ccd-458e-88ef-bb6ff8e824b5",
-                "var": "labx"
-              },
-              {
-                "id": "84efa845-f6b4-462b-8cad-ef8ce497393e",
-                "var": "labz"
-              }
+              {"id": "d50bcfbe-2ccd-458e-88ef-bb6ff8e824b5", "var": "labx"},
+              {"id": "84efa845-f6b4-462b-8cad-ef8ce497393e", "var": "labz"}
             ]
           },
-          "task_dependencies": [],
+          "task_dependencies": ["cf5b6d7e-8f90-4102-b3c4-d5e6f708192a"],
           "task_objectives": null
         }
       ],
-      "objectives": []
+      "objectives": [
+        {
+          "id": "53aac358-f92e-4432-a5d6-da9b2c68915d",
+          "type": "iterate",
+          "iterations": 1
+        }
+      ]
     },
     {
       "id": "889f5b00-cf87-4f95-b77f-4bced6bbf3dc",
-      "group_dependencies": [
-        "2d0336a8-2a15-4df8-a314-59d3f66057eb"
-      ],
+      "group_dependencies": ["c7e18a2b-5b30-4f11-9ec2-1a2b3c4d5e6f"],
       "tasks": [
         {
           "id": "f2127f03-49e4-4e65-a211-aae72cc83804",
