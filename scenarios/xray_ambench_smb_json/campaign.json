@@ -56,7 +56,7 @@
               "properties": {
                 "filename": {
                   "type": "string",
-                  "default": "/app/fixtures/strain_map.reduced.json"
+                  "default": "/data/new_strain_map.json"
                 },
                 "source_format": {
                   "type": "string",
@@ -501,7 +501,7 @@
         {
           "id": "53aac358-f92e-4432-a5d6-da9b2c68915d",
           "type": "iterate",
-          "iterations": 100
+          "iterations": 10
         }
       ]
     },

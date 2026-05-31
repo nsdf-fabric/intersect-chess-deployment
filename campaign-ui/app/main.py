@@ -65,7 +65,7 @@ class UIState:
 
 state = UIState()
 preloaded_campaigns: dict[str, str] = {}
-DEFAULT_PRELOADED_CAMPAIGN = "conf/campaign.json"
+DEFAULT_PRELOADED_CAMPAIGN = "scenarios/xray_ambench_smb_json/campaign.json"
 
 
 def _escape_mermaid_label(value: str) -> str:
