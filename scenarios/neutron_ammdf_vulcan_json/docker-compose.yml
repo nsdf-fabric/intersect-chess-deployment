@@ -24,14 +24,13 @@ services:
       - dial_mongodb_data:/bitnami/mongodb
 
   informer:
-    profiles: ["hdf5-only"]
     image: ghcr.io/nsdf-fabric/chess-instrument-control-informer:0.2.1
     environment:
       CHESS_MEASUREMENT_DELAY_SECONDS: "${CHESS_MEASUREMENT_DELAY_SECONDS:-1.0}"
     volumes:
       - shared-data:/data
-      - ../../datasets/strain_map.small.nxs:/data/strain_map.nxs:ro
-      - ../../conf/informer-config.yaml:/app/config.yaml:ro
+      - ../../datasets/${NEUTRON_DATASET_JSON:-A2_2p1_30layers_VDriveSPF_LD.json}:/data/strain_map.json:ro
+      - ../../conf/informer-config-json.yaml:/app/config.yaml:ro
     command: ["sh", "-c", "mkdir -p /data/autonomous_experiment/experiment1 && chess-instrument-control-informer --config /app/config.yaml"]
     depends_on:
       broker:
@@ -42,7 +41,6 @@ services:
     volumes:
       - shared-data:/data:ro
       - ../../conf/data-service.json:/app/local-conf.json:ro
-      - ../../datasets/${NEUTRON_DATASET_JSON:-A2_2p1_30layers_VDriveSPF_LD.json}:/app/fixtures/neutron_dataset.json:ro
     depends_on:
       broker:
         condition: service_healthy
