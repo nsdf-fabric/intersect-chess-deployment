@@ -30,7 +30,7 @@ services:
     volumes:
       - shared-data:/data
       - ../../datasets/strain_map.reduced.json:/data/strain_map.json:ro
-      - ../../conf/informer-config-json.yaml:/app/config.yaml:ro
+      - ../../conf/informer-config-json-xray.yaml:/app/config.yaml:ro
     command: ["sh", "-c", "mkdir -p /data/autonomous_experiment/experiment1 && chess-instrument-control-informer --config /app/config.yaml"]
     depends_on:
       broker:
@@ -93,6 +93,7 @@ services:
       CAMPAIGN_UI_API_KEY: "1234567890abcdef1234567890abcdef"
       CAMPAIGN_UI_ORCH_BASE_URL: "http://orchestrator:8000"
       CAMPAIGN_PRELOAD_DIR: "/campaigns"
+      CAMPAIGN_UI_DEFAULT_PRELOADED_CAMPAIGN: "scenarios/xray_ambench_smb_json/campaign.json"
     volumes:
       - ../../conf:/campaigns/conf:ro
       - ../../scenarios:/campaigns/scenarios:ro

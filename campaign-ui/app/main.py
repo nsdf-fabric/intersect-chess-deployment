@@ -66,6 +66,7 @@ class UIState:
 state = UIState()
 preloaded_campaigns: dict[str, str] = {}
 DEFAULT_PRELOADED_CAMPAIGN = "scenarios/xray_ambench_smb_json/campaign.json"
+DEFAULT_PRELOADED_CAMPAIGN_ENV = "CAMPAIGN_UI_DEFAULT_PRELOADED_CAMPAIGN"
 
 
 def _escape_mermaid_label(value: str) -> str:
@@ -235,7 +236,9 @@ def startup() -> None:
     global preloaded_campaigns
     preloaded_campaigns = _load_preloaded_campaigns()
     if preloaded_campaigns:
-        default_name = DEFAULT_PRELOADED_CAMPAIGN
+        default_name = os.getenv(DEFAULT_PRELOADED_CAMPAIGN_ENV, DEFAULT_PRELOADED_CAMPAIGN).strip()
+        if not default_name:
+            default_name = DEFAULT_PRELOADED_CAMPAIGN
         if default_name not in preloaded_campaigns:
             default_name = next(iter(preloaded_campaigns))
         _normalize_and_set_campaign(default_name, preloaded_campaigns[default_name])
