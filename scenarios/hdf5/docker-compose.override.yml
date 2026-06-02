@@ -1,4 +1,0 @@
-services:
-  submit-campaign:
-    volumes:
-      - ./scenarios/hdf5/campaign.json:/campaign/campaign.json:ro
