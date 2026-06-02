@@ -1,5 +1,7 @@
 import json
 import os
+import pathlib
+import pathlib
 import uuid
 from dataclasses import dataclass
 from pathlib import Path
@@ -25,10 +27,13 @@ class AppConfig:
 
 
 def load_config() -> AppConfig:
-    conf_path = Path(__file__).with_name("conf.yaml")
+    # Get the config file, read from environment variable if defined
+    conf_path_default = Path(__file__).with_name("conf.yaml")
+    conf_path = os.getenv("CAMPAIGN_UI_CONFIG_PATH", conf_path_default)
     with conf_path.open("r", encoding="utf-8") as f:
         conf_data = yaml.safe_load(f) or {}
 
+    # Get config read in with ordering: 1) environment variable, 2) config file, and 3) defaults
     base_url = str(conf_data.get("orchestrator_base_url", "http://orchestrator:8000")).rstrip("/")
     events_url = str(
         conf_data.get("orchestrator_events_url", "ws://localhost:8000/v1/orchestrator/events")
@@ -39,8 +44,8 @@ def load_config() -> AppConfig:
     # Environment variables override YAML when provided.
     base_url = os.getenv("CAMPAIGN_UI_ORCH_BASE_URL", base_url).rstrip("/")
     events_url = os.getenv("CAMPAIGN_UI_ORCH_EVENTS_URL", events_url).strip()
-    api_key = os.getenv("CAMPAIGN_UI_API_KEY", api_key)
-    preload_root = os.getenv("CAMPAIGN_PRELOAD_DIR", preload_root)
+    api_key = os.getenv("CAMPAIGN_UI_ORCH_API_KEY", api_key)
+    preload_root = os.getenv("CAMPAIGN_UI_PRELOAD_DIR", preload_root)
 
     return AppConfig(
         orchestrator_base_url=base_url,
