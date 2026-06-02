@@ -1,0 +1,17 @@
+# Informer config for xray JSON scenario docker-compose deployment.
+# The strain_map.reduced.json is bind-mounted at /data/strain_map.json (read-only).
+# The shared-data volume is mounted at /data for the new file and loc_dir.
+
+source_format: json
+full_file: /data/strain_map.json
+new_file: /data/new_strain_map.json
+labx_key: labx
+labz_key: labz
+values_key: "0/data/uniform_strain"
+copy_all_json_keys: true
+loc_dir: /data/autonomous_experiment/experiment1
+initial_count: 5
+seed: 42
+
+# Optional simulated measurement delay per location file (seconds)
+measurement_delay_seconds: 1.0
