@@ -92,7 +92,7 @@ services:
     ports:
       - "8081:8080"
     environment:
-      CAMPAIGN_UI_PATH_PREFIX: "/campaigns"
+      ROOT_PATH: "/"
       CAMPAIGN_UI_API_KEY: "1234567890abcdef1234567890abcdef"
       CAMPAIGN_UI_ORCH_BASE_URL: "http://orchestrator:8000"
       CAMPAIGN_PRELOAD_DIR: "/campaigns"
