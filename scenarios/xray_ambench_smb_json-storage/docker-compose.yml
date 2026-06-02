@@ -135,7 +135,7 @@ services:
         echo "minio bucket ready: $${MINIO_BUCKET}"
 
   nsdf-storage-service:
-    image: ghcr.io/nsdf-fabric/nsdf-storage-service:0.0.1
+    image: ghcr.io/nsdf-fabric/nsdf-storage-service:shim-payload-to-snapshot
     volumes:
       - ./nsdf-storage-local-conf.json:/app/local-conf.json:ro
       - ./.local-data/nsdf-storage-service:/app/data
