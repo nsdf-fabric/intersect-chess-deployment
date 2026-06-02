@@ -25,6 +25,25 @@ NEUTRON_DATASET_JSON=D2_2p3_30layers_VDriveSPF_LD.json \
   docker compose -f scenarios/neutron_ammdf_vulcan_json/docker-compose.yml up -d --force-recreate
 ```
 
+## Campaign UI and Running Campaign JSON
+
+1. Start the scenario stack for the scenario you want to run.
+
+2. Open Campaign UI:
+
+http://localhost:8081
+
+3. Run the scenario campaign:
+- Use the scenario's `campaign.json` listed in the table below.
+- The UI preloads the scenario configured by `CAMPAIGN_UI_DEFAULT_PRELOADED_CAMPAIGN`.
+- In the UI, select the preloaded campaign (or upload the scenario `campaign.json`) and run/execute it.
+
+4. Optional checks:
+- Orchestrator API docs: http://localhost:8000/docs
+- RabbitMQ management UI: http://localhost:15672 (user: `intersect_username`, password: `intersect_password`)
+- MinIO Console (storage variants): http://localhost:9001 (user: `minioadmin`, password: `minioadmin`)
+- Dashboard (storage-dashboard variants): http://localhost:8059
+
 ## Scenarios
 
 | Scenario | Dataset | Services | Compose | Campaign | Notes |
