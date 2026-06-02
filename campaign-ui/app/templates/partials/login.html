@@ -7,7 +7,7 @@
       <div class="status error">Invalid username or password.</div>
     {% endif %}
 
-    <form method="post" action="/ui/login/password" class="login-form">
+    <form method="post" action="{{ url_for('login_password') }}" class="login-form">
       <label for="login_username">Username</label>
       <input id="login_username" name="username" type="text" autocomplete="username" required />
 
@@ -19,7 +19,7 @@
       </div>
     </form>
 
-    <form method="post" action="/ui/login/guest" class="login-form">
+    <form method="post" action="{{ url_for('login_guest') }}" class="login-form">
       <div class="actions">
         <button type="submit" class="btn-ghost">Login As Guest</button>
       </div>

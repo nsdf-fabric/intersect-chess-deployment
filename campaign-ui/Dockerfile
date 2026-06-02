@@ -13,4 +13,6 @@ COPY app /app/app
 
 EXPOSE 8080
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]
+# Shell form with exec so uvicorn remains PID 1 while ${ROOT_PATH:-} is expanded at runtime.
+# Set ROOT_PATH=/campaign (or whatever subpath the reverse proxy uses) when deploying behind a proxy.
+CMD exec uvicorn app.main:app --host 0.0.0.0 --port 8080 --root-path "${ROOT_PATH:-}"
