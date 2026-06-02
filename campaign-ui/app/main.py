@@ -10,34 +10,11 @@ from typing import Any
 import httpx
 import yaml
 from fastapi import FastAPI, Form, Request, UploadFile
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from starlette.middleware.sessions import SessionMiddleware
 
-
-def _normalize_prefix(raw: str | None) -> str:
-    candidate = (raw or "").strip()
-    if not candidate or candidate == "/":
-        return ""
-    return "/" + candidate.strip("/")
-
-
-PATH_PREFIX = _normalize_prefix(os.getenv("CAMPAIGN_UI_PATH_PREFIX", ""))
-
-
-def _prefixed(path: str) -> str:
-    if not PATH_PREFIX:
-        return path
-    if path == "/":
-        return PATH_PREFIX
-    return f"{PATH_PREFIX}{path}"
-
-
-app = FastAPI(
-    title="Campaign UI",
-    docs_url=_prefixed("/docs"),
-    openapi_url=_prefixed("/openapi.json"),
-)
+app = FastAPI(title="Campaign UI")
 templates = Jinja2Templates(directory="app/templates")
 
 
@@ -326,7 +303,7 @@ def startup() -> None:
         state.status_kind = "warning"
 
 
-@app.get(_prefixed("/"), response_class=HTMLResponse)
+@app.get("/", response_class=HTMLResponse)
 async def index(request: Request) -> HTMLResponse:
     return templates.TemplateResponse(
         request=request,
@@ -340,7 +317,7 @@ async def index(request: Request) -> HTMLResponse:
     )
 
 
-@app.post(_prefixed("/ui/login/password"), response_class=HTMLResponse)
+@app.post("/ui/login/password", response_class=HTMLResponse)
 async def login_password(
     request: Request,
     username: str = Form(default=""),
@@ -378,7 +355,7 @@ async def login_password(
     )
 
 
-@app.post(_prefixed("/ui/login/guest"), response_class=HTMLResponse)
+@app.post("/ui/login/guest", response_class=HTMLResponse)
 async def login_guest(request: Request) -> HTMLResponse:
     request.session["role"] = "guest"
     request.session["username"] = "Guest"
@@ -394,7 +371,7 @@ async def login_guest(request: Request) -> HTMLResponse:
     )
 
 
-@app.post(_prefixed("/ui/logout"), response_class=HTMLResponse)
+@app.post("/ui/logout", response_class=HTMLResponse)
 async def logout(request: Request) -> HTMLResponse:
     request.session.clear()
     return templates.TemplateResponse(
@@ -413,7 +390,7 @@ async def logout(request: Request) -> HTMLResponse:
     )
 
 
-@app.post(_prefixed("/ui/select-preloaded"), response_class=HTMLResponse)
+@app.post("/ui/select-preloaded", response_class=HTMLResponse)
 async def select_preloaded(request: Request, campaign_name: str = Form(...)) -> HTMLResponse:
     if not _is_authenticated(request):
         return await _render_workspace(request, status_code=401)
@@ -436,7 +413,7 @@ async def select_preloaded(request: Request, campaign_name: str = Form(...)) -> 
     return await _render_workspace(request)
 
 
-@app.post(_prefixed("/ui/upload"), response_class=HTMLResponse)
+@app.post("/ui/upload", response_class=HTMLResponse)
 async def upload_campaign(request: Request, campaign_file: UploadFile) -> HTMLResponse:
     if not _is_authenticated(request):
         return await _render_workspace(request, status_code=401)
@@ -485,7 +462,7 @@ async def _post_to_orchestrator(
         return response.status_code, response.text
 
 
-@app.post(_prefixed("/ui/submit"), response_class=HTMLResponse)
+@app.post("/ui/submit", response_class=HTMLResponse)
 async def submit_campaign(
     request: Request,
     campaign_json: str = Form(...),
@@ -547,7 +524,7 @@ async def submit_campaign(
     return await _render_workspace(request)
 
 
-@app.post(_prefixed("/ui/stop"), response_class=HTMLResponse)
+@app.post("/ui/stop", response_class=HTMLResponse)
 async def stop_campaign(
     request: Request,
     campaign_id: str = Form(default=""),
@@ -592,10 +569,3 @@ async def stop_campaign(
     state.status_message = "Stop failed. Attempts: " + " | ".join(errors[:4])
     state.status_kind = "error"
     return await _render_workspace(request, status_code=502)
-
-
-if PATH_PREFIX:
-
-    @app.get("/", include_in_schema=False)
-    async def root_redirect() -> RedirectResponse:
-        return RedirectResponse(url=PATH_PREFIX, status_code=307)
