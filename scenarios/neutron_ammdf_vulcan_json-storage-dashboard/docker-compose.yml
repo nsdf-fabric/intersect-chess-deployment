@@ -85,8 +85,7 @@ services:
         condition: service_started
 
   campaign-ui:
-    build:
-      context: ../../campaign-ui
+    image: ghcr.io/nsdf-fabric/intersect-chess-campaign-ui:latest
     ports:
       - "8081:8080"
     environment:
