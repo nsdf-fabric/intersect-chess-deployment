@@ -8,6 +8,20 @@
   ></div>
 
   <article class="panel controls">
+    <div class="auth-strip" style="display:flex; justify-content:space-between; align-items:center; gap:0.6rem; margin-bottom:0.6rem;">
+      <div class="hint">
+        Signed in as <strong>{{ auth_username or auth_role }}</strong>
+        {% if can_edit %}
+          <span class="live-conn-badge is-connected" style="margin-left:0.4rem;">Editor</span>
+        {% else %}
+          <span class="live-conn-badge is-idle" style="margin-left:0.4rem;">Guest (read-only)</span>
+        {% endif %}
+      </div>
+      <form method="post" action="/ui/logout" style="margin:0;">
+        <button type="submit" class="btn-ghost">Logout</button>
+      </form>
+    </div>
+
     <h2>Campaign Input</h2>
 
     {% if state.status_message %}
@@ -35,53 +49,72 @@
       </div>
     </form>
 
-    <form
-      hx-post="/ui/upload"
-      hx-target="#workspace"
-      hx-swap="innerHTML"
-      enctype="multipart/form-data"
-    >
-      <label for="campaign_file">Upload Campaign JSON</label>
-      <input id="campaign_file" name="campaign_file" type="file" accept="application/json,.json" />
-      <div class="actions">
-        <button type="submit" class="btn-ghost">Upload</button>
-      </div>
-    </form>
+    {% if can_edit %}
+      <form
+        hx-post="/ui/upload"
+        hx-target="#workspace"
+        hx-swap="innerHTML"
+        enctype="multipart/form-data"
+      >
+        <label for="campaign_file">Upload Campaign JSON</label>
+        <input id="campaign_file" name="campaign_file" type="file" accept="application/json,.json" />
+        <div class="actions">
+          <button type="submit" class="btn-ghost">Upload</button>
+        </div>
+      </form>
+    {% endif %}
 
-    <form
-      hx-post="/ui/submit"
-      hx-target="#workspace"
-      hx-swap="innerHTML"
-    >
-      <label for="campaign_json">Campaign JSON</label>
-      <textarea id="campaign_json" name="campaign_json">{{ state.campaign_json }}</textarea>
+    {% if can_edit %}
+      <form
+        hx-post="/ui/submit"
+        hx-target="#workspace"
+        hx-swap="innerHTML"
+      >
+        <label for="campaign-editor">Campaign Editor</label>
+        <div id="campaign-editor" class="campaign-editor" aria-live="polite"></div>
+        <div id="campaign-editor-error" class="hint" style="display:none; color:#9e1a1a; margin-top:0.5rem;"></div>
 
-      <label>
-        <input type="checkbox" name="regenerate_id" checked /> Regenerate campaign ID before submit
-      </label>
+        <textarea id="campaign_json" name="campaign_json" class="raw-json-textarea" aria-hidden="true">{{ state.campaign_json }}</textarea>
 
-      <div class="actions">
-        <button type="submit" class="btn-primary">Submit Campaign</button>
-      </div>
-    </form>
+        <details class="raw-json-details">
+          <summary>Advanced: Raw JSON</summary>
+          <textarea id="campaign_json_visible" class="raw-json-visible" spellcheck="false"></textarea>
+          <div class="actions">
+            <button type="button" id="apply-raw-json" class="btn-ghost">Apply Raw JSON</button>
+          </div>
+        </details>
 
-    <form
-      hx-post="/ui/stop"
-      hx-target="#workspace"
-      hx-swap="innerHTML"
-    >
-      <label for="campaign_id">Campaign ID To Stop</label>
-      <input
-        id="campaign_id"
-        type="text"
-        name="campaign_id"
-        value="{{ state.active_campaign_id }}"
-        placeholder="defaults to last submitted ID"
-      />
-      <div class="actions">
-        <button type="submit" class="btn-danger">Stop Campaign</button>
-      </div>
-    </form>
+        <label>
+          <input type="checkbox" name="regenerate_id" checked /> Regenerate campaign ID before submit
+        </label>
+
+        <div class="actions">
+          <button type="submit" class="btn-primary">Submit Campaign</button>
+        </div>
+      </form>
+
+      <form
+        hx-post="/ui/stop"
+        hx-target="#workspace"
+        hx-swap="innerHTML"
+      >
+        <label for="campaign_id">Campaign ID To Stop</label>
+        <input
+          id="campaign_id"
+          type="text"
+          name="campaign_id"
+          value="{{ state.active_campaign_id }}"
+          placeholder="defaults to last submitted ID"
+        />
+        <div class="actions">
+          <button type="submit" class="btn-danger">Stop Campaign</button>
+        </div>
+      </form>
+    {% else %}
+      <div class="status info">Guest mode: You can inspect campaigns and monitor live execution, but editing, uploading, submitting, and stopping are disabled.</div>
+      <label for="campaign_json_readonly">Campaign JSON (read-only)</label>
+      <textarea id="campaign_json_readonly" readonly>{{ state.campaign_json }}</textarea>
+    {% endif %}
   </article>
 
   <article class="panel preview">
