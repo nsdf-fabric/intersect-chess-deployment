@@ -19,6 +19,979 @@
         recentEvents: [],
         reconnectTimer: null,
       };
+      window._campaignEditorState = window._campaignEditorState || {
+        campaign: null,
+        activeGroupIndex: 0,
+        taskFilter: "",
+        selectedTaskId: "",
+        draggingGroupIndex: -1,
+        draggingTaskIndex: -1,
+      };
+
+      const KNOWN_CAMPAIGN_KEYS = new Set(["id", "name", "run_id", "task_groups"]);
+      const KNOWN_GROUP_KEYS = new Set(["id", "group_dependencies", "tasks"]);
+      const KNOWN_TASK_KEYS = new Set(["id", "capability", "operation_id", "event_name", "task_dependencies"]);
+
+      const parseCsv = (value) =>
+        (value || "")
+          .split(",")
+          .map((part) => part.trim())
+          .filter(Boolean);
+
+      const formatCsv = (value) => (Array.isArray(value) ? value.join(", ") : "");
+
+      const cloneJson = (value) => JSON.parse(JSON.stringify(value));
+
+      const toNormalizedId = (value) => (value || "").toString().trim().toLowerCase();
+
+      const writeCampaignToHiddenField = (campaign) => {
+        const hidden = document.getElementById("campaign_json");
+        const visible = document.getElementById("campaign_json_visible");
+        if (!hidden) {
+          return;
+        }
+        const nextText = JSON.stringify(campaign, null, 2);
+        hidden.value = nextText;
+        if (visible) {
+          visible.value = nextText;
+        }
+      };
+
+      const setEditorError = (message) => {
+        const errorEl = document.getElementById("campaign-editor-error");
+        if (!errorEl) {
+          return;
+        }
+        if (!message) {
+          errorEl.style.display = "none";
+          errorEl.textContent = "";
+          return;
+        }
+        errorEl.style.display = "block";
+        errorEl.textContent = message;
+      };
+
+      const readCampaignFromHiddenField = () => {
+        const hidden = document.getElementById("campaign_json");
+        if (!hidden || !hidden.value.trim()) {
+          return null;
+        }
+        try {
+          return JSON.parse(hidden.value);
+        } catch (error) {
+          setEditorError(`Unable to parse campaign JSON: ${error}`);
+          return null;
+        }
+      };
+
+      const getTaskGroupLabel = (taskGroup, index) => {
+        const raw = (taskGroup?.id || "").toString().trim();
+        return raw || `Group ${index + 1}`;
+      };
+
+      const getTaskLabel = (task, index) => {
+        const raw = (task?.id || "").toString().trim();
+        return raw || `Task ${index + 1}`;
+      };
+
+      const buildConnections = (campaign) => {
+        const groups = Array.isArray(campaign?.task_groups) ? campaign.task_groups : [];
+        const taskToGroup = new Map();
+        const groupRefs = groups.map((group, groupIndex) => {
+          const groupId = (group?.id || `group-${groupIndex + 1}`).toString();
+          for (const task of group?.tasks || []) {
+            const taskId = (task?.id || "").toString();
+            if (taskId) {
+              taskToGroup.set(taskId, groupId);
+            }
+          }
+          return groupId;
+        });
+
+        const groupDeps = [];
+        const crossTaskDeps = [];
+        groups.forEach((group, groupIndex) => {
+          const targetGroupId = (group?.id || `group-${groupIndex + 1}`).toString();
+          for (const sourceGroup of group?.group_dependencies || []) {
+            groupDeps.push(`${sourceGroup} -> ${targetGroupId}`);
+          }
+
+          for (const task of group?.tasks || []) {
+            const targetTask = (task?.id || "").toString();
+            if (!targetTask) {
+              continue;
+            }
+            for (const sourceTask of task?.task_dependencies || []) {
+              const sourceGroup = taskToGroup.get((sourceTask || "").toString()) || "unknown-group";
+              const targetGroup = taskToGroup.get(targetTask) || targetGroupId;
+              crossTaskDeps.push(`${sourceTask} (${sourceGroup}) -> ${targetTask} (${targetGroup})`);
+            }
+          }
+        });
+
+        return {
+          groupRefs,
+          groupDeps,
+          crossTaskDeps,
+        };
+      };
+
+      const inputField = ({ label, value, path, placeholder = "", multiline = false, rows = 2, type = "text" }) => {
+        const wrapper = document.createElement("div");
+        wrapper.className = "editor-field";
+
+        const labelEl = document.createElement("label");
+        labelEl.className = "editor-label";
+        labelEl.textContent = label;
+        wrapper.appendChild(labelEl);
+
+        const input = multiline ? document.createElement("textarea") : document.createElement("input");
+        if (!multiline) {
+          input.type = "text";
+        } else {
+          input.rows = rows;
+        }
+        input.className = "editor-input";
+        input.value = value ?? "";
+        input.placeholder = placeholder;
+        input.dataset.path = path;
+        input.dataset.valueType = type;
+        wrapper.appendChild(input);
+        return wrapper;
+      };
+
+      const renderConnectionsBox = (campaign) => {
+        const box = document.createElement("div");
+        box.className = "editor-section";
+
+        const title = document.createElement("h3");
+        title.textContent = "Connections";
+        box.appendChild(title);
+
+        const connections = buildConnections(campaign);
+
+        const groupsLine = document.createElement("p");
+        groupsLine.className = "hint";
+        groupsLine.textContent =
+          connections.groupRefs.length > 0
+            ? `Task groups: ${connections.groupRefs.join(" | ")}`
+            : "Task groups: none";
+        box.appendChild(groupsLine);
+
+        const groupDepsTitle = document.createElement("p");
+        groupDepsTitle.className = "hint";
+        groupDepsTitle.innerHTML = "<strong>Group dependencies</strong>";
+        box.appendChild(groupDepsTitle);
+
+        const groupDepsList = document.createElement("ul");
+        groupDepsList.className = "connections-list";
+        if (connections.groupDeps.length === 0) {
+          const empty = document.createElement("li");
+          empty.textContent = "None";
+          groupDepsList.appendChild(empty);
+        } else {
+          for (const item of connections.groupDeps) {
+            const li = document.createElement("li");
+            li.textContent = item;
+            groupDepsList.appendChild(li);
+          }
+        }
+        box.appendChild(groupDepsList);
+
+        const taskDepsTitle = document.createElement("p");
+        taskDepsTitle.className = "hint";
+        taskDepsTitle.innerHTML = "<strong>Task dependencies</strong>";
+        box.appendChild(taskDepsTitle);
+
+        const taskDepsList = document.createElement("ul");
+        taskDepsList.className = "connections-list";
+        if (connections.crossTaskDeps.length === 0) {
+          const empty = document.createElement("li");
+          empty.textContent = "None";
+          taskDepsList.appendChild(empty);
+        } else {
+          for (const item of connections.crossTaskDeps) {
+            const li = document.createElement("li");
+            li.textContent = item;
+            taskDepsList.appendChild(li);
+          }
+        }
+        box.appendChild(taskDepsList);
+
+        return box;
+      };
+
+      const getTaskGraphChain = (campaign, selectedTaskId) => {
+        const selected = toNormalizedId(selectedTaskId);
+        if (!selected || !campaign || !Array.isArray(campaign.task_groups)) {
+          return { upstream: new Set(), downstream: new Set() };
+        }
+
+        const forward = new Map();
+        const reverse = new Map();
+
+        for (const group of campaign.task_groups) {
+          for (const task of group?.tasks || []) {
+            const taskId = toNormalizedId(task?.id);
+            if (!taskId) {
+              continue;
+            }
+            if (!forward.has(taskId)) {
+              forward.set(taskId, new Set());
+            }
+            if (!reverse.has(taskId)) {
+              reverse.set(taskId, new Set());
+            }
+          }
+        }
+
+        for (const group of campaign.task_groups) {
+          for (const task of group?.tasks || []) {
+            const targetId = toNormalizedId(task?.id);
+            if (!targetId) {
+              continue;
+            }
+            for (const dep of task?.task_dependencies || []) {
+              const sourceId = toNormalizedId(dep);
+              if (!sourceId) {
+                continue;
+              }
+              if (!forward.has(sourceId)) {
+                forward.set(sourceId, new Set());
+              }
+              if (!reverse.has(targetId)) {
+                reverse.set(targetId, new Set());
+              }
+              forward.get(sourceId).add(targetId);
+              reverse.get(targetId).add(sourceId);
+            }
+          }
+        }
+
+        const upstream = new Set();
+        const downstream = new Set();
+
+        const upstreamQueue = [selected];
+        while (upstreamQueue.length) {
+          const current = upstreamQueue.shift();
+          for (const dep of reverse.get(current) || []) {
+            if (!upstream.has(dep)) {
+              upstream.add(dep);
+              upstreamQueue.push(dep);
+            }
+          }
+        }
+
+        const downstreamQueue = [selected];
+        while (downstreamQueue.length) {
+          const current = downstreamQueue.shift();
+          for (const dep of forward.get(current) || []) {
+            if (!downstream.has(dep)) {
+              downstream.add(dep);
+              downstreamQueue.push(dep);
+            }
+          }
+        }
+
+        upstream.delete(selected);
+        downstream.delete(selected);
+        return { upstream, downstream };
+      };
+
+      const clearGraphDependencyHighlights = () => {
+        document.querySelectorAll(".graph-wrap .mermaid svg g.node").forEach((node) => {
+          node.classList.remove("dep-selected", "dep-upstream", "dep-downstream", "dep-dim");
+        });
+      };
+
+      const applyGraphDependencyHighlights = () => {
+        const editorState = window._campaignEditorState;
+        const selectedTaskId = editorState.selectedTaskId;
+        clearGraphDependencyHighlights();
+
+        if (!selectedTaskId || !editorState.campaign) {
+          return;
+        }
+
+        const vizState = window._workflowVizState;
+        const selected = toNormalizedId(selectedTaskId);
+        const chain = getTaskGraphChain(editorState.campaign, selectedTaskId);
+
+        const resolveNodeFromTaskId = (taskId) => {
+          const nodeId = vizState.taskMap[toNormalizedId(taskId)];
+          return resolveTaskNodeElement(nodeId);
+        };
+
+        const allNodes = document.querySelectorAll(".graph-wrap .mermaid svg g.node");
+        allNodes.forEach((node) => node.classList.add("dep-dim"));
+
+        for (const taskId of chain.upstream) {
+          const node = resolveNodeFromTaskId(taskId);
+          if (node) {
+            node.classList.remove("dep-dim");
+            node.classList.add("dep-upstream");
+          }
+        }
+
+        for (const taskId of chain.downstream) {
+          const node = resolveNodeFromTaskId(taskId);
+          if (node) {
+            node.classList.remove("dep-dim");
+            node.classList.add("dep-downstream");
+          }
+        }
+
+        const selectedNode = resolveNodeFromTaskId(selected);
+        if (selectedNode) {
+          selectedNode.classList.remove("dep-dim");
+          selectedNode.classList.add("dep-selected");
+        }
+      };
+
+      const renderCampaignEditor = () => {
+        const editor = document.getElementById("campaign-editor");
+        const applyRawBtn = document.getElementById("apply-raw-json");
+        if (!editor) {
+          return;
+        }
+
+        if (applyRawBtn && !applyRawBtn.dataset.bound) {
+          applyRawBtn.dataset.bound = "1";
+          applyRawBtn.addEventListener("click", () => {
+            const visible = document.getElementById("campaign_json_visible");
+            if (!visible) {
+              return;
+            }
+            try {
+              const parsed = JSON.parse(visible.value);
+              writeCampaignToHiddenField(parsed);
+              window._campaignEditorState.campaign = cloneJson(parsed);
+              setEditorError("");
+              renderCampaignEditor();
+            } catch (error) {
+              setEditorError(`Raw JSON parse error: ${error}`);
+            }
+          });
+        }
+
+        const parsed = readCampaignFromHiddenField();
+        if (!parsed || typeof parsed !== "object") {
+          editor.innerHTML = "<p class=\"hint\">Load a campaign to edit.</p>";
+          return;
+        }
+
+        const state = window._campaignEditorState;
+        state.campaign = cloneJson(parsed);
+        if (!Array.isArray(state.campaign.task_groups)) {
+          state.campaign.task_groups = [];
+        }
+        writeCampaignToHiddenField(state.campaign);
+
+        const groups = state.campaign.task_groups;
+        if (state.activeGroupIndex >= groups.length) {
+          state.activeGroupIndex = Math.max(groups.length - 1, 0);
+        }
+
+        editor.innerHTML = "";
+
+        const campaignSection = document.createElement("div");
+        campaignSection.className = "editor-section";
+        const campaignTitle = document.createElement("h3");
+        campaignTitle.textContent = "Campaign";
+        campaignSection.appendChild(campaignTitle);
+
+        campaignSection.appendChild(
+          inputField({ label: "Campaign ID", value: state.campaign.id || "", path: "id", placeholder: "campaign uuid" }),
+        );
+        campaignSection.appendChild(
+          inputField({ label: "Campaign Name", value: state.campaign.name || "", path: "name", placeholder: "friendly name" }),
+        );
+        campaignSection.appendChild(
+          inputField({ label: "Run ID", value: state.campaign.run_id || "", path: "run_id", placeholder: "run uuid" }),
+        );
+
+        const campaignExtra = {};
+        for (const [key, value] of Object.entries(state.campaign)) {
+          if (!KNOWN_CAMPAIGN_KEYS.has(key)) {
+            campaignExtra[key] = value;
+          }
+        }
+        campaignSection.appendChild(
+          inputField({
+            label: "Additional campaign fields (JSON object)",
+            value: Object.keys(campaignExtra).length ? JSON.stringify(campaignExtra, null, 2) : "{}",
+            path: "__campaign_extra__",
+            multiline: true,
+            rows: 5,
+            type: "json-object",
+          }),
+        );
+
+        editor.appendChild(campaignSection);
+
+        const groupsSection = document.createElement("div");
+        groupsSection.className = "editor-section";
+        const groupsTitle = document.createElement("h3");
+        groupsTitle.textContent = "Task Groups";
+        groupsSection.appendChild(groupsTitle);
+
+        const topActions = document.createElement("div");
+        topActions.className = "actions";
+        const addGroupBtn = document.createElement("button");
+        addGroupBtn.type = "button";
+        addGroupBtn.className = "btn-ghost";
+        addGroupBtn.textContent = "Add Task Group";
+        addGroupBtn.dataset.action = "add-group";
+        topActions.appendChild(addGroupBtn);
+        groupsSection.appendChild(topActions);
+
+        if (groups.length === 0) {
+          const empty = document.createElement("p");
+          empty.className = "hint";
+          empty.textContent = "No task groups yet. Add one to get started.";
+          groupsSection.appendChild(empty);
+        } else {
+          const tabs = document.createElement("div");
+          tabs.className = "editor-tabs";
+          groups.forEach((group, index) => {
+            const tabBtn = document.createElement("button");
+            tabBtn.type = "button";
+            tabBtn.className = `editor-tab ${index === state.activeGroupIndex ? "is-active" : ""}`;
+            tabBtn.textContent = getTaskGroupLabel(group, index);
+            tabBtn.dataset.action = "switch-group";
+            tabBtn.dataset.groupIndex = String(index);
+            tabs.appendChild(tabBtn);
+          });
+          groupsSection.appendChild(tabs);
+
+          const group = groups[state.activeGroupIndex];
+          if (!Array.isArray(group.tasks)) {
+            group.tasks = [];
+          }
+          if (!Array.isArray(group.group_dependencies)) {
+            group.group_dependencies = [];
+          }
+
+          const panel = document.createElement("div");
+          panel.className = "editor-group-panel";
+
+          const filterField = inputField({
+            label: "Filter tasks by ID or capability",
+            value: state.taskFilter || "",
+            path: "__task_filter__",
+            placeholder: "type to filter tasks in this group",
+          });
+          const filterInput = filterField.querySelector("input");
+          if (filterInput) {
+            filterInput.dataset.uiOnly = "task-filter";
+          }
+          panel.appendChild(filterField);
+
+          panel.appendChild(
+            inputField({
+              label: "Task Group ID",
+              value: group.id || "",
+              path: `task_groups.${state.activeGroupIndex}.id`,
+              placeholder: `group-${state.activeGroupIndex + 1}`,
+            }),
+          );
+          panel.appendChild(
+            inputField({
+              label: "Group Dependencies (comma-separated group IDs)",
+              value: formatCsv(group.group_dependencies),
+              path: `task_groups.${state.activeGroupIndex}.group_dependencies`,
+              type: "csv-array",
+            }),
+          );
+
+          const groupExtra = {};
+          for (const [key, value] of Object.entries(group)) {
+            if (!KNOWN_GROUP_KEYS.has(key)) {
+              groupExtra[key] = value;
+            }
+          }
+          panel.appendChild(
+            inputField({
+              label: "Additional task-group fields (JSON object)",
+              value: Object.keys(groupExtra).length ? JSON.stringify(groupExtra, null, 2) : "{}",
+              path: `task_groups.${state.activeGroupIndex}.__group_extra__`,
+              multiline: true,
+              rows: 4,
+              type: "json-object",
+            }),
+          );
+
+          const groupActions = document.createElement("div");
+          groupActions.className = "actions";
+
+          const addTaskBtn = document.createElement("button");
+          addTaskBtn.type = "button";
+          addTaskBtn.className = "btn-ghost";
+          addTaskBtn.textContent = "Add Task";
+          addTaskBtn.dataset.action = "add-task";
+          addTaskBtn.dataset.groupIndex = String(state.activeGroupIndex);
+          groupActions.appendChild(addTaskBtn);
+
+          const removeGroupBtn = document.createElement("button");
+          removeGroupBtn.type = "button";
+          removeGroupBtn.className = "btn-danger";
+          removeGroupBtn.textContent = "Remove Group";
+          removeGroupBtn.dataset.action = "remove-group";
+          removeGroupBtn.dataset.groupIndex = String(state.activeGroupIndex);
+          groupActions.appendChild(removeGroupBtn);
+
+          panel.appendChild(groupActions);
+
+          const filterTerm = (state.taskFilter || "").toLowerCase().trim();
+          const matchingTasks = group.tasks
+            .map((task, taskIndex) => ({ task, taskIndex }))
+            .filter(({ task }) => {
+              if (!filterTerm) {
+                return true;
+              }
+              const taskId = (task.id || "").toString().toLowerCase();
+              const capability = (task.capability || "").toString().toLowerCase();
+              return taskId.includes(filterTerm) || capability.includes(filterTerm);
+            });
+
+          if (filterTerm && matchingTasks.length === 0) {
+            const noMatch = document.createElement("p");
+            noMatch.className = "hint";
+            noMatch.textContent = "No tasks match the filter in this task group.";
+            panel.appendChild(noMatch);
+          }
+
+          matchingTasks.forEach(({ task, taskIndex }) => {
+            if (!Array.isArray(task.task_dependencies)) {
+              task.task_dependencies = [];
+            }
+            const taskCard = document.createElement("div");
+            taskCard.className = "task-card";
+            taskCard.draggable = true;
+            taskCard.dataset.groupIndex = String(state.activeGroupIndex);
+            taskCard.dataset.taskIndex = String(taskIndex);
+
+            const taskHeader = document.createElement("div");
+            taskHeader.className = "task-card-header";
+            const taskTitle = document.createElement("h4");
+            taskTitle.textContent = getTaskLabel(task, taskIndex);
+            taskHeader.appendChild(taskTitle);
+
+            const focusBtn = document.createElement("button");
+            focusBtn.type = "button";
+            focusBtn.className = "btn-ghost";
+            focusBtn.textContent = "Focus Graph";
+            focusBtn.dataset.action = "select-task";
+            focusBtn.dataset.taskId = String(task.id || "");
+            taskHeader.appendChild(focusBtn);
+
+            const removeTaskBtn = document.createElement("button");
+            removeTaskBtn.type = "button";
+            removeTaskBtn.className = "btn-danger";
+            removeTaskBtn.textContent = "Remove";
+            removeTaskBtn.dataset.action = "remove-task";
+            removeTaskBtn.dataset.groupIndex = String(state.activeGroupIndex);
+            removeTaskBtn.dataset.taskIndex = String(taskIndex);
+            taskHeader.appendChild(removeTaskBtn);
+            taskCard.appendChild(taskHeader);
+
+            if (toNormalizedId(state.selectedTaskId) && toNormalizedId(task.id) === toNormalizedId(state.selectedTaskId)) {
+              taskCard.classList.add("is-selected");
+            }
+
+            const taskPathPrefix = `task_groups.${state.activeGroupIndex}.tasks.${taskIndex}`;
+            taskCard.appendChild(
+              inputField({
+                label: "Task ID",
+                value: task.id || "",
+                path: `${taskPathPrefix}.id`,
+                placeholder: `task-${state.activeGroupIndex + 1}-${taskIndex + 1}`,
+              }),
+            );
+            taskCard.appendChild(
+              inputField({
+                label: "Capability",
+                value: task.capability || "",
+                path: `${taskPathPrefix}.capability`,
+                placeholder: "service capability",
+              }),
+            );
+            taskCard.appendChild(
+              inputField({
+                label: "Operation ID",
+                value: task.operation_id || "",
+                path: `${taskPathPrefix}.operation_id`,
+                placeholder: "operation id",
+              }),
+            );
+            taskCard.appendChild(
+              inputField({
+                label: "Event Name",
+                value: task.event_name || "",
+                path: `${taskPathPrefix}.event_name`,
+                placeholder: "event name",
+              }),
+            );
+            taskCard.appendChild(
+              inputField({
+                label: "Task Dependencies (comma-separated task IDs)",
+                value: formatCsv(task.task_dependencies),
+                path: `${taskPathPrefix}.task_dependencies`,
+                type: "csv-array",
+              }),
+            );
+
+            const taskExtra = {};
+            for (const [key, value] of Object.entries(task)) {
+              if (!KNOWN_TASK_KEYS.has(key)) {
+                taskExtra[key] = value;
+              }
+            }
+            taskCard.appendChild(
+              inputField({
+                label: "Additional task fields (JSON object)",
+                value: Object.keys(taskExtra).length ? JSON.stringify(taskExtra, null, 2) : "{}",
+                path: `${taskPathPrefix}.__task_extra__`,
+                multiline: true,
+                rows: 4,
+                type: "json-object",
+              }),
+            );
+
+            panel.appendChild(taskCard);
+          });
+
+          groupsSection.appendChild(panel);
+        }
+
+        editor.appendChild(groupsSection);
+        editor.appendChild(renderConnectionsBox(state.campaign));
+
+        writeCampaignToHiddenField(state.campaign);
+        applyGraphDependencyHighlights();
+      };
+
+      const getParentAndKey = (root, path) => {
+        const parts = path.split(".").filter(Boolean);
+        let current = root;
+        for (let i = 0; i < parts.length - 1; i += 1) {
+          const part = parts[i];
+          const nextPart = parts[i + 1];
+          const index = Number(part);
+          const key = Number.isInteger(index) && `${index}` === part ? index : part;
+          if (current[key] === undefined) {
+            const nextIndex = Number(nextPart);
+            const shouldBeArray = Number.isInteger(nextIndex) && `${nextIndex}` === nextPart;
+            current[key] = shouldBeArray ? [] : {};
+          }
+          current = current[key];
+        }
+        return { parent: current, key: parts[parts.length - 1] };
+      };
+
+      const applyEditorFieldChange = (input) => {
+        const state = window._campaignEditorState;
+        if (!state.campaign) {
+          return;
+        }
+
+        const path = input.dataset.path || "";
+        const valueType = input.dataset.valueType || "text";
+        const uiOnly = input.dataset.uiOnly || "";
+        if (!path) {
+          return;
+        }
+
+        if (uiOnly === "task-filter") {
+          state.taskFilter = input.value;
+          renderCampaignEditor();
+          return;
+        }
+
+        setEditorError("");
+
+        if (path === "__campaign_extra__") {
+          let parsed;
+          try {
+            parsed = JSON.parse(input.value || "{}");
+            if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+              throw new Error("Must be a JSON object");
+            }
+          } catch (error) {
+            setEditorError(`Invalid campaign extra fields JSON: ${error}`);
+            return;
+          }
+          for (const key of Object.keys(state.campaign)) {
+            if (!KNOWN_CAMPAIGN_KEYS.has(key)) {
+              delete state.campaign[key];
+            }
+          }
+          Object.assign(state.campaign, parsed);
+          writeCampaignToHiddenField(state.campaign);
+          return;
+        }
+
+        if (path.endsWith(".__group_extra__") || path.endsWith(".__task_extra__")) {
+          let parsed;
+          try {
+            parsed = JSON.parse(input.value || "{}");
+            if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+              throw new Error("Must be a JSON object");
+            }
+          } catch (error) {
+            setEditorError(`Invalid additional fields JSON: ${error}`);
+            return;
+          }
+
+          const basePath = path.replace(".__group_extra__", "").replace(".__task_extra__", "");
+          const { parent, key } = getParentAndKey(state.campaign, basePath);
+          const index = Number(key);
+          const realKey = Number.isInteger(index) && `${index}` === key ? index : key;
+          const target = parent[realKey];
+          if (!target || typeof target !== "object") {
+            return;
+          }
+          const knownSet = path.endsWith(".__group_extra__") ? KNOWN_GROUP_KEYS : KNOWN_TASK_KEYS;
+          for (const field of Object.keys(target)) {
+            if (!knownSet.has(field)) {
+              delete target[field];
+            }
+          }
+          Object.assign(target, parsed);
+          writeCampaignToHiddenField(state.campaign);
+          return;
+        }
+
+        const { parent, key } = getParentAndKey(state.campaign, path);
+        const index = Number(key);
+        const realKey = Number.isInteger(index) && `${index}` === key ? index : key;
+
+        if (valueType === "csv-array") {
+          parent[realKey] = parseCsv(input.value);
+        } else {
+          parent[realKey] = input.value;
+        }
+
+        writeCampaignToHiddenField(state.campaign);
+      };
+
+      const handleEditorAction = (button) => {
+        const state = window._campaignEditorState;
+        if (!state.campaign) {
+          return;
+        }
+        const action = button.dataset.action || "";
+
+        if (action === "switch-group") {
+          state.activeGroupIndex = Number(button.dataset.groupIndex || "0");
+          state.taskFilter = "";
+          renderCampaignEditor();
+          return;
+        }
+
+        if (action === "select-task") {
+          state.selectedTaskId = String(button.dataset.taskId || "");
+          renderCampaignEditor();
+          return;
+        }
+
+        if (!Array.isArray(state.campaign.task_groups)) {
+          state.campaign.task_groups = [];
+        }
+
+        if (action === "add-group") {
+          const nextIndex = state.campaign.task_groups.length + 1;
+          state.campaign.task_groups.push({
+            id: `group-${nextIndex}`,
+            group_dependencies: [],
+            tasks: [],
+          });
+          state.activeGroupIndex = state.campaign.task_groups.length - 1;
+          writeCampaignToHiddenField(state.campaign);
+          renderCampaignEditor();
+          return;
+        }
+
+        if (action === "remove-group") {
+          const groupIndex = Number(button.dataset.groupIndex || "-1");
+          if (groupIndex >= 0 && groupIndex < state.campaign.task_groups.length) {
+            state.campaign.task_groups.splice(groupIndex, 1);
+            state.activeGroupIndex = Math.max(groupIndex - 1, 0);
+            state.selectedTaskId = "";
+            writeCampaignToHiddenField(state.campaign);
+            renderCampaignEditor();
+          }
+          return;
+        }
+
+        if (action === "add-task") {
+          const groupIndex = Number(button.dataset.groupIndex || "-1");
+          const group = state.campaign.task_groups[groupIndex];
+          if (group) {
+            if (!Array.isArray(group.tasks)) {
+              group.tasks = [];
+            }
+            const taskIndex = group.tasks.length + 1;
+            group.tasks.push({
+              id: `task-${groupIndex + 1}-${taskIndex}`,
+              capability: "",
+              operation_id: "",
+              task_dependencies: [],
+            });
+            state.selectedTaskId = "";
+            writeCampaignToHiddenField(state.campaign);
+            renderCampaignEditor();
+          }
+          return;
+        }
+
+        if (action === "remove-task") {
+          const groupIndex = Number(button.dataset.groupIndex || "-1");
+          const taskIndex = Number(button.dataset.taskIndex || "-1");
+          const group = state.campaign.task_groups[groupIndex];
+          if (group && Array.isArray(group.tasks) && taskIndex >= 0 && taskIndex < group.tasks.length) {
+            group.tasks.splice(taskIndex, 1);
+            state.selectedTaskId = "";
+            writeCampaignToHiddenField(state.campaign);
+            renderCampaignEditor();
+          }
+        }
+      };
+
+      document.addEventListener("input", (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement)) {
+          return;
+        }
+        if (!target.closest("#campaign-editor")) {
+          return;
+        }
+        if (target.dataset.valueType === "json-object") {
+          return;
+        }
+        applyEditorFieldChange(target);
+      });
+
+      document.addEventListener("change", (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement)) {
+          return;
+        }
+        if (!target.closest("#campaign-editor")) {
+          return;
+        }
+        applyEditorFieldChange(target);
+        renderCampaignEditor();
+      });
+
+      document.addEventListener("click", (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLElement)) {
+          return;
+        }
+        const button = target.closest("button[data-action]");
+        if (!button || !button.closest("#campaign-editor")) {
+          return;
+        }
+        handleEditorAction(button);
+      });
+
+      document.addEventListener("dragstart", (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLElement)) {
+          return;
+        }
+        const card = target.closest(".task-card");
+        if (!card || !card.closest("#campaign-editor")) {
+          return;
+        }
+        const state = window._campaignEditorState;
+        state.draggingGroupIndex = Number(card.dataset.groupIndex || "-1");
+        state.draggingTaskIndex = Number(card.dataset.taskIndex || "-1");
+        card.classList.add("is-dragging");
+      });
+
+      document.addEventListener("dragend", (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLElement)) {
+          return;
+        }
+        const card = target.closest(".task-card");
+        if (!card) {
+          return;
+        }
+        card.classList.remove("is-dragging", "drag-over");
+      });
+
+      document.addEventListener("dragover", (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLElement)) {
+          return;
+        }
+        const card = target.closest(".task-card");
+        if (!card || !card.closest("#campaign-editor")) {
+          return;
+        }
+        event.preventDefault();
+        card.classList.add("drag-over");
+      });
+
+      document.addEventListener("dragleave", (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLElement)) {
+          return;
+        }
+        const card = target.closest(".task-card");
+        if (!card) {
+          return;
+        }
+        card.classList.remove("drag-over");
+      });
+
+      document.addEventListener("drop", (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLElement)) {
+          return;
+        }
+        const dropCard = target.closest(".task-card");
+        if (!dropCard || !dropCard.closest("#campaign-editor")) {
+          return;
+        }
+        event.preventDefault();
+
+        const state = window._campaignEditorState;
+        if (!state.campaign || !Array.isArray(state.campaign.task_groups)) {
+          return;
+        }
+
+        const fromGroup = state.draggingGroupIndex;
+        const fromTask = state.draggingTaskIndex;
+        const toGroup = Number(dropCard.dataset.groupIndex || "-1");
+        const toTask = Number(dropCard.dataset.taskIndex || "-1");
+
+        if (fromGroup < 0 || fromTask < 0 || toGroup < 0 || toTask < 0) {
+          return;
+        }
+        if (fromGroup !== toGroup || fromTask === toTask) {
+          return;
+        }
+
+        const group = state.campaign.task_groups[fromGroup];
+        if (!group || !Array.isArray(group.tasks)) {
+          return;
+        }
+        if (fromTask >= group.tasks.length || toTask >= group.tasks.length) {
+          return;
+        }
+
+        const [moved] = group.tasks.splice(fromTask, 1);
+        group.tasks.splice(toTask, 0, moved);
+
+        state.draggingGroupIndex = -1;
+        state.draggingTaskIndex = -1;
+        writeCampaignToHiddenField(state.campaign);
+        renderCampaignEditor();
+      });
 
       const normalizeId = (value) => (value || "").toString().trim().toLowerCase();
 
@@ -224,6 +1197,7 @@
           state.recentEvents = state.recentEvents.slice(0, 20);
 
           applyTaskStatuses();
+          applyGraphDependencyHighlights();
           renderRecentEvents();
         };
 
@@ -295,16 +1269,19 @@
         initPanZoom();
         syncGraphMeta();
         applyTaskStatuses();
+        applyGraphDependencyHighlights();
         renderRecentEvents();
         connectLiveEvents();
       };
 
       document.addEventListener("DOMContentLoaded", () => {
+        renderCampaignEditor();
         window.renderMermaid();
       });
 
       document.body.addEventListener("htmx:afterSwap", (event) => {
         if (event.target && event.target.id === "workspace") {
+          renderCampaignEditor();
           window.renderMermaid();
         }
       });
@@ -408,6 +1385,150 @@
         font-size: 0.84rem;
       }
 
+      .campaign-editor {
+        display: grid;
+        gap: 0.8rem;
+      }
+
+      .editor-section {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #fffcf5;
+        padding: 0.75rem;
+      }
+
+      .editor-section h3 {
+        margin: 0 0 0.65rem;
+        font-size: 0.95rem;
+        color: #273142;
+      }
+
+      .editor-field {
+        display: grid;
+        gap: 0.3rem;
+        margin-bottom: 0.55rem;
+      }
+
+      .editor-label {
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: #374151;
+      }
+
+      .editor-input {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 0.48rem 0.58rem;
+        font: inherit;
+        background: #fff;
+      }
+
+      textarea.editor-input {
+        min-height: 80px;
+        font-family: "IBM Plex Mono", "Consolas", monospace;
+        font-size: 0.8rem;
+      }
+
+      .editor-tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.45rem;
+        margin-bottom: 0.55rem;
+      }
+
+      .editor-tab {
+        border: 1px solid #d0c6b0;
+        background: #f5eee0;
+        color: #2b3440;
+        border-radius: 8px;
+        padding: 0.35rem 0.6rem;
+        font-size: 0.78rem;
+      }
+
+      .editor-tab.is-active {
+        background: #154c79;
+        color: #fff;
+        border-color: #154c79;
+      }
+
+      .editor-group-panel {
+        border: 1px dashed #ccbea2;
+        border-radius: 9px;
+        background: #fff;
+        padding: 0.65rem;
+      }
+
+      .task-card {
+        border: 1px solid #d9cfbd;
+        border-radius: 8px;
+        background: #fffdfa;
+        padding: 0.6rem;
+        margin-top: 0.6rem;
+        cursor: grab;
+      }
+
+      .task-card.is-selected {
+        border-color: #154c79;
+        box-shadow: 0 0 0 2px rgba(21, 76, 121, 0.22);
+      }
+
+      .task-card.is-dragging {
+        opacity: 0.55;
+      }
+
+      .task-card.drag-over {
+        border-color: #da5b34;
+        box-shadow: 0 0 0 2px rgba(218, 91, 52, 0.24);
+      }
+
+      .task-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0.45rem;
+      }
+
+      .task-card-header h4 {
+        margin: 0;
+        font-size: 0.86rem;
+        color: #1f2937;
+      }
+
+      .connections-list {
+        margin: 0.35rem 0 0.7rem;
+        padding-left: 1.15rem;
+        color: #374151;
+        font-size: 0.82rem;
+      }
+
+      .raw-json-textarea {
+        display: none;
+      }
+
+      .raw-json-details {
+        margin-top: 0.4rem;
+      }
+
+      .raw-json-details summary {
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 0.85rem;
+        color: #374151;
+      }
+
+      .raw-json-visible {
+        width: 100%;
+        min-height: 220px;
+        margin-top: 0.55rem;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 0.52rem 0.6rem;
+        font-family: "IBM Plex Mono", "Consolas", monospace;
+        font-size: 0.8rem;
+        background: #fff;
+      }
+
       .actions {
         display: flex;
         gap: 0.55rem;
@@ -480,6 +1601,25 @@
         stroke-width: 2.6px !important;
       }
 
+      .graph-wrap .mermaid svg g.dep-dim {
+        opacity: 0.28;
+      }
+
+      .graph-wrap .mermaid svg g.dep-upstream {
+        opacity: 1;
+        filter: drop-shadow(0 0 3px rgba(234, 88, 12, 0.45));
+      }
+
+      .graph-wrap .mermaid svg g.dep-downstream {
+        opacity: 1;
+        filter: drop-shadow(0 0 3px rgba(22, 163, 74, 0.45));
+      }
+
+      .graph-wrap .mermaid svg g.dep-selected {
+        opacity: 1;
+        filter: drop-shadow(0 0 5px rgba(21, 76, 121, 0.78));
+      }
+
       .live-conn-badge {
         display: inline-flex;
         align-items: center;
@@ -522,6 +1662,29 @@
         font-size: 0.86rem;
       }
 
+      .login-shell {
+        display: grid;
+        place-items: center;
+      }
+
+      .login-card {
+        width: min(460px, 94vw);
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 1.1rem;
+      }
+
+      .login-card h2 {
+        margin: 0 0 0.35rem;
+      }
+
+      .login-form + .login-form {
+        margin-top: 0.55rem;
+        border-top: 1px dashed var(--line);
+        padding-top: 0.6rem;
+      }
+
       @media (max-width: 960px) {
         .grid { grid-template-columns: 1fr; }
       }
@@ -534,7 +1697,11 @@
         <p>Load scenario campaigns, inspect the workflow graph, and start/stop orchestrator campaigns.</p>
       </section>
       <section id="workspace">
-        {% include "partials/workspace.html" %}
+        {% if is_authenticated %}
+          {% include "partials/workspace.html" %}
+        {% else %}
+          {% include "partials/login.html" %}
+        {% endif %}
       </section>
     </main>
   </body>

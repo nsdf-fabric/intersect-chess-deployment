@@ -10,6 +10,7 @@ import yaml
 from fastapi import FastAPI, Form, Request, UploadFile
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+from starlette.middleware.sessions import SessionMiddleware
 
 app = FastAPI(title="Campaign UI")
 templates = Jinja2Templates(directory="app/templates")
@@ -51,6 +52,17 @@ def load_config() -> AppConfig:
 
 config = load_config()
 
+SESSION_SECRET = os.getenv("CAMPAIGN_UI_SESSION_SECRET", "campaign-ui-dev-secret-change-me")
+LOGIN_USERNAME = os.getenv("CAMPAIGN_UI_LOGIN_USERNAME", "admin")
+LOGIN_PASSWORD = os.getenv("CAMPAIGN_UI_LOGIN_PASSWORD", "admin")
+
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=SESSION_SECRET,
+    same_site="lax",
+    https_only=False,
+)
+
 
 @dataclass
 class UIState:
@@ -67,6 +79,32 @@ state = UIState()
 preloaded_campaigns: dict[str, str] = {}
 DEFAULT_PRELOADED_CAMPAIGN = "scenarios/xray_ambench_smb_json/campaign.json"
 DEFAULT_PRELOADED_CAMPAIGN_ENV = "CAMPAIGN_UI_DEFAULT_PRELOADED_CAMPAIGN"
+
+
+def _auth_role(request: Request) -> str:
+    return str(request.session.get("role") or "")
+
+
+def _auth_username(request: Request) -> str:
+    return str(request.session.get("username") or "")
+
+
+def _is_authenticated(request: Request) -> bool:
+    return _auth_role(request) in {"user", "guest"}
+
+
+def _can_edit(request: Request) -> bool:
+    return _auth_role(request) == "user"
+
+
+def _auth_context(request: Request) -> dict[str, Any]:
+    return {
+        "is_authenticated": _is_authenticated(request),
+        "can_edit": _can_edit(request),
+        "auth_role": _auth_role(request),
+        "auth_username": _auth_username(request),
+        "login_failed": False,
+    }
 
 
 def _escape_mermaid_label(value: str) -> str:
@@ -219,6 +257,16 @@ def _load_preloaded_campaigns() -> dict[str, str]:
 
 
 async def _render_workspace(request: Request, status_code: int = 200) -> HTMLResponse:
+    if not _is_authenticated(request):
+        return templates.TemplateResponse(
+            request=request,
+            name="partials/login.html",
+            context={
+                "login_failed": False,
+            },
+            status_code=401,
+        )
+
     return templates.TemplateResponse(
         request=request,
         name="partials/workspace.html",
@@ -226,6 +274,7 @@ async def _render_workspace(request: Request, status_code: int = 200) -> HTMLRes
             "state": state,
             "preloaded_campaigns": preloaded_campaigns,
             "orchestrator_events_url": _orchestrator_events_url(),
+            **_auth_context(request),
         },
         status_code=status_code,
     )
@@ -258,12 +307,89 @@ async def index(request: Request) -> HTMLResponse:
             "state": state,
             "preloaded_campaigns": preloaded_campaigns,
             "orchestrator_events_url": _orchestrator_events_url(),
+            **_auth_context(request),
+        },
+    )
+
+
+@app.post("/ui/login/password", response_class=HTMLResponse)
+async def login_password(
+    request: Request,
+    username: str = Form(default=""),
+    password: str = Form(default=""),
+) -> HTMLResponse:
+    candidate_username = username.strip()
+    if candidate_username == LOGIN_USERNAME and password == LOGIN_PASSWORD:
+        request.session["role"] = "user"
+        request.session["username"] = candidate_username
+        return templates.TemplateResponse(
+            request=request,
+            name="index.html",
+            context={
+                "state": state,
+                "preloaded_campaigns": preloaded_campaigns,
+                "orchestrator_events_url": _orchestrator_events_url(),
+                **_auth_context(request),
+            },
+        )
+
+    return templates.TemplateResponse(
+        request=request,
+        name="index.html",
+        context={
+            "state": state,
+            "preloaded_campaigns": preloaded_campaigns,
+            "orchestrator_events_url": _orchestrator_events_url(),
+            "is_authenticated": False,
+            "can_edit": False,
+            "auth_role": "",
+            "auth_username": "",
+            "login_failed": True,
+        },
+        status_code=401,
+    )
+
+
+@app.post("/ui/login/guest", response_class=HTMLResponse)
+async def login_guest(request: Request) -> HTMLResponse:
+    request.session["role"] = "guest"
+    request.session["username"] = "Guest"
+    return templates.TemplateResponse(
+        request=request,
+        name="index.html",
+        context={
+            "state": state,
+            "preloaded_campaigns": preloaded_campaigns,
+            "orchestrator_events_url": _orchestrator_events_url(),
+            **_auth_context(request),
+        },
+    )
+
+
+@app.post("/ui/logout", response_class=HTMLResponse)
+async def logout(request: Request) -> HTMLResponse:
+    request.session.clear()
+    return templates.TemplateResponse(
+        request=request,
+        name="index.html",
+        context={
+            "state": state,
+            "preloaded_campaigns": preloaded_campaigns,
+            "orchestrator_events_url": _orchestrator_events_url(),
+            "is_authenticated": False,
+            "can_edit": False,
+            "auth_role": "",
+            "auth_username": "",
+            "login_failed": False,
         },
     )
 
 
 @app.post("/ui/select-preloaded", response_class=HTMLResponse)
 async def select_preloaded(request: Request, campaign_name: str = Form(...)) -> HTMLResponse:
+    if not _is_authenticated(request):
+        return await _render_workspace(request, status_code=401)
+
     campaign_content = preloaded_campaigns.get(campaign_name)
     if not campaign_content:
         state.status_message = f"Campaign not found: {campaign_name}"
@@ -284,6 +410,13 @@ async def select_preloaded(request: Request, campaign_name: str = Form(...)) -> 
 
 @app.post("/ui/upload", response_class=HTMLResponse)
 async def upload_campaign(request: Request, campaign_file: UploadFile) -> HTMLResponse:
+    if not _is_authenticated(request):
+        return await _render_workspace(request, status_code=401)
+    if not _can_edit(request):
+        state.status_message = "Guest mode is read-only. Sign in with username/password to upload campaigns."
+        state.status_kind = "warning"
+        return await _render_workspace(request, status_code=403)
+
     if not campaign_file.filename:
         state.status_message = "No file selected."
         state.status_kind = "warning"
@@ -330,6 +463,13 @@ async def submit_campaign(
     campaign_json: str = Form(...),
     regenerate_id: str | None = Form(default=None),
 ) -> HTMLResponse:
+    if not _is_authenticated(request):
+        return await _render_workspace(request, status_code=401)
+    if not _can_edit(request):
+        state.status_message = "Guest mode is read-only. Sign in with username/password to submit campaigns."
+        state.status_kind = "warning"
+        return await _render_workspace(request, status_code=403)
+
     try:
         campaign = json.loads(campaign_json)
     except json.JSONDecodeError as exc:
@@ -384,6 +524,13 @@ async def stop_campaign(
     request: Request,
     campaign_id: str = Form(default=""),
 ) -> HTMLResponse:
+    if not _is_authenticated(request):
+        return await _render_workspace(request, status_code=401)
+    if not _can_edit(request):
+        state.status_message = "Guest mode is read-only. Sign in with username/password to stop campaigns."
+        state.status_kind = "warning"
+        return await _render_workspace(request, status_code=403)
+
     candidate_campaign_id = campaign_id.strip() or state.active_campaign_id.strip()
     attempts: list[tuple[str, dict[str, Any] | str | None, str]] = []
 
