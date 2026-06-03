@@ -1,0 +1,121 @@
+{
+  "hierarchy": "ornl.intersect.dial-system.dial-subsystem.dial-service",
+  "output": {
+    "schema": {
+      "type": "object",
+      "properties": {
+        "workflow_id": {
+          "type": "string"
+        }
+      }
+    },
+    "values": [
+      {
+        "id": "f1234567-0000-4000-8000-000000000001",
+        "var": "workflow_id"
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "type": "object",
+      "properties": {
+        "dataset_x": {
+          "type": "array",
+          "default": [
+            [
+              -25,
+              32.5
+            ],
+            [
+              -22.5,
+              32.5
+            ],
+            [
+              -20,
+              32.5
+            ],
+            [
+              -17.5,
+              32.5
+            ],
+            [
+              -15,
+              32.5
+            ]
+          ]
+        },
+        "dataset_y": {
+          "type": "array",
+          "default": [
+            -474.6270751953125,
+            -379.7016296386719,
+            -272.8006896972656,
+            -264.5606384277344,
+            -199.07968139648438
+          ]
+        },
+        "bounds": {
+          "type": "array",
+          "default": [
+            [
+              -25,
+              25
+            ],
+            [
+              2.5,
+              32.5
+            ]
+          ]
+        },
+        "dim_x": {
+          "type": "integer",
+          "default": 2
+        },
+        "kernel": {
+          "type": "string",
+          "default": "rbf"
+        },
+        "y_is_good": {
+          "type": "boolean",
+          "default": true
+        },
+        "backend": {
+          "type": "string",
+          "default": "sklearn"
+        }
+      }
+    },
+    "values": [
+      {
+        "id": "7a9d3b2b-a24f-4b57-b496-7fbaa7826d8b",
+        "var": "dataset_x"
+      },
+      {
+        "id": "f59d3133-0d2e-41b5-ba40-ccd9d5644f3f",
+        "var": "dataset_y"
+      },
+      {
+        "id": "80a59175-c4b2-48be-a267-e37eec6d3737",
+        "var": "bounds"
+      },
+      {
+        "id": "78af7e4e-0b15-4f62-b45d-81e2ec26d524",
+        "var": "dim_x"
+      },
+      {
+        "id": "09ef13e4-f754-4caf-9e1f-03fd75f73f78",
+        "var": "kernel"
+      },
+      {
+        "id": "4e817a36-4014-4ce3-ab2f-7f0e28ab81d1",
+        "var": "y_is_good"
+      },
+      {
+        "id": "1083ad66-9011-4db7-9923-7ef5e846e266",
+        "var": "backend"
+      }
+    ]
+  },
+  "task_objectives": null
+}
