@@ -1,0 +1,9 @@
+{
+  "intersect-hierarchy": {
+    "organization": "chess",
+    "facility": "chess-facility",
+    "system": "instrument-control-system",
+    "subsystem": "instrument-control-subsystem",
+    "service": "chess-instrument-control-service"
+  }
+}

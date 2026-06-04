@@ -1,0 +1,9 @@
+{
+    "intersect-hierarchy": {
+    "organization": "intersect",
+    "facility": "default",
+    "system": "dial-transformer-system",
+    "subsystem": "dial-transformer-subsystem",
+    "service": "dial-transformer-service"
+  }
+}

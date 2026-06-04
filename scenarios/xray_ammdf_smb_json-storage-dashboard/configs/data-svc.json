@@ -1,0 +1,9 @@
+{
+  "intersect-hierarchy": {
+    "organization": "chess",
+    "facility": "chess-facility",
+    "system": "data-egress-system",
+    "subsystem": "data-egress-subsystem",
+    "service": "chess-data-egress-service"
+  }
+}

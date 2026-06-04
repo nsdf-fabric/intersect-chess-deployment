@@ -1,8 +1,8 @@
 {
-  "id": "6c2cf730-0f6e-4d1b-b149-7c1708bb7a5d",
-  "name": "neutron-ammdf-vulcan-json-storage-dashboard",
+  "id": "7d3dg841-1g7f-5e2c-c250-8d2809cc8b6e",
+  "name": "xray-ammdf-smb-json-storage-dashboard",
   "user": "system",
-  "description": "Legacy callback-flow workflow for neutron AMMDF VULCAN JSON + storage + dashboard scenario.",
+  "description": "Legacy callback-flow workflow for X-ray AMMDF SMB JSON + storage + dashboard scenario (k8s cluster).",
   "task_groups": [
     {
       "id": "f9d45034-a410-4e22-a1d7-0f93d78df6b0",
@@ -120,7 +120,7 @@
         },
         {
           "id": "31b6a9f7-98f8-4a09-a327-4b1a5f0a9b01",
-          "hierarchy": "ornl.intersect.dial-transformer-system.dial-transformer-subsystem.dial-transformer-service",
+          "hierarchy": "intersect.default.dial-transformer-system.dial-transformer-subsystem.dial-transformer-service",
           "capability": "dial_transformer",
           "operation_id": "initialize_transform",
           "event_name": null,
@@ -169,7 +169,7 @@
         },
         {
           "id": "31b6a9f7-98f8-4a09-a327-4b1a5f0a9b02",
-          "hierarchy": "ornl.intersect.dial-transformer-system.dial-transformer-subsystem.dial-transformer-service",
+          "hierarchy": "intersect.default.dial-transformer-system.dial-transformer-subsystem.dial-transformer-service",
           "capability": "dial_transformer",
           "operation_id": "calculate_bounds",
           "event_name": null,
@@ -247,7 +247,7 @@
         },
         {
           "id": "01d05790-44bb-47a6-8aea-af86ddbf0514",
-          "hierarchy": "ornl.intersect.dial-system.dial-subsystem.dial-service",
+          "hierarchy": "intersect.default.dial-system.dial-subsystem.dial-service",
           "capability": "dial",
           "operation_id": "initialize_workflow",
           "event_name": null,
@@ -459,7 +459,7 @@
         },
         {
           "id": "31b6a9f7-98f8-4a09-a327-4b1a5f0a9b03",
-          "hierarchy": "ornl.intersect.dial-transformer-system.dial-transformer-subsystem.dial-transformer-service",
+          "hierarchy": "intersect.default.dial-transformer-system.dial-transformer-subsystem.dial-transformer-service",
           "capability": "dial_transformer",
           "operation_id": "transform",
           "event_name": null,
@@ -511,7 +511,7 @@
         },
         {
           "id": "be4a5c6d-7e8f-4091-a2b3-c4d5e6f70819",
-          "hierarchy": "ornl.intersect.dial-system.dial-subsystem.dial-service",
+          "hierarchy": "intersect.default.dial-system.dial-subsystem.dial-service",
           "capability": "dial",
           "operation_id": "update_workflow_with_data",
           "event_name": null,
@@ -559,7 +559,7 @@
         },
         {
           "id": "cf5b6d7e-8f90-4102-b3c4-d5e6f708192a",
-          "hierarchy": "ornl.intersect.dial-system.dial-subsystem.dial-service",
+          "hierarchy": "intersect.default.dial-system.dial-subsystem.dial-service",
           "capability": "dial",
           "operation_id": "get_next_point",
           "event_name": null,
@@ -643,7 +643,7 @@
         },
         {
           "id": "31b6a9f7-98f8-4a09-a327-4b1a5f0a9b04",
-          "hierarchy": "ornl.intersect.dial-transformer-system.dial-transformer-subsystem.dial-transformer-service",
+          "hierarchy": "intersect.default.dial-transformer-system.dial-transformer-subsystem.dial-transformer-service",
           "capability": "dial_transformer",
           "operation_id": "inverse_transform",
           "event_name": null,
@@ -697,7 +697,7 @@
         },
         {
           "id": "da6c7e8f-9001-4213-c4d5-e6f708192a3b",
-          "hierarchy": "ornl.intersect.dial-system.dial-subsystem.dial-service",
+          "hierarchy": "intersect.default.dial-system.dial-subsystem.dial-service",
           "capability": "dial",
           "operation_id": "get_surrogate_values",
           "event_name": null,
