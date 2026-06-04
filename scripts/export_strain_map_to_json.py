@@ -6,14 +6,52 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
+from typing import NamedTuple
 
 import h5py
 import numpy as np
 
-ENTRY = "v8-p3-10s-0deg_dataset1"
-STRAIN_ENTRY = "v8-p3-10s-0deg_dataset1_strainanalysis"
-DETECTOR = "0"
-HKL = "2_2_2"
+
+class FileLayout(NamedTuple):
+    """Describes the HDF5 layout for a specific file type."""
+
+    entry: str
+    strain_entry: str
+    detector: str
+    hkl: str
+    uniform_strain_field: str
+    unconstrained_strain_field: str
+
+
+# X-ray AMBench layout (strain_map_ambench.nxs)
+AMBENCH_LAYOUT = FileLayout(
+    entry="v8-p3-10s-0deg_dataset1",
+    strain_entry="v8-p3-10s-0deg_dataset1_strainanalysis",
+    detector="0",
+    hkl="2_2_2",
+    uniform_strain_field="uniform_microstrain",
+    unconstrained_strain_field="unconstrained_microstrain",
+)
+
+# Neutron AMMDF/VULCAN layout (strain_map_ammdf.nxs)
+AMMDF_LAYOUT = FileLayout(
+    entry="d1-2_dataset1",
+    strain_entry="d1-2_dataset1_strainanalysis",
+    detector="0",
+    hkl="2_2_2",
+    uniform_strain_field="uniform_strain",
+    unconstrained_strain_field="unconstrained_strain",
+)
+
+
+def _detect_layout(h5: h5py.File) -> FileLayout:
+    """Auto-detect the file layout based on top-level group names."""
+    keys = set(h5.keys())
+    if AMMDF_LAYOUT.entry in keys:
+        return AMMDF_LAYOUT
+    if AMBENCH_LAYOUT.entry in keys:
+        return AMBENCH_LAYOUT
+    raise ValueError(f"Unknown file layout. Top-level groups: {list(keys)}")
 
 
 def _to_json_numbers(arr: np.ndarray) -> list[float | None]:
@@ -36,25 +74,27 @@ def _resolve_default_input() -> Path:
 
 def export(input_file: Path, output_file: Path) -> None:
     with h5py.File(input_file, "r") as h5:
-        labx = _to_json_numbers(h5[f"{ENTRY}/data/labx"][...])
-        labz = _to_json_numbers(h5[f"{ENTRY}/data/labz"][...])
-        uniform_microstrain = _to_json_numbers(
-            h5[f"{STRAIN_ENTRY}/{DETECTOR}/data/uniform_microstrain"][...]
+        layout = _detect_layout(h5)
+
+        labx = _to_json_numbers(h5[f"{layout.entry}/data/labx"][...])
+        labz = _to_json_numbers(h5[f"{layout.entry}/data/labz"][...])
+        uniform_strain = _to_json_numbers(
+            h5[f"{layout.strain_entry}/{layout.detector}/data/{layout.uniform_strain_field}"][...]
         )
-        unconstrained_microstrain = _to_json_numbers(
-            h5[f"{STRAIN_ENTRY}/{DETECTOR}/data/unconstrained_microstrain"][...]
+        unconstrained_strain = _to_json_numbers(
+            h5[f"{layout.strain_entry}/{layout.detector}/data/{layout.unconstrained_strain_field}"][...]
         )
         unconstrained_centers = _to_json_numbers(
-            h5[f"{STRAIN_ENTRY}/{DETECTOR}/unconstrained_fit/{HKL}/centers/values"][...]
+            h5[f"{layout.strain_entry}/{layout.detector}/unconstrained_fit/{layout.hkl}/centers/values"][...]
         )
 
     payload = {
         "labx": labx,
         "labz": labz,
-        # Alias microstrain arrays to the keys expected by JSON monitor defaults/tests.
-        "0/data/uniform_strain": uniform_microstrain,
-        "0/data/unconstrained_strain": unconstrained_microstrain,
-        "0/unconstrained_fit/2_2_2/centers/values": unconstrained_centers,
+        # Alias strain arrays to the keys expected by JSON monitor defaults/tests.
+        "0/data/uniform_strain": uniform_strain,
+        "0/data/unconstrained_strain": unconstrained_strain,
+        f"0/unconstrained_fit/{layout.hkl}/centers/values": unconstrained_centers,
     }
 
     output_file.parent.mkdir(parents=True, exist_ok=True)
