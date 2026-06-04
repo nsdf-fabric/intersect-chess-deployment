@@ -55,6 +55,15 @@ services:
       mongodb:
         condition: service_started
 
+  dial-transformer:
+    image: ghcr.io/intersect-dial/dial-transformer:0.1.2
+    command: ["python", "-m", "intersect_dial_transformer", "--config", "/app/local-conf.json"]
+    volumes:
+      - ../../conf/dial-transformer-service.json:/app/local-conf.json:ro
+    depends_on:
+      broker:
+        condition: service_healthy
+
   chess-instrument-control-service:
     image: ghcr.io/nsdf-fabric/intersect-chess-instrument-control-service:0.1.2
     volumes:
@@ -65,7 +74,10 @@ services:
         condition: service_healthy
 
   orchestrator:
-    image: ghcr.io/intersect-sdk/campaign-orchestrator:v0.1.4
+    build:
+      context: ../../repos/campaign-orchestrator
+      dockerfile: Dockerfile
+    image: campaign-orchestrator-local
     ports:
       - "8000:8000"
     environment:
@@ -85,10 +97,14 @@ services:
         condition: service_started
 
   campaign-ui:
-    image: ghcr.io/nsdf-fabric/intersect-chess-deployment/intersect-chess-campaign-ui:0.2.1
+    build:
+      context: ../../campaign-ui
+      dockerfile: Dockerfile
+    image: intersect-chess-campaign-ui-local
     ports:
       - "8081:8080"
     environment:
+      ROOT_PATH: "/"
       CAMPAIGN_UI_API_KEY: "1234567890abcdef1234567890abcdef"
       CAMPAIGN_UI_ORCH_BASE_URL: "http://orchestrator:8000"
       CAMPAIGN_PRELOAD_DIR: "/campaigns"
