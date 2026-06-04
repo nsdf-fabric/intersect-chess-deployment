@@ -1005,6 +1005,17 @@
         badge.textContent = text;
       };
 
+      const showCampaignBanner = (kind, text) => {
+        // kind: "complete" | "error"
+        const banner = document.getElementById("campaign-outcome-banner");
+        if (!banner) {
+          return;
+        }
+        banner.textContent = text;
+        banner.className = `campaign-outcome-banner is-${kind}`;
+        banner.style.display = "block";
+      };
+
       const syncGraphMeta = () => {
         const meta = document.getElementById("graph-meta");
         if (!meta) {
@@ -1029,6 +1040,9 @@
         if (campaignChanged) {
           state.taskStatus = {};
           state.recentEvents = [];
+          // Hide any previous campaign outcome banner when a new campaign starts.
+          const banner = document.getElementById("campaign-outcome-banner");
+          if (banner) { banner.style.display = "none"; banner.textContent = ""; }
           if (state.reconnectTimer) {
             clearTimeout(state.reconnectTimer);
             state.reconnectTimer = null;
@@ -1181,7 +1195,43 @@
           }
 
           const eventType = payload?.event?.event_type;
-          const stepId = normalizeId(payload?.event?.step_id);
+          const stepId = normalizeId(payload?.event?.step_id || "");
+
+          // Handle campaign-level terminal events (no step_id required).
+          if (eventType === "CAMPAIGN_COMPLETE") {
+            const when = new Date().toLocaleTimeString();
+            state.recentEvents.unshift(`${when} CAMPAIGN_COMPLETE`);
+            state.recentEvents = state.recentEvents.slice(0, 20);
+            setConnectionBadge("idle", "Live events: idle");
+            showCampaignBanner("complete", `Campaign complete at ${when}`);
+            // Mark all tracked tasks complete.
+            for (const taskId of Object.keys(state.taskStatus)) {
+              state.taskStatus[taskId] = "complete";
+            }
+            // Close the WebSocket — no more events expected for this run.
+            if (state.ws === ws) {
+              state.ws = null;
+              try { ws.close(); } catch (_) {}
+            }
+            applyTaskStatuses();
+            renderRecentEvents();
+            return;
+          }
+
+          if (
+            eventType === "CAMPAIGN_ERROR_FROM_SERVICE" ||
+            eventType === "CAMPAIGN_ERROR_SCHEMA" ||
+            eventType === "UNKNOWN_ERROR"
+          ) {
+            const msg = payload?.event?.exception_message || eventType;
+            const when = new Date().toLocaleTimeString();
+            state.recentEvents.unshift(`${when} ${eventType}`);
+            state.recentEvents = state.recentEvents.slice(0, 20);
+            showCampaignBanner("error", `Campaign error at ${when}: ${msg}`);
+            renderRecentEvents();
+            return;
+          }
+
           if (!stepId) {
             return;
           }
@@ -1655,6 +1705,25 @@
         background: #fef2f2;
         color: #991b1b;
         border-color: #fca5a5;
+      }
+
+      .campaign-outcome-banner {
+        padding: 0.75rem 1rem;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 1rem;
+        margin-bottom: 0.75rem;
+        border: 1.5px solid;
+      }
+      .campaign-outcome-banner.is-complete {
+        background: #dcfce7;
+        color: #14532d;
+        border-color: #16a34a;
+      }
+      .campaign-outcome-banner.is-error {
+        background: #fef2f2;
+        color: #7f1d1d;
+        border-color: #dc2626;
       }
 
       .hint {

@@ -65,33 +65,9 @@
     {% endif %}
 
     {% if can_edit %}
-      <form
-        hx-post="{{ url_for('submit_campaign') }}"
-        hx-target="#workspace"
-        hx-swap="innerHTML"
-      >
-        <div class="actions" style="margin-top:0; margin-bottom:0.75rem;">
-          <button type="submit" class="btn-primary">Submit Campaign</button>
-        </div>
-
-        <label>
-          <input type="checkbox" name="regenerate_id" checked /> Regenerate campaign ID before submit
-        </label>
-
-        <label for="campaign-editor">Campaign Editor</label>
-        <div id="campaign-editor" class="campaign-editor" aria-live="polite"></div>
-        <div id="campaign-editor-error" class="hint" style="display:none; color:#9e1a1a; margin-top:0.5rem;"></div>
-
-        <textarea id="campaign_json" name="campaign_json" class="raw-json-textarea" aria-hidden="true">{{ state.campaign_json }}</textarea>
-
-        <details class="raw-json-details">
-          <summary>Advanced: Raw JSON</summary>
-          <textarea id="campaign_json_visible" class="raw-json-visible" spellcheck="false"></textarea>
-          <div class="actions">
-            <button type="button" id="apply-raw-json" class="btn-ghost">Apply Raw JSON</button>
-          </div>
-        </details>
-      </form>
+      <div class="actions" style="margin-top:0; margin-bottom:0.75rem;">
+        <button type="submit" form="submit-campaign-form" class="btn-primary">Submit Campaign</button>
+      </div>
 
       <form
         hx-post="{{ url_for('stop_campaign') }}"
@@ -110,6 +86,31 @@
           <button type="submit" class="btn-danger">Stop Campaign</button>
         </div>
       </form>
+
+      <form
+        id="submit-campaign-form"
+        hx-post="{{ url_for('submit_campaign') }}"
+        hx-target="#workspace"
+        hx-swap="innerHTML"
+      >
+        <label>
+          <input type="checkbox" name="regenerate_id" checked /> Regenerate campaign ID before submit
+        </label>
+
+        <label for="campaign-editor">Campaign Editor</label>
+        <div id="campaign-editor" class="campaign-editor" aria-live="polite"></div>
+        <div id="campaign-editor-error" class="hint" style="display:none; color:#9e1a1a; margin-top:0.5rem;"></div>
+
+        <textarea id="campaign_json" name="campaign_json" class="raw-json-textarea" aria-hidden="true">{{ state.campaign_json }}</textarea>
+
+        <details class="raw-json-details">
+          <summary>Advanced: Raw JSON</summary>
+          <textarea id="campaign_json_visible" class="raw-json-visible" spellcheck="false"></textarea>
+          <div class="actions">
+            <button type="button" id="apply-raw-json" class="btn-ghost">Apply Raw JSON</button>
+          </div>
+        </details>
+      </form>
     {% else %}
       <div class="status info">Guest mode: You can inspect campaigns and monitor live execution, but editing, uploading, submitting, and stopping are disabled.</div>
       <label for="campaign_json_readonly">Campaign JSON (read-only)</label>
@@ -122,6 +123,7 @@
     <p>
       <span id="live-conn-badge" class="live-conn-badge is-idle">Live events: idle</span>
     </p>
+    <div id="campaign-outcome-banner" class="campaign-outcome-banner" style="display:none;"></div>
     <p class="hint">Task groups are boxed. Orange thick arrows show group dependencies. Blue dashed arrows show in-group task dependencies. Live status colors: running=orange, complete=green. Use mouse wheel to zoom and drag to pan.</p>
     <p class="hint"><strong>Recent step events</strong></p>
     <ul id="recent-events" class="hint" style="margin-top:0.3rem; max-height: 8rem; overflow:auto; padding-left: 1.1rem;"></ul>
