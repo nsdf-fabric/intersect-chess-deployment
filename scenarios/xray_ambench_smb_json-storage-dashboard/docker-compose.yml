@@ -29,7 +29,7 @@ services:
       CHESS_MEASUREMENT_DELAY_SECONDS: "${CHESS_MEASUREMENT_DELAY_SECONDS:-1.0}"
     volumes:
       - shared-data:/data
-      - ../../datasets/strain_map.reduced.json:/data/strain_map.json:ro
+      - ../../datasets/strain_map_xray_ambench_smb.reduced.json:/data/strain_map.json:ro
       - ../../conf/informer-config-json-xray.yaml:/app/config.yaml:ro
     command: ["sh", "-c", "mkdir -p /data/autonomous_experiment/experiment1 && chess-instrument-control-informer --config /app/config.yaml"]
     depends_on:
@@ -153,7 +153,7 @@ services:
       MINIO_ROOT_PASSWORD: minioadmin
       MINIO_BUCKET: scientistcloud
     volumes:
-      - ../../datasets/strain_map.reduced.json:/seed/reduced_data.json:ro
+      - ../../datasets/strain_map_xray_ambench_smb.reduced.json:/seed/reduced_data.json:ro
     entrypoint:
       - sh
       - -ec

@@ -29,7 +29,7 @@ services:
       CHESS_MEASUREMENT_DELAY_SECONDS: "${CHESS_MEASUREMENT_DELAY_SECONDS:-1.0}"
     volumes:
       - shared-data:/data
-      - ../../datasets/strain_map.small.nxs:/data/strain_map.nxs:ro
+      - ../../datasets/strain_map_xray_ambench_smb.small.nxs:/data/strain_map.nxs:ro
       - ../../conf/informer-config.yaml:/app/config.yaml:ro
     command: ["sh", "-c", "mkdir -p /data/autonomous_experiment/experiment1 && chess-instrument-control-informer --config /app/config.yaml"]
     depends_on:

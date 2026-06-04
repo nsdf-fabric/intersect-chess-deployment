@@ -170,7 +170,7 @@ services:
       MINIO_ROOT_PASSWORD: minioadmin
       MINIO_BUCKET: scientistcloud
     volumes:
-      - ../../datasets/strain_map.reduced.json:/seed/reduced_data.json:ro
+      - ../../datasets/${NEUTRON_DATASET_JSON:-A2_2p1_30layers_VDriveSPF_LD.json}:/seed/reduced_data.json:ro
     entrypoint:
       - sh
       - -ec

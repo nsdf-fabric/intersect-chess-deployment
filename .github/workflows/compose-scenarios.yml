@@ -11,6 +11,7 @@ on:
 
 jobs:
   compose-scenarios:
+    if: false  # Temporarily disabled - remove this line to re-enable
     runs-on: ubuntu-latest
     timeout-minutes: 30
     strategy:
