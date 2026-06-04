@@ -1,0 +1,23 @@
+# Example: Random sampling from full HDF5 file
+# This config will randomly select initial_count points from the full HDF5 file
+# and place them in the new file, then watch for new location files
+#
+
+full_file: /home/kng_1/datasets/strain_map.nxs
+new_file: /home/kng_1/datasets/new_strain_map.nxs
+entry: v8-p3-10s-0deg_dataset1_strainanalysis
+detector_ids:
+  - 0
+fit: uniform_fit
+hkls:
+  - "2_2_2"
+data_group: centers
+dataset_names:
+  - labx
+  - labz
+  - values
+loc_dir: /home/kng_1/datasets/new/autonomous_experiment/exp_01
+initial_count: 5
+seed: 42
+
+

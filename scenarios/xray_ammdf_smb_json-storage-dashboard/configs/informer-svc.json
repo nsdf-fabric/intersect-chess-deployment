@@ -1,0 +1,16 @@
+# Example: Random sampling from a full reduced JSON file
+# This config writes initial random rows into a reduced JSON file, then watches
+# for new location files.
+
+source_format: json
+
+full_file: /nfs/chess/user/kng_1/datasets/reduced_data.json
+new_file: /nfs/chess/user/kng_1/datasets/new/new_strain.json
+
+labx_key: labx
+labz_key: labz
+copy_all_json_keys: true
+
+loc_dir: /nfs/chess/user/kng_1/datasets/new/exp_01
+initial_count: 3
+seed: 42

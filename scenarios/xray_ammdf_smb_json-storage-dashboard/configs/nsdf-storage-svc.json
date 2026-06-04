@@ -1,0 +1,9 @@
+{
+  "intersect-hierarchy": {
+    "organization": "chess",
+    "facility": "chess-facility",
+    "system": "storage-system",
+    "subsystem": "storage-subsystem",
+    "service": "nsdf-storage-service"
+  },
+}
