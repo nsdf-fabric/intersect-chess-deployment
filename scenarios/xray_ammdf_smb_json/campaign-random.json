@@ -562,6 +562,14 @@
                 },
                 "bounds": {
                   "type": "array"
+                },
+                "discrete_measurements": {
+                  "type": "boolean",
+                  "default": true
+                },
+                "discrete_measurement_grid_size": {
+                  "type": "array",
+                  "default": [60, 29]
                 }
               }
             },
