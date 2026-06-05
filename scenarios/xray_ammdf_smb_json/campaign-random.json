@@ -21,7 +21,7 @@
               "properties": {
                 "experiment_name": {
                   "type": "string",
-                  "default": "exp_03"
+                  "default": "exp_04"
                 },
                 "base_dir": {
                   "type": "string",
@@ -56,7 +56,7 @@
               "properties": {
                 "filename": {
                   "type": "string",
-                  "default": "/nfs/chess/auxiliary/reduced_data/cycles/2026-2/id1a3/fancher-4630-b/exp_03/strain_results.json"
+                  "default": "/nfs/chess/auxiliary/reduced_data/cycles/2026-2/id1a3/fancher-4630-b/exp_04/strain_results.json"
                 },
                 "source_format": {
                   "type": "string",
@@ -272,10 +272,12 @@
               "type": "object",
               "properties": {
                 "dataset_x": {
-                  "type": "array"
+                  "type": "array",
+                  "default": []
                 },
                 "dataset_y": {
-                  "type": "array"
+                  "type": "array",
+                  "default": []
                 },
                 "bounds": {
                   "type": "array"
@@ -424,7 +426,7 @@
           "id": "31b6a9f7-98f8-4a09-a327-4b1a5f0a9b03",
           "hierarchy": "intersect.default.dial-transformer-system.dial-transformer-subsystem.dial-transformer-service",
           "capability": "dial_transformer",
-          "operation_id": "inverse_transform",
+          "operation_id": "transform",
           "event_name": null,
           "output": {
             "schema": {
@@ -577,7 +579,7 @@
                 "var": "y_is_good"
               },
               {
-                "id": "ac040001-0000-4000-8000-000000000004",
+                "id": "80a59175-c4b2-48be-a267-e37eec6d3737",
                 "var": "bounds"
               }
             ]
@@ -591,7 +593,7 @@
           "id": "31b6a9f7-98f8-4a09-a327-4b1a5f0a9b04",
           "hierarchy": "intersect.default.dial-transformer-system.dial-transformer-subsystem.dial-transformer-service",
           "capability": "dial_transformer",
-          "operation_id": "transform",
+          "operation_id": "inverse_transform",
           "event_name": null,
           "output": {
             "schema": {
