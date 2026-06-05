@@ -869,7 +869,7 @@
                 },
                 "strategy": {
                   "type": "string",
-                  "default": "expected_improvement"
+                  "default": "uncertainty"
                 },
                 "y_is_good": {
                   "type": "boolean",
