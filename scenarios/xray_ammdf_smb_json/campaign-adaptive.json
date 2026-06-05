@@ -684,13 +684,13 @@
       ]
     },
     {
-      "id": "c7e18a2b-5b30-4f11-9ec2-1a2b3c4d5e6f",
+      "id": "d8f29c3a-6c41-4f22-a3e3-2b4c5d6e7f80",
       "group_dependencies": [
-        "f9d45034-a410-4e22-a1d7-0f93d78df6b0"
+        "c7e18a2b-5b30-4f11-9ec2-1a2b3c4d5e6f"
       ],
       "tasks": [
         {
-          "id": "6e5008c2-a12a-45de-b86f-e6775f40663b",
+          "id": "7f6019d3-b23b-56ef-c97f-f7786e51774c",
           "hierarchy": "chess.chess-facility.data-egress-system.data-egress-subsystem.chess-data-egress-service",
           "capability": "chess_data_egress",
           "operation_id": null,
@@ -712,15 +712,15 @@
             },
             "values": [
               {
-                "id": "c2010001-0000-4000-8000-000000000001",
+                "id": "c3010001-0000-4000-8000-000000000001",
                 "var": "labx"
               },
               {
-                "id": "c2010001-0000-4000-8000-000000000002",
+                "id": "c3010001-0000-4000-8000-000000000002",
                 "var": "labz"
               },
               {
-                "id": "ab030001-0000-4000-8000-000000000003",
+                "id": "ac030001-0000-4000-8000-000000000003",
                 "var": "center_value"
               }
             ]
@@ -730,7 +730,7 @@
           "task_objectives": null
         },
         {
-          "id": "31b6a9f7-98f8-4a09-a327-4b1a5f0a9b03",
+          "id": "42c8b8a8-a9f9-5b1a-b438-5c2b6e1c2c12",
           "hierarchy": "intersect.default.dial-transformer-system.dial-transformer-subsystem.dial-transformer-service",
           "capability": "dial_transformer",
           "operation_id": "transform",
@@ -746,7 +746,7 @@
             },
             "values": [
               {
-                "id": "ab020001-0000-4000-8000-000000000002",
+                "id": "ac020001-0000-4000-8000-000000000002",
                 "var": "transformed_values"
               }
             ]
@@ -765,22 +765,22 @@
             },
             "values": [
               {
-                "id": "c2010001-0000-4000-8000-000000000001",
+                "id": "c3010001-0000-4000-8000-000000000001",
                 "var": "labx"
               },
               {
-                "id": "c2010001-0000-4000-8000-000000000002",
+                "id": "c3010001-0000-4000-8000-000000000002",
                 "var": "labz"
               }
             ]
           },
           "task_dependencies": [
-            "6e5008c2-a12a-45de-b86f-e6775f40663b"
+            "7f6019d3-b23b-56ef-c97f-f7786e51774c"
           ],
           "task_objectives": null
         },
         {
-          "id": "be4a5c6d-7e8f-4091-a2b3-c4d5e6f70819",
+          "id": "cf6b7d8e-9f01-5102-c4d5-e6f8091a2b3c",
           "hierarchy": "intersect.default.dial-system.dial-subsystem.dial-service",
           "capability": "dial",
           "operation_id": "update_workflow_with_data",
@@ -808,22 +808,22 @@
                 "var": "workflow_id"
               },
               {
-                "id": "ab020001-0000-4000-8000-000000000002",
+                "id": "ac020001-0000-4000-8000-000000000002",
                 "var": "next_x"
               },
               {
-                "id": "ab030001-0000-4000-8000-000000000003",
+                "id": "ac030001-0000-4000-8000-000000000003",
                 "var": "next_y"
               }
             ]
           },
           "task_dependencies": [
-            "31b6a9f7-98f8-4a09-a327-4b1a5f0a9b03"
+            "42c8b8a8-a9f9-5b1a-b438-5c2b6e1c2c12"
           ],
           "task_objectives": null
         },
         {
-          "id": "cf5b6d7e-8f90-4102-b3c4-d5e6f708192a",
+          "id": "e06c8e9f-a012-5213-d5e6-f7081920a3b4",
           "hierarchy": "intersect.default.dial-system.dial-subsystem.dial-service",
           "capability": "dial",
           "operation_id": "get_next_point",
@@ -846,7 +846,7 @@
                 "var": "workflow_id"
               },
               {
-                "id": "e1020001-0000-4000-8000-000000000002",
+                "id": "e2020001-0000-4000-8000-000000000002",
                 "var": "data"
               }
             ]
@@ -861,7 +861,7 @@
                 },
                 "strategy": {
                   "type": "string",
-                  "default": "expected_improvement',"
+                  "default": "expected_improvement"
                 },
                 "y_is_good": {
                   "type": "boolean",
@@ -886,26 +886,34 @@
                 "var": "workflow_id"
               },
               {
-                "id": "ac020001-0000-4000-8000-000000000002",
+                "id": "ad020001-0000-4000-8000-000000000002",
                 "var": "strategy"
               },
               {
-                "id": "ac030001-0000-4000-8000-000000000003",
+                "id": "ad030001-0000-4000-8000-000000000003",
                 "var": "y_is_good"
               },
               {
                 "id": "80a59175-c4b2-48be-a267-e37eec6d3737",
                 "var": "bounds"
+              },
+              {
+                "id": "ad040001-0000-4000-8000-000000000004",
+                "var": "discrete_measurements"
+              },
+              {
+                "id": "ad050001-0000-4000-8000-000000000005",
+                "var": "discrete_measurement_grid_size"
               }
             ]
           },
           "task_dependencies": [
-            "be4a5c6d-7e8f-4091-a2b3-c4d5e6f70819"
+            "cf6b7d8e-9f01-5102-c4d5-e6f8091a2b3c"
           ],
           "task_objectives": null
         },
         {
-          "id": "31b6a9f7-98f8-4a09-a327-4b1a5f0a9b04",
+          "id": "42c8b8a8-a9f9-5b1a-b438-5c2b6e1c2c13",
           "hierarchy": "intersect.default.dial-transformer-system.dial-transformer-subsystem.dial-transformer-service",
           "capability": "dial_transformer",
           "operation_id": "inverse_transform",
@@ -924,11 +932,11 @@
             },
             "values": [
               {
-                "id": "d50bcfbe-2ccd-458e-88ef-bb6ff8e824b5",
+                "id": "e50bcfbe-2ccd-458e-88ef-bb6ff8e824b5",
                 "var": "labx"
               },
               {
-                "id": "84efa845-f6b4-462b-8cad-ef8ce497393e",
+                "id": "94efa845-f6b4-462b-8cad-ef8ce497393e",
                 "var": "labz"
               }
             ]
@@ -944,18 +952,18 @@
             },
             "values": [
               {
-                "id": "e1020001-0000-4000-8000-000000000002",
+                "id": "e2020001-0000-4000-8000-000000000002",
                 "var": "transformed_values"
               }
             ]
           },
           "task_dependencies": [
-            "cf5b6d7e-8f90-4102-b3c4-d5e6f708192a"
+            "e06c8e9f-a012-5213-d5e6-f7081920a3b4"
           ],
           "task_objectives": null
         },
         {
-          "id": "afef1f16-29b3-4f8a-a958-0c629e84c208",
+          "id": "b0f02017-3ac4-5fa9-b069-1d72af95d319",
           "hierarchy": "chess.chess-facility.instrument-control-system.instrument-control-subsystem.chess-instrument-control-service",
           "capability": "chess_instrument_control",
           "operation_id": "write_motor_position",
@@ -975,24 +983,24 @@
             },
             "values": [
               {
-                "id": "d50bcfbe-2ccd-458e-88ef-bb6ff8e824b5",
+                "id": "e50bcfbe-2ccd-458e-88ef-bb6ff8e824b5",
                 "var": "labx"
               },
               {
-                "id": "84efa845-f6b4-462b-8cad-ef8ce497393e",
+                "id": "94efa845-f6b4-462b-8cad-ef8ce497393e",
                 "var": "labz"
               }
             ]
           },
           "task_dependencies": [
-            "31b6a9f7-98f8-4a09-a327-4b1a5f0a9b04"
+            "42c8b8a8-a9f9-5b1a-b438-5c2b6e1c2c13"
           ],
           "task_objectives": null
         }
       ],
       "objectives": [
         {
-          "id": "53aac358-f92e-4432-a5d6-da9b2c68915d",
+          "id": "64bbd469-0a3f-5543-b6e7-ebaac3d79626",
           "type": "iterate",
           "iterations": 5
         }
@@ -1001,7 +1009,7 @@
     {
       "id": "889f5b00-cf87-4f95-b77f-4bced6bbf3dc",
       "group_dependencies": [
-        "c7e18a2b-5b30-4f11-9ec2-1a2b3c4d5e6f"
+        "d8f29c3a-6c41-4f22-a3e3-2b4c5d6e7f80"
       ],
       "tasks": [
         {
