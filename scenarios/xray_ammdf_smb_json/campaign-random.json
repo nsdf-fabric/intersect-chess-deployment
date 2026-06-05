@@ -21,7 +21,7 @@
               "properties": {
                 "experiment_name": {
                   "type": "string",
-                  "default": "exp_01"
+                  "default": "exp_03"
                 },
                 "base_dir": {
                   "type": "string",
@@ -56,7 +56,7 @@
               "properties": {
                 "filename": {
                   "type": "string",
-                  "default": "/nfs/chess/auxiliary/reduced_data/cycles/2026-2/id1a3/fancher-4630-b/exp_01/strain_results.json"
+                  "default": "/nfs/chess/auxiliary/reduced_data/cycles/2026-2/id1a3/fancher-4630-b/exp_03/strain_results.json"
                 },
                 "source_format": {
                   "type": "string",
@@ -208,7 +208,16 @@
                 },
                 "output_bounds": {
                   "type": "array",
-                  "default": []
+                   "default": [
+                    [
+                      0,
+                      1
+                    ],
+                    [
+                      0,
+                      1
+                    ]
+                  ]
                 },
                 "type": {
                   "type": "string",
@@ -263,16 +272,13 @@
               "type": "object",
               "properties": {
                 "dataset_x": {
-                  "type": "array",
-                  "default": []
+                  "type": "array"
                 },
                 "dataset_y": {
-                  "type": "array",
-                  "default": []
+                  "type": "array"
                 },
                 "bounds": {
-                  "type": "array",
-                  "default": []
+                  "type": "array"
                 },
                 "dim_x": {
                   "type": "integer",
@@ -327,16 +333,7 @@
             "31b6a9f7-98f8-4a09-a327-4b1a5f0a9b02"
           ],
           "task_objectives": null
-        }
-      ],
-      "objectives": []
-    },
-    {
-      "id": "c7e18a2b-5b30-4f11-9ec2-1a2b3c4d5e6f",
-      "group_dependencies": [
-        "f9d45034-a410-4e22-a1d7-0f93d78df6b0"
-      ],
-      "tasks": [
+        },
         {
           "id": "2f7a0e1b-6a8c-4f91-9b35-a7d26d9c0f11",
           "hierarchy": "chess.chess-facility.instrument-control-system.instrument-control-subsystem.chess-instrument-control-service",
@@ -350,11 +347,11 @@
               "properties": {
                 "labx": {
                   "type": "number",
-                  "default": 1.6001999
+                  "default": 30
                 },
                 "labz": {
                   "type": "number",
-                  "default": -31.500063
+                  "default": 20.5
                 }
               }
             },
@@ -369,9 +366,20 @@
               }
             ]
           },
-          "task_dependencies": [],
+          "task_dependencies": [
+            "01d05790-44bb-47a6-8aea-af86ddbf0514"
+          ],
           "task_objectives": null
-        },
+        }
+      ],
+      "objectives": []
+    },
+    {
+      "id": "c7e18a2b-5b30-4f11-9ec2-1a2b3c4d5e6f",
+      "group_dependencies": [
+        "f9d45034-a410-4e22-a1d7-0f93d78df6b0"
+      ],
+      "tasks": [
         {
           "id": "6e5008c2-a12a-45de-b86f-e6775f40663b",
           "hierarchy": "chess.chess-facility.data-egress-system.data-egress-subsystem.chess-data-egress-service",
@@ -416,7 +424,7 @@
           "id": "31b6a9f7-98f8-4a09-a327-4b1a5f0a9b03",
           "hierarchy": "intersect.default.dial-transformer-system.dial-transformer-subsystem.dial-transformer-service",
           "capability": "dial_transformer",
-          "operation_id": "transform",
+          "operation_id": "inverse_transform",
           "event_name": null,
           "output": {
             "schema": {
@@ -439,12 +447,10 @@
               "type": "object",
               "properties": {
                 "labx": {
-                  "type": "number",
-                  "default": -10.58
+                  "type": "number"
                 },
                 "labz": {
-                  "type": "number",
-                  "default": -248.8
+                  "type": "number"
                 }
               }
             },
@@ -480,12 +486,10 @@
                   "default": "000000000000000000000001"
                 },
                 "next_x": {
-                  "type": "array",
-                  "default": []
+                  "type": "array"
                 },
                 "next_y": {
-                  "type": "number",
-                  "default": null
+                  "type": "number"
                 }
               }
             },
@@ -555,8 +559,7 @@
                   "default": true
                 },
                 "bounds": {
-                  "type": "array",
-                  "default": []
+                  "type": "array"
                 }
               }
             },
@@ -588,7 +591,7 @@
           "id": "31b6a9f7-98f8-4a09-a327-4b1a5f0a9b04",
           "hierarchy": "intersect.default.dial-transformer-system.dial-transformer-subsystem.dial-transformer-service",
           "capability": "dial_transformer",
-          "operation_id": "inverse_transform",
+          "operation_id": "transform",
           "event_name": null,
           "output": {
             "schema": {
@@ -618,8 +621,7 @@
               "type": "object",
               "properties": {
                 "transformed_values": {
-                  "type": "array",
-                  "default": []
+                  "type": "array"
                 }
               }
             },
@@ -636,43 +638,6 @@
           "task_objectives": null
         },
         {
-          "id": "da6c7e8f-9001-4213-c4d5-e6f708192a3b",
-          "hierarchy": "intersect.default.dial-system.dial-subsystem.dial-service",
-          "capability": "dial",
-          "operation_id": "get_surrogate_values",
-          "event_name": null,
-          "output": null,
-          "input": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "workflow_id": {
-                  "type": "string",
-                  "default": "000000000000000000000001"
-                },
-                "points_to_predict": {
-                  "type": "array",
-                  "default": []
-                }
-              }
-            },
-            "values": [
-              {
-                "id": "f1234567-0000-4000-8000-000000000001",
-                "var": "workflow_id"
-              },
-              {
-                "id": "ad020001-0000-4000-8000-000000000002",
-                "var": "points_to_predict"
-              }
-            ]
-          },
-          "task_dependencies": [
-            "be4a5c6d-7e8f-4091-a2b3-c4d5e6f70819"
-          ],
-          "task_objectives": null
-        },
-        {
           "id": "afef1f16-29b3-4f8a-a958-0c629e84c208",
           "hierarchy": "chess.chess-facility.instrument-control-system.instrument-control-subsystem.chess-instrument-control-service",
           "capability": "chess_instrument_control",
@@ -684,12 +649,10 @@
               "type": "object",
               "properties": {
                 "labx": {
-                  "type": "number",
-                  "default": null
+                  "type": "number"
                 },
                 "labz": {
-                  "type": "number",
-                  "default": -248.8
+                  "type": "number"
                 }
               }
             },
