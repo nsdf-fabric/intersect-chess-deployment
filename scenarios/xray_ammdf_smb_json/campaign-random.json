@@ -21,7 +21,7 @@
               "properties": {
                 "experiment_name": {
                   "type": "string",
-                  "default": "exp_04"
+                  "default": "exp_05"
                 },
                 "base_dir": {
                   "type": "string",
@@ -56,7 +56,7 @@
               "properties": {
                 "filename": {
                   "type": "string",
-                  "default": "/nfs/chess/auxiliary/reduced_data/cycles/2026-2/id1a3/fancher-4630-b/exp_04/strain_results.json"
+                  "default": "/nfs/chess/auxiliary/reduced_data/cycles/2026-2/id1a3/fancher-4630-b/exp_05/strain_results.json"
                 },
                 "source_format": {
                   "type": "string",
@@ -72,7 +72,7 @@
                 },
                 "value_key": {
                   "type": "string",
-                  "default": "0/data/uniform_strain"
+                  "default": "strain_rosette/e_xx/values"
                 },
                 "poll_interval": {
                   "type": "number",
@@ -132,8 +132,8 @@
                 "origins": {
                   "type": "array",
                   "default": [
-                    -36.0262,
-                    -30.33649
+                    -36.0,
+                    -29.0
                   ]
                 },
                 "bin_sizes": {
@@ -202,7 +202,7 @@
                     ],
                     [
                       0,
-                      41
+                      39
                     ]
                   ]
                 },
@@ -349,11 +349,11 @@
               "properties": {
                 "labx": {
                   "type": "number",
-                  "default": 30
+                  "default": -6
                 },
                 "labz": {
                   "type": "number",
-                  "default": 20.5
+                  "default": -19
                 }
               }
             },
@@ -679,7 +679,7 @@
         {
           "id": "53aac358-f92e-4432-a5d6-da9b2c68915d",
           "type": "iterate",
-          "iterations": 2
+          "iterations": 5
         }
       ]
     },
