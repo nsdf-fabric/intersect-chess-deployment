@@ -25,7 +25,7 @@
                 },
                 "base_dir": {
                   "type": "string",
-                  "default": "/nfs/chess/auxiliary/cycles/current/id1a3/fancher-4630-b/holding_bay/autonomous_input"
+                  "default": "/nfs/chess/user/mmcdonnell/datasets/new"
                 }
               }
             },
@@ -56,7 +56,7 @@
               "properties": {
                 "filename": {
                   "type": "string",
-                  "default": "/nfs/chess/auxiliary/reduced_data/cycles/2026-2/id1a3/fancher-4630-b/exp_01/strain_results.json"
+                  "default": "/nfs/chess/user/mmcdonnell/datasets/new/new_strain.json"
                 },
                 "source_format": {
                   "type": "string",
@@ -72,7 +72,7 @@
                 },
                 "value_key": {
                   "type": "string",
-                  "default": "0/data/uniform_strain"
+                  "default": "0/unconstrained_fit/3_1_1/strains/values"
                 },
                 "poll_interval": {
                   "type": "number",
@@ -132,14 +132,14 @@
                 "origins": {
                   "type": "array",
                   "default": [
-                    -36.0262,
-                    -30.33649
+                    1.6001999,
+                    -31.500063
                   ]
                 },
                 "bin_sizes": {
                   "type": "array",
                   "default": [
-                    2.0,
+                    1.0,
                     1.0
                   ]
                 },
@@ -197,18 +197,27 @@
                   "type": "array",
                   "default": [
                     [
-                      0,
-                      60
+                      1.0,
+                      2.0
                     ],
                     [
-                      0,
-                      41
+                      -35.500063,
+                      -25.500063
                     ]
                   ]
                 },
                 "output_bounds": {
                   "type": "array",
-                  "default": []
+                  "default": [
+                    [
+                      0.0,
+                      20.0
+                    ],
+                    [
+                      0.0,
+                      20.0
+                    ]
+                  ]
                 },
                 "type": {
                   "type": "string",
@@ -264,15 +273,31 @@
               "properties": {
                 "dataset_x": {
                   "type": "array",
-                  "default": []
+                  "default": [
+                    [
+                      1.6001999,
+                      -31.500063
+                    ]
+                  ]
                 },
                 "dataset_y": {
                   "type": "array",
-                  "default": []
+                  "default": [
+                    66.9
+                  ]
                 },
                 "bounds": {
                   "type": "array",
-                  "default": []
+                  "default": [
+                    [
+                      1.0,
+                      2.0
+                    ],
+                    [
+                      -25.500063,
+                      -35.500063
+                    ]
+                  ]
                 },
                 "dim_x": {
                   "type": "integer",
@@ -481,11 +506,14 @@
                 },
                 "next_x": {
                   "type": "array",
-                  "default": []
+                  "default": [
+                    -10.58,
+                    -248.8
+                  ]
                 },
                 "next_y": {
                   "type": "number",
-                  "default": null
+                  "default": 85.656041
                 }
               }
             },
@@ -556,7 +584,16 @@
                 },
                 "bounds": {
                   "type": "array",
-                  "default": []
+                  "default": [
+                    [
+                      -47.33,
+                      26.17
+                    ],
+                    [
+                      -255.3,
+                      -242.3
+                    ]
+                  ]
                 }
               }
             },
@@ -619,7 +656,10 @@
               "properties": {
                 "transformed_values": {
                   "type": "array",
-                  "default": []
+                  "default": [
+                    -10.58,
+                    -248.8
+                  ]
                 }
               }
             },
@@ -652,7 +692,20 @@
                 },
                 "points_to_predict": {
                   "type": "array",
-                  "default": []
+                  "default": [
+                    [
+                      -10.58,
+                      -248.8
+                    ],
+                    [
+                      -47.33,
+                      -255.3
+                    ],
+                    [
+                      26.17,
+                      -242.3
+                    ]
+                  ]
                 }
               }
             },
@@ -685,7 +738,7 @@
               "properties": {
                 "labx": {
                   "type": "number",
-                  "default": 
+                  "default": -10.58
                 },
                 "labz": {
                   "type": "number",
@@ -714,7 +767,7 @@
         {
           "id": "53aac358-f92e-4432-a5d6-da9b2c68915d",
           "type": "iterate",
-          "iterations": 2
+          "iterations": 10
         }
       ]
     },
