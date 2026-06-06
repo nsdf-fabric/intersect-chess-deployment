@@ -1,0 +1,1359 @@
+{
+  "id": "7d3dg841-1g7f-5e2c-c250-8d2809cc8b6f",
+  "name": "xray-ammdf-smb-json-dashboard",
+  "user": "system",
+  "description": "Legacy callback-flow workflow for X-ray AMMDF SMB JSON scenario with storage and dashboard support.",
+  "task_groups": [
+    {
+      "id": "f9d45034-a410-4e22-a1d7-0f93d78df6b0",
+      "group_dependencies": [],
+      "tasks": [
+        {
+          "id": "a3b17875-93ca-4e70-b0d2-0667d4b70bd0",
+          "hierarchy": "chess.chess-facility.instrument-control-system.instrument-control-subsystem.chess-instrument-control-service",
+          "capability": "chess_instrument_control",
+          "operation_id": "initialize_experiment",
+          "event_name": null,
+          "output": null,
+          "input": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "experiment_name": {
+                  "type": "string",
+                  "default": "exp_08"
+                },
+                "base_dir": {
+                  "type": "string",
+                  "default": "/nfs/chess/auxiliary/cycles/current/id1a3/fancher-4630-b/holding_bay/autonomous_input"
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "d8f5f3e8-c0f3-4811-b206-f4bf66e695cb",
+                "var": "experiment_name"
+              },
+              {
+                "id": "85d08db4-eb9f-4f8e-b00e-9e2ec1654264",
+                "var": "base_dir"
+              }
+            ]
+          },
+          "task_dependencies": [],
+          "task_objectives": null
+        },
+        {
+          "id": "95af6f8d-f7f6-4f84-86f2-0cc31fce50fb",
+          "hierarchy": "chess.chess-facility.data-egress-system.data-egress-subsystem.chess-data-egress-service",
+          "capability": "chess_data_egress",
+          "operation_id": "start_monitoring",
+          "event_name": null,
+          "output": null,
+          "input": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "filename": {
+                  "type": "string",
+                  "default": "/nfs/chess/auxiliary/reduced_data/cycles/2026-2/id1a3/fancher-4630-b/exp_08/strain_results.json"
+                },
+                "source_format": {
+                  "type": "string",
+                  "default": "json"
+                },
+                "labx_key": {
+                  "type": "string",
+                  "default": "labx"
+                },
+                "labz_key": {
+                  "type": "string",
+                  "default": "labz"
+                },
+                "value_key": {
+                  "type": "string",
+                  "default": "strain_rosette/e_xx/values"
+                },
+                "poll_interval": {
+                  "type": "number",
+                  "default": 0.5
+                },
+                "skip_invalid_values": {
+                  "type": "boolean",
+                  "default": true
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "ae729f76-c0f4-463f-a5f0-f5005670e717",
+                "var": "filename"
+              },
+              {
+                "id": "8f59f47a-fa59-4e9e-a847-1fe43ecef6ad",
+                "var": "source_format"
+              },
+              {
+                "id": "a41da10a-ef95-4afb-b9e4-bfda72f6f6f1",
+                "var": "labx_key"
+              },
+              {
+                "id": "db6f8ea7-a798-4b99-9dc8-a6c9ef9aa281",
+                "var": "labz_key"
+              },
+              {
+                "id": "8cb36f5e-2757-4fd0-84d0-5fe0f56f25bb",
+                "var": "value_key"
+              },
+              {
+                "id": "74179056-c24f-4236-87b4-fb97639de8ee",
+                "var": "poll_interval"
+              },
+              {
+                "id": "4eb233b3-b191-47e6-b86d-0eef7af326ab",
+                "var": "skip_invalid_values"
+              }
+            ]
+          },
+          "task_dependencies": [],
+          "task_objectives": null
+        },
+        {
+          "id": "31b6a9f7-98f8-4a09-a327-4b1a5f0a9b01",
+          "hierarchy": "intersect.default.dial-transformer-system.dial-transformer-subsystem.dial-transformer-service",
+          "capability": "dial_transformer",
+          "operation_id": "initialize_transform",
+          "event_name": null,
+          "output": null,
+          "input": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "origins": {
+                  "type": "array",
+                  "default": [
+                    -36.0,
+                    -29.0
+                  ]
+                },
+                "bin_sizes": {
+                  "type": "array",
+                  "default": [
+                    2.0,
+                    1.0
+                  ]
+                },
+                "type": {
+                  "type": "string",
+                  "default": "linear"
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "c1010001-0000-4000-8000-000000000001",
+                "var": "origins"
+              },
+              {
+                "id": "c1010001-0000-4000-8000-000000000002",
+                "var": "bin_sizes"
+              },
+              {
+                "id": "c1010001-0000-4000-8000-000000000003",
+                "var": "type"
+              }
+            ]
+          },
+          "task_dependencies": [],
+          "task_objectives": null
+        },
+        {
+          "id": "31b6a9f7-98f8-4a09-a327-4b1a5f0a9b02",
+          "hierarchy": "intersect.default.dial-transformer-system.dial-transformer-subsystem.dial-transformer-service",
+          "capability": "dial_transformer",
+          "operation_id": "calculate_bounds",
+          "event_name": null,
+          "output": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "bounds": {
+                  "type": "array"
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "80a59175-c4b2-48be-a267-e37eec6d3737",
+                "var": "bounds"
+              }
+            ]
+          },
+          "input": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "input_bounds": {
+                  "type": "array",
+                  "default": [
+                    [
+                      0,
+                      60
+                    ],
+                    [
+                      0,
+                      39
+                    ]
+                  ]
+                },
+                "output_bounds": {
+                  "type": "array",
+                   "default": [
+                    [
+                      0,
+                      1
+                    ],
+                    [
+                      0,
+                      1
+                    ]
+                  ]
+                },
+                "type": {
+                  "type": "string",
+                  "default": "linear"
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "c1020001-0000-4000-8000-000000000001",
+                "var": "input_bounds"
+              },
+              {
+                "id": "c1020001-0000-4000-8000-000000000002",
+                "var": "output_bounds"
+              },
+              {
+                "id": "c1020001-0000-4000-8000-000000000003",
+                "var": "type"
+              }
+            ]
+          },
+          "task_dependencies": [
+            "31b6a9f7-98f8-4a09-a327-4b1a5f0a9b01"
+          ],
+          "task_objectives": null
+        },
+        {
+          "id": "01d05790-44bb-47a6-8aea-af86ddbf0514",
+          "hierarchy": "intersect.default.dial-system.dial-subsystem.dial-service",
+          "capability": "dial",
+          "operation_id": "initialize_workflow",
+          "event_name": null,
+          "output": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "workflow_id": {
+                  "type": "string"
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "f1234567-0000-4000-8000-000000000001",
+                "var": "workflow_id"
+              }
+            ]
+          },
+          "input": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "dataset_x": {
+                  "type": "array",
+                  "default": []
+                },
+                "dataset_y": {
+                  "type": "array",
+                  "default": []
+                },
+                "bounds": {
+                  "type": "array"
+                },
+                "dim_x": {
+                  "type": "integer",
+                  "default": 2
+                },
+                "kernel": {
+                  "type": "string",
+                  "default": "rbf"
+                },
+                "y_is_good": {
+                  "type": "boolean",
+                  "default": true
+                },
+                "backend": {
+                  "type": "string",
+                  "default": "sklearn"
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "7a9d3b2b-a24f-4b57-b496-7fbaa7826d8b",
+                "var": "dataset_x"
+              },
+              {
+                "id": "f59d3133-0d2e-41b5-ba40-ccd9d5644f3f",
+                "var": "dataset_y"
+              },
+              {
+                "id": "80a59175-c4b2-48be-a267-e37eec6d3737",
+                "var": "bounds"
+              },
+              {
+                "id": "78af7e4e-0b15-4f62-b45d-81e2ec26d524",
+                "var": "dim_x"
+              },
+              {
+                "id": "09ef13e4-f754-4caf-9e1f-03fd75f73f78",
+                "var": "kernel"
+              },
+              {
+                "id": "4e817a36-4014-4ce3-ab2f-7f0e28ab81d1",
+                "var": "y_is_good"
+              },
+              {
+                "id": "1083ad66-9011-4db7-9923-7ef5e846e266",
+                "var": "backend"
+              }
+            ]
+          },
+          "task_dependencies": [
+            "31b6a9f7-98f8-4a09-a327-4b1a5f0a9b02"
+          ],
+          "task_objectives": null
+        },
+        {
+          "id": "2f7a0e1b-6a8c-4f91-9b35-a7d26d9c0f11",
+          "hierarchy": "chess.chess-facility.instrument-control-system.instrument-control-subsystem.chess-instrument-control-service",
+          "capability": "chess_instrument_control",
+          "operation_id": "write_motor_position",
+          "event_name": null,
+          "output": null,
+          "input": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "labx": {
+                  "type": "number",
+                  "default": -6
+                },
+                "labz": {
+                  "type": "number",
+                  "default": -19
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "b4100001-0000-4000-8000-000000000001",
+                "var": "labx"
+              },
+              {
+                "id": "b4100001-0000-4000-8000-000000000002",
+                "var": "labz"
+              }
+            ]
+          },
+          "task_dependencies": [
+            "01d05790-44bb-47a6-8aea-af86ddbf0514"
+          ],
+          "task_objectives": null
+        }
+      ],
+      "objectives": []
+    },
+    {
+      "id": "c7e18a2b-5b30-4f11-9ec2-1a2b3c4d5e6f",
+      "group_dependencies": [
+        "f9d45034-a410-4e22-a1d7-0f93d78df6b0"
+      ],
+      "tasks": [
+        {
+          "id": "6e5008c2-a12a-45de-b86f-e6775f40663b",
+          "hierarchy": "chess.chess-facility.data-egress-system.data-egress-subsystem.chess-data-egress-service",
+          "capability": "chess_data_egress",
+          "operation_id": null,
+          "event_name": "new_measurement",
+          "output": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "labx": {
+                  "type": "number"
+                },
+                "labz": {
+                  "type": "number"
+                },
+                "center_value": {
+                  "type": "number"
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "c2010001-0000-4000-8000-000000000001",
+                "var": "labx"
+              },
+              {
+                "id": "c2010001-0000-4000-8000-000000000002",
+                "var": "labz"
+              },
+              {
+                "id": "ab030001-0000-4000-8000-000000000003",
+                "var": "center_value"
+              }
+            ]
+          },
+          "input": null,
+          "task_dependencies": [],
+          "task_objectives": null
+        },
+        {
+          "id": "31b6a9f7-98f8-4a09-a327-4b1a5f0a9b03",
+          "hierarchy": "intersect.default.dial-transformer-system.dial-transformer-subsystem.dial-transformer-service",
+          "capability": "dial_transformer",
+          "operation_id": "transform",
+          "event_name": null,
+          "output": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "transformed_values": {
+                  "type": "array"
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "ab020001-0000-4000-8000-000000000002",
+                "var": "transformed_values"
+              }
+            ]
+          },
+          "input": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "labx": {
+                  "type": "number"
+                },
+                "labz": {
+                  "type": "number"
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "c2010001-0000-4000-8000-000000000001",
+                "var": "labx"
+              },
+              {
+                "id": "c2010001-0000-4000-8000-000000000002",
+                "var": "labz"
+              }
+            ]
+          },
+          "task_dependencies": [
+            "6e5008c2-a12a-45de-b86f-e6775f40663b"
+          ],
+          "task_objectives": null
+        },
+        {
+          "id": "be4a5c6d-7e8f-4091-a2b3-c4d5e6f70819",
+          "hierarchy": "intersect.default.dial-system.dial-subsystem.dial-service",
+          "capability": "dial",
+          "operation_id": "update_workflow_with_data",
+          "event_name": null,
+          "output": null,
+          "input": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "workflow_id": {
+                  "type": "string",
+                  "default": "000000000000000000000001"
+                },
+                "next_x": {
+                  "type": "array"
+                },
+                "next_y": {
+                  "type": "number"
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "f1234567-0000-4000-8000-000000000001",
+                "var": "workflow_id"
+              },
+              {
+                "id": "ab020001-0000-4000-8000-000000000002",
+                "var": "next_x"
+              },
+              {
+                "id": "ab030001-0000-4000-8000-000000000003",
+                "var": "next_y"
+              }
+            ]
+          },
+          "task_dependencies": [
+            "31b6a9f7-98f8-4a09-a327-4b1a5f0a9b03"
+          ],
+          "task_objectives": null
+        },
+        {
+          "id": "cf5b6d7e-8f90-4102-b3c4-d5e6f708192a",
+          "hierarchy": "intersect.default.dial-system.dial-subsystem.dial-service",
+          "capability": "dial",
+          "operation_id": "get_next_point",
+          "event_name": null,
+          "output": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "workflow_id": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "array"
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "f1234567-0000-4000-8000-000000000001",
+                "var": "workflow_id"
+              },
+              {
+                "id": "e1020001-0000-4000-8000-000000000002",
+                "var": "data"
+              }
+            ]
+          },
+          "input": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "workflow_id": {
+                  "type": "string",
+                  "default": "000000000000000000000001"
+                },
+                "strategy": {
+                  "type": "string",
+                  "default": "random"
+                },
+                "y_is_good": {
+                  "type": "boolean",
+                  "default": true
+                },
+                "bounds": {
+                  "type": "array"
+                },
+                "discrete_measurements": {
+                  "type": "boolean",
+                  "default": false
+                },
+                "discrete_measurement_grid_size": {
+                  "type": "array",
+                  "default": [60, 29]
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "f1234567-0000-4000-8000-000000000001",
+                "var": "workflow_id"
+              },
+              {
+                "id": "ac020001-0000-4000-8000-000000000002",
+                "var": "strategy"
+              },
+              {
+                "id": "ac030001-0000-4000-8000-000000000003",
+                "var": "y_is_good"
+              },
+              {
+                "id": "80a59175-c4b2-48be-a267-e37eec6d3737",
+                "var": "bounds"
+              }
+            ]
+          },
+          "task_dependencies": [
+            "be4a5c6d-7e8f-4091-a2b3-c4d5e6f70819"
+          ],
+          "task_objectives": null
+        },
+        {
+          "id": "31b6a9f7-98f8-4a09-a327-4b1a5f0a9b04",
+          "hierarchy": "intersect.default.dial-transformer-system.dial-transformer-subsystem.dial-transformer-service",
+          "capability": "dial_transformer",
+          "operation_id": "inverse_transform",
+          "event_name": null,
+          "output": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "labx": {
+                  "type": "number"
+                },
+                "labz": {
+                  "type": "number"
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "d50bcfbe-2ccd-458e-88ef-bb6ff8e824b5",
+                "var": "labx"
+              },
+              {
+                "id": "84efa845-f6b4-462b-8cad-ef8ce497393e",
+                "var": "labz"
+              }
+            ]
+          },
+          "input": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "transformed_values": {
+                  "type": "array"
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "e1020001-0000-4000-8000-000000000002",
+                "var": "transformed_values"
+              }
+            ]
+          },
+          "task_dependencies": [
+            "cf5b6d7e-8f90-4102-b3c4-d5e6f708192a"
+          ],
+          "task_objectives": null
+        },
+        {
+          "id": "da6c7e8f-9001-4213-c4d5-e6f708192a3b",
+          "hierarchy": "intersect.default.dial-system.dial-subsystem.dial-service",
+          "capability": "dial",
+          "operation_id": "get_surrogate_values",
+          "event_name": null,
+          "output": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "array"
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "e1030001-0000-4000-8000-000000000003",
+                "var": "data"
+              }
+            ]
+          },
+          "input": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "workflow_id": {
+                  "type": "string",
+                  "default": "000000000000000000000001"
+                },
+                "points_to_predict": {
+                  "type": "array",
+                  "default": []
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "f1234567-0000-4000-8000-000000000001",
+                "var": "workflow_id"
+              },
+              {
+                "id": "ad020001-0000-4000-8000-000000000002",
+                "var": "points_to_predict"
+              }
+            ]
+          },
+          "task_dependencies": [
+            "be4a5c6d-7e8f-4091-a2b3-c4d5e6f70819"
+          ],
+          "task_objectives": null
+        },
+        {
+          "id": "11111111-2222-4333-8444-555555555551",
+          "hierarchy": "intersect.default.nsdf-storage-system.nsdf-storage-subsystem.nsdf-storage-service",
+          "capability": "nsdf_storage",
+          "operation_id": "new_measurement",
+          "event_name": null,
+          "output": null,
+          "input": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "next_x": {
+                  "type": "array"
+                },
+                "next_y": {
+                  "type": "number"
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "ab020001-0000-4000-8000-000000000002",
+                "var": "next_x"
+              },
+              {
+                "id": "ab030001-0000-4000-8000-000000000003",
+                "var": "next_y"
+              }
+            ]
+          },
+          "task_dependencies": [
+            "31b6a9f7-98f8-4a09-a327-4b1a5f0a9b03"
+          ],
+          "task_objectives": null
+        },
+        {
+          "id": "11111111-2222-4333-8444-555555555552",
+          "hierarchy": "intersect.default.nsdf-storage-system.nsdf-storage-subsystem.nsdf-storage-service",
+          "capability": "nsdf_storage",
+          "operation_id": "next_point",
+          "event_name": null,
+          "output": null,
+          "input": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "workflow_id": {
+                  "type": "string",
+                  "default": "000000000000000000000001"
+                },
+                "data": {
+                  "type": "array"
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "f1234567-0000-4000-8000-000000000001",
+                "var": "workflow_id"
+              },
+              {
+                "id": "e1020001-0000-4000-8000-000000000002",
+                "var": "data"
+              }
+            ]
+          },
+          "task_dependencies": [
+            "cf5b6d7e-8f90-4102-b3c4-d5e6f708192a"
+          ],
+          "task_objectives": null
+        },
+        {
+          "id": "11111111-2222-4333-8444-555555555553",
+          "hierarchy": "intersect.default.nsdf-storage-system.nsdf-storage-subsystem.nsdf-storage-service",
+          "capability": "nsdf_storage",
+          "operation_id": "surrogate_values",
+          "event_name": null,
+          "output": null,
+          "input": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "workflow_id": {
+                  "type": "string",
+                  "default": "000000000000000000000001"
+                },
+                "data": {
+                  "type": "array"
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "f1234567-0000-4000-8000-000000000001",
+                "var": "workflow_id"
+              },
+              {
+                "id": "e1030001-0000-4000-8000-000000000003",
+                "var": "data"
+              }
+            ]
+          },
+          "task_dependencies": [
+            "da6c7e8f-9001-4213-c4d5-e6f708192a3b"
+          ],
+          "task_objectives": null
+        },
+        {
+          "id": "afef1f16-29b3-4f8a-a958-0c629e84c208",
+          "hierarchy": "chess.chess-facility.instrument-control-system.instrument-control-subsystem.chess-instrument-control-service",
+          "capability": "chess_instrument_control",
+          "operation_id": "write_motor_position",
+          "event_name": null,
+          "output": null,
+          "input": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "labx": {
+                  "type": "number"
+                },
+                "labz": {
+                  "type": "number"
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "d50bcfbe-2ccd-458e-88ef-bb6ff8e824b5",
+                "var": "labx"
+              },
+              {
+                "id": "84efa845-f6b4-462b-8cad-ef8ce497393e",
+                "var": "labz"
+              }
+            ]
+          },
+          "task_dependencies": [
+            "31b6a9f7-98f8-4a09-a327-4b1a5f0a9b04"
+          ],
+          "task_objectives": null
+        }
+      ],
+      "objectives": [
+        {
+          "id": "53aac358-f92e-4432-a5d6-da9b2c68915d",
+          "type": "iterate",
+          "iterations": 5
+        }
+      ]
+    },
+    {
+      "id": "d8f29c3a-6c41-4f22-a3e3-2b4c5d6e7f80",
+      "group_dependencies": [
+        "c7e18a2b-5b30-4f11-9ec2-1a2b3c4d5e6f"
+      ],
+      "tasks": [
+        {
+          "id": "7f6019d3-b23b-56ef-c97f-f7786e51774c",
+          "hierarchy": "chess.chess-facility.data-egress-system.data-egress-subsystem.chess-data-egress-service",
+          "capability": "chess_data_egress",
+          "operation_id": null,
+          "event_name": "new_measurement",
+          "output": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "labx": {
+                  "type": "number"
+                },
+                "labz": {
+                  "type": "number"
+                },
+                "center_value": {
+                  "type": "number"
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "c3010001-0000-4000-8000-000000000001",
+                "var": "labx"
+              },
+              {
+                "id": "c3010001-0000-4000-8000-000000000002",
+                "var": "labz"
+              },
+              {
+                "id": "ac030001-0000-4000-8000-000000000003",
+                "var": "center_value"
+              }
+            ]
+          },
+          "input": null,
+          "task_dependencies": [],
+          "task_objectives": null
+        },
+        {
+          "id": "42c8b8a8-a9f9-5b1a-b438-5c2b6e1c2c12",
+          "hierarchy": "intersect.default.dial-transformer-system.dial-transformer-subsystem.dial-transformer-service",
+          "capability": "dial_transformer",
+          "operation_id": "transform",
+          "event_name": null,
+          "output": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "transformed_values": {
+                  "type": "array"
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "ac020001-0000-4000-8000-000000000002",
+                "var": "transformed_values"
+              }
+            ]
+          },
+          "input": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "labx": {
+                  "type": "number"
+                },
+                "labz": {
+                  "type": "number"
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "c3010001-0000-4000-8000-000000000001",
+                "var": "labx"
+              },
+              {
+                "id": "c3010001-0000-4000-8000-000000000002",
+                "var": "labz"
+              }
+            ]
+          },
+          "task_dependencies": [
+            "7f6019d3-b23b-56ef-c97f-f7786e51774c"
+          ],
+          "task_objectives": null
+        },
+        {
+          "id": "cf6b7d8e-9f01-5102-c4d5-e6f8091a2b3c",
+          "hierarchy": "intersect.default.dial-system.dial-subsystem.dial-service",
+          "capability": "dial",
+          "operation_id": "update_workflow_with_data",
+          "event_name": null,
+          "output": null,
+          "input": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "workflow_id": {
+                  "type": "string",
+                  "default": "000000000000000000000001"
+                },
+                "next_x": {
+                  "type": "array"
+                },
+                "next_y": {
+                  "type": "number"
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "f1234567-0000-4000-8000-000000000001",
+                "var": "workflow_id"
+              },
+              {
+                "id": "ac020001-0000-4000-8000-000000000002",
+                "var": "next_x"
+              },
+              {
+                "id": "ac030001-0000-4000-8000-000000000003",
+                "var": "next_y"
+              }
+            ]
+          },
+          "task_dependencies": [
+            "42c8b8a8-a9f9-5b1a-b438-5c2b6e1c2c12"
+          ],
+          "task_objectives": null
+        },
+        {
+          "id": "e06c8e9f-a012-5213-d5e6-f7081920a3b4",
+          "hierarchy": "intersect.default.dial-system.dial-subsystem.dial-service",
+          "capability": "dial",
+          "operation_id": "get_next_point",
+          "event_name": null,
+          "output": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "workflow_id": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "array"
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "f1234567-0000-4000-8000-000000000001",
+                "var": "workflow_id"
+              },
+              {
+                "id": "e2020001-0000-4000-8000-000000000002",
+                "var": "data"
+              }
+            ]
+          },
+          "input": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "workflow_id": {
+                  "type": "string",
+                  "default": "000000000000000000000001"
+                },
+                "strategy": {
+                  "type": "string",
+                  "default": "uncertainty"
+                },
+                "y_is_good": {
+                  "type": "boolean",
+                  "default": true
+                },
+                "bounds": {
+                  "type": "array"
+                },
+                "discrete_measurements": {
+                  "type": "boolean",
+                  "default": true
+                },
+                "discrete_measurement_grid_size": {
+                  "type": "array",
+                  "default": [60, 29]
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "f1234567-0000-4000-8000-000000000001",
+                "var": "workflow_id"
+              },
+              {
+                "id": "ad020001-0000-4000-8000-000000000002",
+                "var": "strategy"
+              },
+              {
+                "id": "ad030001-0000-4000-8000-000000000003",
+                "var": "y_is_good"
+              },
+              {
+                "id": "80a59175-c4b2-48be-a267-e37eec6d3737",
+                "var": "bounds"
+              },
+              {
+                "id": "ad040001-0000-4000-8000-000000000004",
+                "var": "discrete_measurements"
+              },
+              {
+                "id": "ad050001-0000-4000-8000-000000000005",
+                "var": "discrete_measurement_grid_size"
+              }
+            ]
+          },
+          "task_dependencies": [
+            "cf6b7d8e-9f01-5102-c4d5-e6f8091a2b3c"
+          ],
+          "task_objectives": null
+        },
+        {
+          "id": "42c8b8a8-a9f9-5b1a-b438-5c2b6e1c2c13",
+          "hierarchy": "intersect.default.dial-transformer-system.dial-transformer-subsystem.dial-transformer-service",
+          "capability": "dial_transformer",
+          "operation_id": "inverse_transform",
+          "event_name": null,
+          "output": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "labx": {
+                  "type": "number"
+                },
+                "labz": {
+                  "type": "number"
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "e50bcfbe-2ccd-458e-88ef-bb6ff8e824b5",
+                "var": "labx"
+              },
+              {
+                "id": "94efa845-f6b4-462b-8cad-ef8ce497393e",
+                "var": "labz"
+              }
+            ]
+          },
+          "input": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "transformed_values": {
+                  "type": "array"
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "e2020001-0000-4000-8000-000000000002",
+                "var": "transformed_values"
+              }
+            ]
+          },
+          "task_dependencies": [
+            "e06c8e9f-a012-5213-d5e6-f7081920a3b4"
+          ],
+          "task_objectives": null
+        },
+        {
+          "id": "eb7d8f90-0112-5324-d5e6-f7081920b4c5",
+          "hierarchy": "intersect.default.dial-system.dial-subsystem.dial-service",
+          "capability": "dial",
+          "operation_id": "get_surrogate_values",
+          "event_name": null,
+          "output": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "array"
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "e2030001-0000-4000-8000-000000000003",
+                "var": "data"
+              }
+            ]
+          },
+          "input": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "workflow_id": {
+                  "type": "string",
+                  "default": "000000000000000000000001"
+                },
+                "points_to_predict": {
+                  "type": "array",
+                  "default": []
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "f1234567-0000-4000-8000-000000000001",
+                "var": "workflow_id"
+              },
+              {
+                "id": "ae020001-0000-4000-8000-000000000002",
+                "var": "points_to_predict"
+              }
+            ]
+          },
+          "task_dependencies": [
+            "cf6b7d8e-9f01-5102-c4d5-e6f8091a2b3c"
+          ],
+          "task_objectives": null
+        },
+        {
+          "id": "22222222-3333-4444-8555-666666666661",
+          "hierarchy": "intersect.default.nsdf-storage-system.nsdf-storage-subsystem.nsdf-storage-service",
+          "capability": "nsdf_storage",
+          "operation_id": "new_measurement",
+          "event_name": null,
+          "output": null,
+          "input": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "next_x": {
+                  "type": "array"
+                },
+                "next_y": {
+                  "type": "number"
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "ac020001-0000-4000-8000-000000000002",
+                "var": "next_x"
+              },
+              {
+                "id": "ac030001-0000-4000-8000-000000000003",
+                "var": "next_y"
+              }
+            ]
+          },
+          "task_dependencies": [
+            "42c8b8a8-a9f9-5b1a-b438-5c2b6e1c2c12"
+          ],
+          "task_objectives": null
+        },
+        {
+          "id": "22222222-3333-4444-8555-666666666662",
+          "hierarchy": "intersect.default.nsdf-storage-system.nsdf-storage-subsystem.nsdf-storage-service",
+          "capability": "nsdf_storage",
+          "operation_id": "next_point",
+          "event_name": null,
+          "output": null,
+          "input": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "workflow_id": {
+                  "type": "string",
+                  "default": "000000000000000000000001"
+                },
+                "data": {
+                  "type": "array"
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "f1234567-0000-4000-8000-000000000001",
+                "var": "workflow_id"
+              },
+              {
+                "id": "e2020001-0000-4000-8000-000000000002",
+                "var": "data"
+              }
+            ]
+          },
+          "task_dependencies": [
+            "e06c8e9f-a012-5213-d5e6-f7081920a3b4"
+          ],
+          "task_objectives": null
+        },
+        {
+          "id": "22222222-3333-4444-8555-666666666663",
+          "hierarchy": "intersect.default.nsdf-storage-system.nsdf-storage-subsystem.nsdf-storage-service",
+          "capability": "nsdf_storage",
+          "operation_id": "surrogate_values",
+          "event_name": null,
+          "output": null,
+          "input": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "workflow_id": {
+                  "type": "string",
+                  "default": "000000000000000000000001"
+                },
+                "data": {
+                  "type": "array"
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "f1234567-0000-4000-8000-000000000001",
+                "var": "workflow_id"
+              },
+              {
+                "id": "e2030001-0000-4000-8000-000000000003",
+                "var": "data"
+              }
+            ]
+          },
+          "task_dependencies": [
+            "eb7d8f90-0112-5324-d5e6-f7081920b4c5"
+          ],
+          "task_objectives": null
+        },
+        {
+          "id": "b0f02017-3ac4-5fa9-b069-1d72af95d319",
+          "hierarchy": "chess.chess-facility.instrument-control-system.instrument-control-subsystem.chess-instrument-control-service",
+          "capability": "chess_instrument_control",
+          "operation_id": "write_motor_position",
+          "event_name": null,
+          "output": null,
+          "input": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "labx": {
+                  "type": "number"
+                },
+                "labz": {
+                  "type": "number"
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "e50bcfbe-2ccd-458e-88ef-bb6ff8e824b5",
+                "var": "labx"
+              },
+              {
+                "id": "94efa845-f6b4-462b-8cad-ef8ce497393e",
+                "var": "labz"
+              }
+            ]
+          },
+          "task_dependencies": [
+            "42c8b8a8-a9f9-5b1a-b438-5c2b6e1c2c13"
+          ],
+          "task_objectives": null
+        }
+      ],
+      "objectives": [
+        {
+          "id": "64bbd469-0a3f-5543-b6e7-ebaac3d79626",
+          "type": "iterate",
+          "iterations": 5
+        }
+      ]
+    },
+    {
+      "id": "889f5b00-cf87-4f95-b77f-4bced6bbf3dc",
+      "group_dependencies": [
+        "d8f29c3a-6c41-4f22-a3e3-2b4c5d6e7f80"
+      ],
+      "tasks": [
+        {
+          "id": "f2127f03-49e4-4e65-a211-aae72cc83804",
+          "hierarchy": "chess.chess-facility.data-egress-system.data-egress-subsystem.chess-data-egress-service",
+          "capability": "chess_data_egress",
+          "operation_id": "stop_monitoring",
+          "event_name": null,
+          "output": null,
+          "input": null,
+          "task_dependencies": [],
+          "task_objectives": null
+        }
+      ],
+      "objectives": []
+    }
+  ],
+  "objectives": null,
+  "inputs": [],
+  "outputs": []
+}
