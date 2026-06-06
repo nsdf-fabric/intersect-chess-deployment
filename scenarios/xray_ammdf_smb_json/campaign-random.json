@@ -565,7 +565,7 @@
                 },
                 "discrete_measurements": {
                   "type": "boolean",
-                  "default": false
+                  "default": true
                 },
                 "discrete_measurement_grid_size": {
                   "type": "array",
@@ -687,7 +687,7 @@
         {
           "id": "53aac358-f92e-4432-a5d6-da9b2c68915d",
           "type": "iterate",
-          "iterations": 15
+          "iterations": 5
         }
       ]
     },
