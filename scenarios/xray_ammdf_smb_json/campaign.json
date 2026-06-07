@@ -641,7 +641,64 @@
           "capability": "dial",
           "operation_id": "get_surrogate_values",
           "event_name": null,
-          "output": null,
+          "output": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "values": {
+                  "type": "array"
+                },
+                "transformed_stddevs": {
+                  "type": "array"
+                },
+                "stddevs": {
+                  "type": "array"
+                },
+                "dim_x": {
+                  "type": "integer"
+                },
+                "bounds": {
+                  "type": "array"
+                },
+                "points_to_predict": {
+                  "type": "array"
+                },
+                "workflow_id": {
+                  "type": "string"
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "e1030001-0000-4000-8000-000000000003",
+                "var": "values"
+              },
+              {
+                "id": "e1030002-0000-4000-8000-000000000004",
+                "var": "transformed_stddevs"
+              },
+              {
+                "id": "e1030003-0000-4000-8000-000000000005",
+                "var": "stddevs"
+              },
+              {
+                "id": "e1030004-0000-4000-8000-000000000006",
+                "var": "dim_x"
+              },
+              {
+                "id": "e1030005-0000-4000-8000-000000000007",
+                "var": "bounds"
+              },
+              {
+                "id": "e1030006-0000-4000-8000-000000000008",
+                "var": "points_to_predict"
+              },
+              {
+                "id": "f1234567-0000-4000-8000-000000000001",
+                "var": "workflow_id"
+              }
+            ]
+          },
           "input": {
             "schema": {
               "type": "object",
