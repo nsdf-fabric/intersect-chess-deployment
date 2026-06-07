@@ -21,7 +21,7 @@
               "properties": {
                 "experiment_name": {
                   "type": "string",
-                  "default": "exp_13"
+                  "default": "exp_14"
                 },
                 "base_dir": {
                   "type": "string",
@@ -56,7 +56,7 @@
               "properties": {
                 "filename": {
                   "type": "string",
-                  "default": "/nfs/chess/auxiliary/reduced_data/cycles/2026-2/id1a3/fancher-4630-b/exp_13/strain_results.json"
+                  "default": "/nfs/chess/auxiliary/reduced_data/cycles/2026-2/id1a3/fancher-4630-b/exp_14/strain_results.json"
                 },
                 "source_format": {
                   "type": "string",
@@ -473,6 +473,134 @@
           "task_objectives": null
         },
         {
+          "id": "be4a5c6d-7e8f-4091-a2b3-c4d5e6f70818",
+          "hierarchy": "intersect.default.dial-system.dial-subsystem.dial-service",
+          "capability": "dial",
+          "operation_id": "get_workflow_data",
+          "event_name": null,
+          "output": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "dataset_x": {
+                  "type": "array"
+                },
+                "dataset_y": {
+                  "type": "array"
+                },
+                "y_is_good": {
+                  "type": "boolean"
+                },
+                "kernel": {
+                  "type": "string"
+                },
+                "bounds": {
+                  "type": "array"
+                },
+                "seed": {
+                  "type": "integer"
+                },
+                "dim_x": {
+                  "type": "integer"
+                },
+                "preprocess_log": {
+                  "type": "boolean"
+                },
+                "preprocess_standardize": {
+                  "type": "boolean"
+                },
+                "kernel_args": {
+                  "type": "object"
+                },
+                "backend": {
+                  "type": "string"
+                },
+                "backend_args": {
+                  "type": "object"
+                },
+                "extra_args": {
+                  "type": "object"
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "c2020001-0000-4000-8000-000000000001",
+                "var": "dataset_x"
+              },
+              {
+                "id": "c2020001-0000-4000-8000-000000000002",
+                "var": "dataset_y"
+              },
+              {
+                "id": "c2020001-0000-4000-8000-000000000003",
+                "var": "y_is_good"
+              },
+              {
+                "id": "c2020001-0000-4000-8000-000000000004",
+                "var": "kernel"
+              },
+              {
+                "id": "c2020001-0000-4000-8000-000000000005",
+                "var": "bounds"
+              },
+              {
+                "id": "c2020001-0000-4000-8000-000000000006",
+                "var": "seed"
+              },
+              {
+                "id": "c2020001-0000-4000-8000-000000000007",
+                "var": "dim_x"
+              },
+              {
+                "id": "c2020001-0000-4000-8000-000000000008",
+                "var": "preprocess_log"
+              },
+              {
+                "id": "c2020001-0000-4000-8000-000000000009",
+                "var": "preprocess_standardize"
+              },
+              {
+                "id": "c2020001-0000-4000-8000-000000000010",
+                "var": "kernel_args"
+              },
+              {
+                "id": "c2020001-0000-4000-8000-000000000011",
+                "var": "backend"
+              },
+              {
+                "id": "c2020001-0000-4000-8000-000000000012",
+                "var": "backend_args"
+              },
+              {
+                "id": "c2020001-0000-4000-8000-000000000013",
+                "var": "extra_args"
+              }
+            ]
+          },
+          "input": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "uuid": {
+                  "type": "string",
+                  "default": "000000000000000000000001"
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "f1234567-0000-4000-8000-000000000001",
+                "var": "uuid"
+              }
+            ]
+          },
+          "task_dependencies": [
+            "31b6a9f7-98f8-4a09-a327-4b1a5f0a9b03"
+          ],
+          "task_objectives": null
+        },
+        {
           "id": "be4a5c6d-7e8f-4091-a2b3-c4d5e6f70819",
           "hierarchy": "intersect.default.dial-system.dial-subsystem.dial-service",
           "capability": "dial",
@@ -511,7 +639,7 @@
             ]
           },
           "task_dependencies": [
-            "31b6a9f7-98f8-4a09-a327-4b1a5f0a9b03"
+            "be4a5c6d-7e8f-4091-a2b3-c4d5e6f70818"
           ],
           "task_objectives": null
         },
@@ -716,27 +844,104 @@
             "schema": {
               "type": "object",
               "properties": {
-                "next_x": {
+                "dataset_x": {
                   "type": "array"
                 },
-                "next_y": {
-                  "type": "number"
+                "dataset_y": {
+                  "type": "array"
+                },
+                "backend": {
+                  "type": "string"
+                },
+                "kernel": {
+                  "type": "string"
+                },
+                "bounds": {
+                  "type": "array"
+                },
+                "y_is_good": {
+                  "type": "boolean"
+                },
+                "seed": {
+                  "type": "integer"
+                },
+                "dim_x": {
+                  "type": "integer"
+                },
+                "preprocess_log": {
+                  "type": "boolean"
+                },
+                "preprocess_standardize": {
+                  "type": "boolean"
+                },
+                "kernel_args": {
+                  "type": "object"
+                },
+                "backend_args": {
+                  "type": "object"
+                },
+                "extra_args": {
+                  "type": "object"
                 }
               }
             },
             "values": [
               {
-                "id": "ab020001-0000-4000-8000-000000000002",
-                "var": "next_x"
+                "id": "c2020001-0000-4000-8000-000000000001",
+                "var": "dataset_x"
               },
               {
-                "id": "ab030001-0000-4000-8000-000000000003",
-                "var": "next_y"
+                "id": "c2020001-0000-4000-8000-000000000002",
+                "var": "dataset_y"
+              },
+              {
+                "id": "c2020001-0000-4000-8000-000000000011",
+                "var": "backend"
+              },
+              {
+                "id": "c2020001-0000-4000-8000-000000000004",
+                "var": "kernel"
+              },
+              {
+                "id": "c2020001-0000-4000-8000-000000000005",
+                "var": "bounds"
+              },
+              {
+                "id": "c2020001-0000-4000-8000-000000000003",
+                "var": "y_is_good"
+              },
+              {
+                "id": "c2020001-0000-4000-8000-000000000006",
+                "var": "seed"
+              },
+              {
+                "id": "c2020001-0000-4000-8000-000000000007",
+                "var": "dim_x"
+              },
+              {
+                "id": "c2020001-0000-4000-8000-000000000008",
+                "var": "preprocess_log"
+              },
+              {
+                "id": "c2020001-0000-4000-8000-000000000009",
+                "var": "preprocess_standardize"
+              },
+              {
+                "id": "c2020001-0000-4000-8000-000000000010",
+                "var": "kernel_args"
+              },
+              {
+                "id": "c2020001-0000-4000-8000-000000000012",
+                "var": "backend_args"
+              },
+              {
+                "id": "c2020001-0000-4000-8000-000000000013",
+                "var": "extra_args"
               }
             ]
           },
           "task_dependencies": [
-            "31b6a9f7-98f8-4a09-a327-4b1a5f0a9b03"
+            "be4a5c6d-7e8f-4091-a2b3-c4d5e6f70818"
           ],
           "task_objectives": null
         },
@@ -953,6 +1158,134 @@
           "task_objectives": null
         },
         {
+          "id": "cf6b7d8e-9f01-5102-c4d5-e6f8091a2b3b",
+          "hierarchy": "intersect.default.dial-system.dial-subsystem.dial-service",
+          "capability": "dial",
+          "operation_id": "get_workflow_data",
+          "event_name": null,
+          "output": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "dataset_x": {
+                  "type": "array"
+                },
+                "dataset_y": {
+                  "type": "array"
+                },
+                "y_is_good": {
+                  "type": "boolean"
+                },
+                "kernel": {
+                  "type": "string"
+                },
+                "bounds": {
+                  "type": "array"
+                },
+                "seed": {
+                  "type": "integer"
+                },
+                "dim_x": {
+                  "type": "integer"
+                },
+                "preprocess_log": {
+                  "type": "boolean"
+                },
+                "preprocess_standardize": {
+                  "type": "boolean"
+                },
+                "kernel_args": {
+                  "type": "object"
+                },
+                "backend": {
+                  "type": "string"
+                },
+                "backend_args": {
+                  "type": "object"
+                },
+                "extra_args": {
+                  "type": "object"
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "c3020001-0000-4000-8000-000000000001",
+                "var": "dataset_x"
+              },
+              {
+                "id": "c3020001-0000-4000-8000-000000000002",
+                "var": "dataset_y"
+              },
+              {
+                "id": "c3020001-0000-4000-8000-000000000003",
+                "var": "y_is_good"
+              },
+              {
+                "id": "c3020001-0000-4000-8000-000000000004",
+                "var": "kernel"
+              },
+              {
+                "id": "c3020001-0000-4000-8000-000000000005",
+                "var": "bounds"
+              },
+              {
+                "id": "c3020001-0000-4000-8000-000000000006",
+                "var": "seed"
+              },
+              {
+                "id": "c3020001-0000-4000-8000-000000000007",
+                "var": "dim_x"
+              },
+              {
+                "id": "c3020001-0000-4000-8000-000000000008",
+                "var": "preprocess_log"
+              },
+              {
+                "id": "c3020001-0000-4000-8000-000000000009",
+                "var": "preprocess_standardize"
+              },
+              {
+                "id": "c3020001-0000-4000-8000-000000000010",
+                "var": "kernel_args"
+              },
+              {
+                "id": "c3020001-0000-4000-8000-000000000011",
+                "var": "backend"
+              },
+              {
+                "id": "c3020001-0000-4000-8000-000000000012",
+                "var": "backend_args"
+              },
+              {
+                "id": "c3020001-0000-4000-8000-000000000013",
+                "var": "extra_args"
+              }
+            ]
+          },
+          "input": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "uuid": {
+                  "type": "string",
+                  "default": "000000000000000000000001"
+                }
+              }
+            },
+            "values": [
+              {
+                "id": "f1234567-0000-4000-8000-000000000001",
+                "var": "uuid"
+              }
+            ]
+          },
+          "task_dependencies": [
+            "42c8b8a8-a9f9-5b1a-b438-5c2b6e1c2c12"
+          ],
+          "task_objectives": null
+        },
+        {
           "id": "cf6b7d8e-9f01-5102-c4d5-e6f8091a2b3c",
           "hierarchy": "intersect.default.dial-system.dial-subsystem.dial-service",
           "capability": "dial",
@@ -991,7 +1324,7 @@
             ]
           },
           "task_dependencies": [
-            "42c8b8a8-a9f9-5b1a-b438-5c2b6e1c2c12"
+            "cf6b7d8e-9f01-5102-c4d5-e6f8091a2b3b"
           ],
           "task_objectives": null
         },
@@ -1204,27 +1537,104 @@
             "schema": {
               "type": "object",
               "properties": {
-                "next_x": {
+                "dataset_x": {
                   "type": "array"
                 },
-                "next_y": {
-                  "type": "number"
+                "dataset_y": {
+                  "type": "array"
+                },
+                "backend": {
+                  "type": "string"
+                },
+                "kernel": {
+                  "type": "string"
+                },
+                "bounds": {
+                  "type": "array"
+                },
+                "y_is_good": {
+                  "type": "boolean"
+                },
+                "seed": {
+                  "type": "integer"
+                },
+                "dim_x": {
+                  "type": "integer"
+                },
+                "preprocess_log": {
+                  "type": "boolean"
+                },
+                "preprocess_standardize": {
+                  "type": "boolean"
+                },
+                "kernel_args": {
+                  "type": "object"
+                },
+                "backend_args": {
+                  "type": "object"
+                },
+                "extra_args": {
+                  "type": "object"
                 }
               }
             },
             "values": [
               {
-                "id": "ac020001-0000-4000-8000-000000000002",
-                "var": "next_x"
+                "id": "c3020001-0000-4000-8000-000000000001",
+                "var": "dataset_x"
               },
               {
-                "id": "ac030001-0000-4000-8000-000000000003",
-                "var": "next_y"
+                "id": "c3020001-0000-4000-8000-000000000002",
+                "var": "dataset_y"
+              },
+              {
+                "id": "c3020001-0000-4000-8000-000000000011",
+                "var": "backend"
+              },
+              {
+                "id": "c3020001-0000-4000-8000-000000000004",
+                "var": "kernel"
+              },
+              {
+                "id": "c3020001-0000-4000-8000-000000000005",
+                "var": "bounds"
+              },
+              {
+                "id": "c3020001-0000-4000-8000-000000000003",
+                "var": "y_is_good"
+              },
+              {
+                "id": "c3020001-0000-4000-8000-000000000006",
+                "var": "seed"
+              },
+              {
+                "id": "c3020001-0000-4000-8000-000000000007",
+                "var": "dim_x"
+              },
+              {
+                "id": "c3020001-0000-4000-8000-000000000008",
+                "var": "preprocess_log"
+              },
+              {
+                "id": "c3020001-0000-4000-8000-000000000009",
+                "var": "preprocess_standardize"
+              },
+              {
+                "id": "c3020001-0000-4000-8000-000000000010",
+                "var": "kernel_args"
+              },
+              {
+                "id": "c3020001-0000-4000-8000-000000000012",
+                "var": "backend_args"
+              },
+              {
+                "id": "c3020001-0000-4000-8000-000000000013",
+                "var": "extra_args"
               }
             ]
           },
           "task_dependencies": [
-            "42c8b8a8-a9f9-5b1a-b438-5c2b6e1c2c12"
+            "cf6b7d8e-9f01-5102-c4d5-e6f8091a2b3b"
           ],
           "task_objectives": null
         },
