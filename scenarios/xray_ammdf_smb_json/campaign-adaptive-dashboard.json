@@ -580,18 +580,13 @@
           },
           "input": {
             "schema": {
-              "type": "object",
-              "properties": {
-                "uuid": {
-                  "type": "string",
-                  "default": "000000000000000000000001"
-                }
-              }
+              "type": "string",
+              "default": "000000000000000000000001"
             },
             "values": [
               {
                 "id": "f1234567-0000-4000-8000-000000000001",
-                "var": "uuid"
+                "var": "workflow_id"
               }
             ]
           },
@@ -1265,18 +1260,13 @@
           },
           "input": {
             "schema": {
-              "type": "object",
-              "properties": {
-                "uuid": {
-                  "type": "string",
-                  "default": "000000000000000000000001"
-                }
-              }
+              "type": "string",
+              "default": "000000000000000000000001"
             },
             "values": [
               {
                 "id": "f1234567-0000-4000-8000-000000000001",
-                "var": "uuid"
+                "var": "workflow_id"
               }
             ]
           },
