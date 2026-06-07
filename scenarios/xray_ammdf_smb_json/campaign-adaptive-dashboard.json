@@ -21,7 +21,7 @@
               "properties": {
                 "experiment_name": {
                   "type": "string",
-                  "default": "exp_16"
+                  "default": "exp_17"
                 },
                 "base_dir": {
                   "type": "string",
@@ -56,7 +56,7 @@
               "properties": {
                 "filename": {
                   "type": "string",
-                  "default": "/nfs/chess/auxiliary/reduced_data/cycles/2026-2/id1a3/fancher-4630-b/exp_16/strain_results.json"
+                  "default": "/nfs/chess/auxiliary/reduced_data/cycles/2026-2/id1a3/fancher-4630-b/exp_17/strain_results.json"
                 },
                 "source_format": {
                   "type": "string",
@@ -677,7 +677,7 @@
                 },
                 "strategy": {
                   "type": "string",
-                  "default": "random"
+                  "default": "hypercube"
                 },
                 "y_is_good": {
                   "type": "boolean",
@@ -688,11 +688,11 @@
                 },
                 "discrete_measurements": {
                   "type": "boolean",
-                  "default": false
+                  "default": true
                 },
                 "discrete_measurement_grid_size": {
                   "type": "array",
-                  "default": [60, 29]
+                  "default": [5, 4]
                 }
               }
             },
@@ -1033,7 +1033,22 @@
                   "type": "string",
                   "default": "000000000000000000000001"
                 },
-                "data": {
+                "values": {
+                  "type": "array"
+                },
+                "transformed_stddevs": {
+                  "type": "array"
+                },
+                "stddevs": {
+                  "type": "array"
+                },
+                "dim_x": {
+                  "type": "integer"
+                },
+                "bounds": {
+                  "type": "array"
+                },
+                "points_to_predict": {
                   "type": "array"
                 }
               }
@@ -1044,8 +1059,28 @@
                 "var": "workflow_id"
               },
               {
+                "id": "e1030001-0000-4000-8000-000000000003",
+                "var": "values"
+              },
+              {
+                "id": "e1030002-0000-4000-8000-000000000004",
+                "var": "transformed_stddevs"
+              },
+              {
+                "id": "e1030003-0000-4000-8000-000000000005",
+                "var": "stddevs"
+              },
+              {
+                "id": "e1030004-0000-4000-8000-000000000006",
+                "var": "dim_x"
+              },
+              {
+                "id": "e1030005-0000-4000-8000-000000000007",
+                "var": "bounds"
+              },
+              {
                 "id": "e1030006-0000-4000-8000-000000000008",
-                "var": "data"
+                "var": "points_to_predict"
               }
             ]
           },
@@ -1763,7 +1798,22 @@
                   "type": "string",
                   "default": "000000000000000000000001"
                 },
-                "data": {
+                "values": {
+                  "type": "array"
+                },
+                "transformed_stddevs": {
+                  "type": "array"
+                },
+                "stddevs": {
+                  "type": "array"
+                },
+                "dim_x": {
+                  "type": "integer"
+                },
+                "bounds": {
+                  "type": "array"
+                },
+                "points_to_predict": {
                   "type": "array"
                 }
               }
@@ -1774,8 +1824,28 @@
                 "var": "workflow_id"
               },
               {
+                "id": "e2030001-0000-4000-8000-000000000003",
+                "var": "values"
+              },
+              {
+                "id": "e2030002-0000-4000-8000-000000000004",
+                "var": "transformed_stddevs"
+              },
+              {
+                "id": "e2030003-0000-4000-8000-000000000005",
+                "var": "stddevs"
+              },
+              {
+                "id": "e2030004-0000-4000-8000-000000000006",
+                "var": "dim_x"
+              },
+              {
+                "id": "e2030005-0000-4000-8000-000000000007",
+                "var": "bounds"
+              },
+              {
                 "id": "e2030006-0000-4000-8000-000000000008",
-                "var": "data"
+                "var": "points_to_predict"
               }
             ]
           },
