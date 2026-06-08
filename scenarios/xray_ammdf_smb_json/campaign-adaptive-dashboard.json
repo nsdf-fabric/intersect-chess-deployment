@@ -21,7 +21,7 @@
               "properties": {
                 "experiment_name": {
                   "type": "string",
-                  "default": "exp_20"
+                  "default": "exp_21"
                 },
                 "base_dir": {
                   "type": "string",
@@ -56,7 +56,7 @@
               "properties": {
                 "filename": {
                   "type": "string",
-                  "default": "/nfs/chess/auxiliary/reduced_data/cycles/2026-2/id1a3/fancher-4630-b/exp_20/strain_results.json"
+                  "default": "/nfs/chess/auxiliary/reduced_data/cycles/2026-2/id1a3/fancher-4630-b/exp_21/strain_results.json"
                 },
                 "source_format": {
                   "type": "string",
@@ -813,6 +813,9 @@
                 "points_to_predict": {
                   "type": "array"
                 },
+                "transformed_stddevs_avg": {
+                  "type": "number"
+                },
                 "workflow_id": {
                   "type": "string"
                 }
@@ -842,6 +845,10 @@
               {
                 "id": "e1030006-0000-4000-8000-000000000008",
                 "var": "points_to_predict"
+              },
+              {
+                "id": "e1030007-0000-4000-8000-000000000009",
+                "var": "transformed_stddevs_avg"
               },
               {
                 "id": "f1234567-0000-4000-8000-000000000001",
@@ -1964,6 +1971,9 @@
                 },
                 "points_to_predict": {
                   "type": "array"
+                },
+                "transformed_stddevs_avg": {
+                  "type": "number"
                 }
               }
             },
@@ -1995,6 +2005,10 @@
               {
                 "id": "e1030006-0000-4000-8000-000000000008",
                 "var": "points_to_predict"
+              },
+              {
+                "id": "e1030007-0000-4000-8000-000000000009",
+                "var": "transformed_stddevs_avg"
               }
             ]
           },
@@ -2492,6 +2506,9 @@
                 "points_to_predict": {
                   "type": "array"
                 },
+                "transformed_stddevs_avg": {
+                  "type": "number"
+                },
                 "workflow_id": {
                   "type": "string"
                 }
@@ -2521,6 +2538,10 @@
               {
                 "id": "e2030006-0000-4000-8000-000000000008",
                 "var": "points_to_predict"
+              },
+              {
+                "id": "e2030007-0000-4000-8000-000000000009",
+                "var": "transformed_stddevs_avg"
               },
               {
                 "id": "f1234567-0000-4000-8000-000000000001",
@@ -3643,6 +3664,9 @@
                 },
                 "points_to_predict": {
                   "type": "array"
+                },
+                "transformed_stddevs_avg": {
+                  "type": "number"
                 }
               }
             },
@@ -3674,6 +3698,10 @@
               {
                 "id": "e2030006-0000-4000-8000-000000000008",
                 "var": "points_to_predict"
+              },
+              {
+                "id": "e2030007-0000-4000-8000-000000000009",
+                "var": "transformed_stddevs_avg"
               }
             ]
           },
