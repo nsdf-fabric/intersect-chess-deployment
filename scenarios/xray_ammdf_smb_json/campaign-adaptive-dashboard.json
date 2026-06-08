@@ -21,7 +21,7 @@
               "properties": {
                 "experiment_name": {
                   "type": "string",
-                  "default": "exp_26"
+                  "default": "exp_27"
                 },
                 "base_dir": {
                   "type": "string",
@@ -56,7 +56,7 @@
               "properties": {
                 "filename": {
                   "type": "string",
-                  "default": "/nfs/chess/auxiliary/reduced_data/cycles/2026-2/id1a3/fancher-4630-b/exp_26/strain_results.json"
+                  "default": "/nfs/chess/auxiliary/reduced_data/cycles/2026-2/id1a3/fancher-4630-b/exp_27/strain_results.json"
                 },
                 "source_format": {
                   "type": "string",
@@ -2099,7 +2099,7 @@
         {
           "id": "53aac358-f92e-4432-a5d6-da9b2c68915d",
           "type": "iterate",
-          "iterations": 30
+          "iterations": 5
         }
       ]
     },
@@ -2425,7 +2425,7 @@
                 },
                 "strategy": {
                   "type": "string",
-                  "default": "upper_confidence_bound"
+                  "default": "uncertainty"
                 },
                 "y_is_good": {
                   "type": "boolean",
@@ -3834,7 +3834,7 @@
         {
           "id": "64bbd469-0a3f-5543-b6e7-ebaac3d79626",
           "type": "iterate",
-          "iterations": 20
+          "iterations": 5
         }
       ]
     },
