@@ -21,7 +21,7 @@
               "properties": {
                 "experiment_name": {
                   "type": "string",
-                  "default": "exp_19"
+                  "default": "exp_20"
                 },
                 "base_dir": {
                   "type": "string",
@@ -56,7 +56,7 @@
               "properties": {
                 "filename": {
                   "type": "string",
-                  "default": "/nfs/chess/auxiliary/reduced_data/cycles/2026-2/id1a3/fancher-4630-b/exp_19/strain_results.json"
+                  "default": "/nfs/chess/auxiliary/reduced_data/cycles/2026-2/id1a3/fancher-4630-b/exp_20/strain_results.json"
                 },
                 "source_format": {
                   "type": "string",
@@ -520,6 +520,9 @@
                 },
                 "extra_args": {
                   "type": "object"
+                },
+                "workflow_id": {
+                  "type": "string"
                 }
               }
             },
@@ -575,6 +578,10 @@
               {
                 "id": "c2020001-0000-4000-8000-000000000013",
                 "var": "extra_args"
+              },
+              {
+                "id": "f1234567-0000-4000-8000-000000000001",
+                "var": "workflow_id"
               }
             ]
           },
@@ -1819,6 +1826,9 @@
                 },
                 "extra_args": {
                   "type": "object"
+                },
+                "workflow_id": {
+                  "type": "string"
                 }
               }
             },
@@ -1874,6 +1884,10 @@
               {
                 "id": "c2020001-0000-4000-8000-000000000013",
                 "var": "extra_args"
+              },
+              {
+                "id": "f1234567-0000-4000-8000-000000000001",
+                "var": "workflow_id"
               }
             ]
           },
@@ -2177,6 +2191,9 @@
                 },
                 "extra_args": {
                   "type": "object"
+                },
+                "workflow_id": {
+                  "type": "string"
                 }
               }
             },
@@ -2232,6 +2249,10 @@
               {
                 "id": "c3020001-0000-4000-8000-000000000013",
                 "var": "extra_args"
+              },
+              {
+                "id": "f1234567-0000-4000-8000-000000000001",
+                "var": "workflow_id"
               }
             ]
           },
@@ -3484,6 +3505,9 @@
                 },
                 "extra_args": {
                   "type": "object"
+                },
+                "workflow_id": {
+                  "type": "string"
                 }
               }
             },
@@ -3539,6 +3563,10 @@
               {
                 "id": "c3020001-0000-4000-8000-000000000013",
                 "var": "extra_args"
+              },
+              {
+                "id": "f1234567-0000-4000-8000-000000000001",
+                "var": "workflow_id"
               }
             ]
           },
