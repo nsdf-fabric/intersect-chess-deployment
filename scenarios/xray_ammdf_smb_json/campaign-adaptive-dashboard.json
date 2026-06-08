@@ -21,7 +21,7 @@
               "properties": {
                 "experiment_name": {
                   "type": "string",
-                  "default": "exp_25"
+                  "default": "exp_26"
                 },
                 "base_dir": {
                   "type": "string",
@@ -56,7 +56,7 @@
               "properties": {
                 "filename": {
                   "type": "string",
-                  "default": "/nfs/chess/auxiliary/reduced_data/cycles/2026-2/id1a3/fancher-4630-b/exp_25/strain_results.json"
+                  "default": "/nfs/chess/auxiliary/reduced_data/cycles/2026-2/id1a3/fancher-4630-b/exp_26/strain_results.json"
                 },
                 "source_format": {
                   "type": "string",
@@ -521,6 +521,9 @@
                 "extra_args": {
                   "type": "object"
                 },
+                "dataset_x_size": {
+                  "type": "integer"
+                },
                 "workflow_id": {
                   "type": "string"
                 }
@@ -580,6 +583,10 @@
                 "var": "extra_args"
               },
               {
+                "id": "c2020001-0000-4000-8000-000000000014",
+                "var": "dataset_x_size"
+              },
+              {
                 "id": "f1234567-0000-4000-8000-000000000001",
                 "var": "workflow_id"
               }
@@ -598,7 +605,7 @@
             ]
           },
           "task_dependencies": [
-            "31b6a9f7-98f8-4a09-a327-4b1a5f0a9b03"
+            "be4a5c6d-7e8f-4091-a2b3-c4d5e6f70819"
           ],
           "task_objectives": null
         },
@@ -641,7 +648,7 @@
             ]
           },
           "task_dependencies": [
-            "be4a5c6d-7e8f-4091-a2b3-c4d5e6f70818"
+            "31b6a9f7-98f8-4a09-a327-4b1a5f0a9b03"
           ],
           "task_objectives": null
         },
@@ -660,6 +667,9 @@
                 },
                 "data": {
                   "type": "array"
+                },
+                "dataset_x_size": {
+                  "type": "integer"
                 }
               }
             },
@@ -671,6 +681,10 @@
               {
                 "id": "e1020001-0000-4000-8000-000000000002",
                 "var": "data"
+              },
+              {
+                "id": "e1020002-0000-4000-8000-000000000003",
+                "var": "dataset_x_size"
               }
             ]
           },
@@ -1841,6 +1855,9 @@
                 "extra_args": {
                   "type": "object"
                 },
+                "dataset_x_size": {
+                  "type": "integer"
+                },
                 "workflow_id": {
                   "type": "string"
                 }
@@ -1900,6 +1917,10 @@
                 "var": "extra_args"
               },
               {
+                "id": "c2020001-0000-4000-8000-000000000014",
+                "var": "dataset_x_size"
+              },
+              {
                 "id": "f1234567-0000-4000-8000-000000000001",
                 "var": "workflow_id"
               }
@@ -1927,6 +1948,9 @@
                 },
                 "data": {
                   "type": "array"
+                },
+                "dataset_x_size": {
+                  "type": "integer"
                 }
               }
             },
@@ -1938,6 +1962,10 @@
               {
                 "id": "e1020001-0000-4000-8000-000000000002",
                 "var": "data"
+              },
+              {
+                "id": "e1020002-0000-4000-8000-000000000003",
+                "var": "dataset_x_size"
               }
             ]
           },
@@ -2220,6 +2248,9 @@
                 "extra_args": {
                   "type": "object"
                 },
+                "dataset_x_size": {
+                  "type": "integer"
+                },
                 "workflow_id": {
                   "type": "string"
                 }
@@ -2279,6 +2310,10 @@
                 "var": "extra_args"
               },
               {
+                "id": "c3020001-0000-4000-8000-000000000014",
+                "var": "dataset_x_size"
+              },
+              {
                 "id": "f1234567-0000-4000-8000-000000000001",
                 "var": "workflow_id"
               }
@@ -2297,7 +2332,7 @@
             ]
           },
           "task_dependencies": [
-            "42c8b8a8-a9f9-5b1a-b438-5c2b6e1c2c12"
+            "cf6b7d8e-9f01-5102-c4d5-e6f8091a2b3c"
           ],
           "task_objectives": null
         },
@@ -2340,7 +2375,7 @@
             ]
           },
           "task_dependencies": [
-            "cf6b7d8e-9f01-5102-c4d5-e6f8091a2b3b"
+            "42c8b8a8-a9f9-5b1a-b438-5c2b6e1c2c12"
           ],
           "task_objectives": null
         },
@@ -2359,6 +2394,9 @@
                 },
                 "data": {
                   "type": "array"
+                },
+                "dataset_x_size": {
+                  "type": "integer"
                 }
               }
             },
@@ -2370,6 +2408,10 @@
               {
                 "id": "e2020001-0000-4000-8000-000000000002",
                 "var": "data"
+              },
+              {
+                "id": "e2020002-0000-4000-8000-000000000003",
+                "var": "dataset_x_size"
               }
             ]
           },
@@ -3548,6 +3590,9 @@
                 "extra_args": {
                   "type": "object"
                 },
+                "dataset_x_size": {
+                  "type": "integer"
+                },
                 "workflow_id": {
                   "type": "string"
                 }
@@ -3607,6 +3652,10 @@
                 "var": "extra_args"
               },
               {
+                "id": "c3020001-0000-4000-8000-000000000014",
+                "var": "dataset_x_size"
+              },
+              {
                 "id": "f1234567-0000-4000-8000-000000000001",
                 "var": "workflow_id"
               }
@@ -3634,6 +3683,9 @@
                 },
                 "data": {
                   "type": "array"
+                },
+                "dataset_x_size": {
+                  "type": "integer"
                 }
               }
             },
@@ -3645,6 +3697,10 @@
               {
                 "id": "e2020001-0000-4000-8000-000000000002",
                 "var": "data"
+              },
+              {
+                "id": "e2020002-0000-4000-8000-000000000003",
+                "var": "dataset_x_size"
               }
             ]
           },
