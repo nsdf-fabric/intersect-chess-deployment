@@ -21,7 +21,7 @@
               "properties": {
                 "experiment_name": {
                   "type": "string",
-                  "default": "exp_21"
+                  "default": "exp_22"
                 },
                 "base_dir": {
                   "type": "string",
@@ -56,7 +56,7 @@
               "properties": {
                 "filename": {
                   "type": "string",
-                  "default": "/nfs/chess/auxiliary/reduced_data/cycles/2026-2/id1a3/fancher-4630-b/exp_21/strain_results.json"
+                  "default": "/nfs/chess/auxiliary/reduced_data/cycles/2026-2/id1a3/fancher-4630-b/exp_22/strain_results.json"
                 },
                 "source_format": {
                   "type": "string",
@@ -816,6 +816,9 @@
                 "transformed_stddevs_avg": {
                   "type": "number"
                 },
+                "dataset_x_size": {
+                  "type": "integer"
+                },
                 "workflow_id": {
                   "type": "string"
                 }
@@ -849,6 +852,10 @@
               {
                 "id": "e1030007-0000-4000-8000-000000000009",
                 "var": "transformed_stddevs_avg"
+              },
+              {
+                "id": "e1030008-0000-4000-8000-000000000010",
+                "var": "dataset_x_size"
               },
               {
                 "id": "f1234567-0000-4000-8000-000000000001",
@@ -1974,6 +1981,9 @@
                 },
                 "transformed_stddevs_avg": {
                   "type": "number"
+                },
+                "dataset_x_size": {
+                  "type": "integer"
                 }
               }
             },
@@ -2009,6 +2019,10 @@
               {
                 "id": "e1030007-0000-4000-8000-000000000009",
                 "var": "transformed_stddevs_avg"
+              },
+              {
+                "id": "e1030008-0000-4000-8000-000000000010",
+                "var": "dataset_x_size"
               }
             ]
           },
@@ -2509,6 +2523,9 @@
                 "transformed_stddevs_avg": {
                   "type": "number"
                 },
+                "dataset_x_size": {
+                  "type": "integer"
+                },
                 "workflow_id": {
                   "type": "string"
                 }
@@ -2542,6 +2559,10 @@
               {
                 "id": "e2030007-0000-4000-8000-000000000009",
                 "var": "transformed_stddevs_avg"
+              },
+              {
+                "id": "e2030008-0000-4000-8000-000000000010",
+                "var": "dataset_x_size"
               },
               {
                 "id": "f1234567-0000-4000-8000-000000000001",
@@ -3667,6 +3688,9 @@
                 },
                 "transformed_stddevs_avg": {
                   "type": "number"
+                },
+                "dataset_x_size": {
+                  "type": "integer"
                 }
               }
             },
@@ -3702,6 +3726,10 @@
               {
                 "id": "e2030007-0000-4000-8000-000000000009",
                 "var": "transformed_stddevs_avg"
+              },
+              {
+                "id": "e2030008-0000-4000-8000-000000000010",
+                "var": "dataset_x_size"
               }
             ]
           },
