@@ -1,0 +1,816 @@
+{
+  "labx": [
+    -18.902476,
+    -18.902476,
+    -18.902476,
+    -18.902476,
+    -18.902476,
+    -18.902476,
+    -18.902476,
+    -18.902476,
+    -18.902476,
+    -18.902476,
+    -18.902476,
+    -18.902476,
+    -18.902476,
+    -18.902476,
+    -18.902476,
+    -18.902476,
+    -18.902476,
+    -18.902476,
+    -18.902476,
+    -18.902476,
+    -18.902476,
+    -18.902476,
+    -18.902476,
+    -18.902476,
+    -18.902476,
+    -18.902476
+  ],
+  "labz": [
+    -7.5999338,
+    -7.5999338,
+    -7.5999338,
+    -7.5999338,
+    -7.5999338,
+    -7.5999338,
+    -7.5999338,
+    -7.5999338,
+    -7.5999338,
+    -7.5999338,
+    -7.5999338,
+    -7.5999338,
+    -7.5999338,
+    -7.5999338,
+    -7.5999338,
+    -7.5999338,
+    -7.5999338,
+    -7.5999338,
+    -7.5999338,
+    -7.5999338,
+    -7.5999338,
+    -7.5999338,
+    -7.5999338,
+    -7.5999338,
+    -7.5999338,
+    -7.5999338
+  ],
+  "0": {
+    "data": {
+      "unconstrained_strain": [
+        -0.002389772373117545
+      ],
+      "uniform_strain": [
+        -9.113761502994888e-05
+      ],
+      "unconstrained_strain_stdev": [
+        0.003381819033500953
+      ]
+    },
+    "unconstrained_fit": {
+      "1_1_1/strains/values": [
+        -0.007171147548697081
+      ],
+      "2_0_0/strains/values": [
+        -9.336381686607558e-05
+      ],
+      "2_2_0/strains/values": [
+        NaN
+      ],
+      "2_2_2/strains/values": [
+        NaN
+      ],
+      "3_1_1/strains/values": [
+        NaN
+      ],
+      "3_3_1/strains/values": [
+        NaN
+      ],
+      "4_0_0/strains/values": [
+        9.519424621052164e-05
+      ],
+      "4_2_0/strains/values": [
+        NaN
+      ],
+      "4_2_2/strains/values": [
+        NaN
+      ],
+      "results/success": [
+        true
+      ]
+    },
+    "uniform_fit": {
+      "results/success": [
+        true
+      ]
+    }
+  },
+  "1": {
+    "data": {
+      "unconstrained_strain": [
+        0.00032361762961314255
+      ],
+      "uniform_strain": [
+        0.0005593189256307824
+      ],
+      "unconstrained_strain_stdev": [
+        0.0006424315840853213
+      ]
+    },
+    "unconstrained_fit": {
+      "1_1_1/strains/values": [
+        NaN
+      ],
+      "2_0_0/strains/values": [
+        0.0006086457672826012
+      ],
+      "2_2_0/strains/values": [
+        -0.00032804287479716696
+      ],
+      "2_2_2/strains/values": [
+        NaN
+      ],
+      "3_1_1/strains/values": [
+        0.001296171408677452
+      ],
+      "3_3_1/strains/values": [
+        NaN
+      ],
+      "4_0_0/strains/values": [
+        0.00048339768065352074
+      ],
+      "4_2_0/strains/values": [
+        -0.0004420838337506944
+      ],
+      "4_2_2/strains/values": [
+        NaN
+      ],
+      "results/success": [
+        true
+      ]
+    },
+    "uniform_fit": {
+      "results/success": [
+        true
+      ]
+    }
+  },
+  "5": {
+    "data": {
+      "unconstrained_strain": [
+        0.00015129315263017192
+      ],
+      "uniform_strain": [
+        0.00010119224852084055
+      ],
+      "unconstrained_strain_stdev": [
+        0.0002241138207687857
+      ]
+    },
+    "unconstrained_fit": {
+      "1_1_1/strains/values": [
+        NaN
+      ],
+      "2_0_0/strains/values": [
+        NaN
+      ],
+      "2_2_0/strains/values": [
+        0.00015856259059785437
+      ],
+      "2_2_2/strains/values": [
+        0.0005820073568033527
+      ],
+      "3_1_1/strains/values": [
+        1.8788138900844996e-05
+      ],
+      "3_3_1/strains/values": [
+        2.4546895396494357e-05
+      ],
+      "4_0_0/strains/values": [
+        NaN
+      ],
+      "4_2_0/strains/values": [
+        -2.7439218547686807e-05
+      ],
+      "4_2_2/strains/values": [
+        NaN
+      ],
+      "results/success": [
+        true
+      ]
+    },
+    "uniform_fit": {
+      "results/success": [
+        true
+      ]
+    }
+  },
+  "8": {
+    "data": {
+      "unconstrained_strain": [
+        0.00027948900862442844
+      ],
+      "uniform_strain": [
+        0.0004781506109815681
+      ],
+      "unconstrained_strain_stdev": [
+        0.0003804974958727733
+      ]
+    },
+    "unconstrained_fit": {
+      "1_1_1/strains/values": [
+        NaN
+      ],
+      "2_0_0/strains/values": [
+        NaN
+      ],
+      "2_2_0/strains/values": [
+        -0.0001754182000548707
+      ],
+      "2_2_2/strains/values": [
+        NaN
+      ],
+      "3_1_1/strains/values": [
+        0.0007558644685069031
+      ],
+      "3_3_1/strains/values": [
+        NaN
+      ],
+      "4_0_0/strains/values": [
+        NaN
+      ],
+      "4_2_0/strains/values": [
+        0.0002580207574212529
+      ],
+      "4_2_2/strains/values": [
+        NaN
+      ],
+      "results/success": [
+        true
+      ]
+    },
+    "uniform_fit": {
+      "results/success": [
+        true
+      ]
+    }
+  },
+  "11": {
+    "data": {
+      "unconstrained_strain": [
+        0.001587556350982912
+      ],
+      "uniform_strain": [
+        -0.0007055602784638349
+      ],
+      "unconstrained_strain_stdev": [
+        0.002205177200718407
+      ]
+    },
+    "unconstrained_fit": {
+      "1_1_1/strains/values": [
+        NaN
+      ],
+      "2_0_0/strains/values": [
+        0.004986144299641875
+      ],
+      "2_2_0/strains/values": [
+        0.002042638958217413
+      ],
+      "2_2_2/strains/values": [
+        NaN
+      ],
+      "3_1_1/strains/values": [
+        -0.0007055693482251915
+      ],
+      "3_3_1/strains/values": [
+        NaN
+      ],
+      "4_0_0/strains/values": [
+        NaN
+      ],
+      "4_2_0/strains/values": [
+        2.701149429755101e-05
+      ],
+      "4_2_2/strains/values": [
+        NaN
+      ],
+      "results/success": [
+        true
+      ]
+    },
+    "uniform_fit": {
+      "results/success": [
+        true
+      ]
+    }
+  },
+  "12": {
+    "data": {
+      "unconstrained_strain": [
+        0.00010232696508090879
+      ],
+      "uniform_strain": [
+        0.00027552513171646737
+      ],
+      "unconstrained_strain_stdev": [
+        0.00017331644280357586
+      ]
+    },
+    "unconstrained_fit": {
+      "1_1_1/strains/values": [
+        NaN
+      ],
+      "2_0_0/strains/values": [
+        NaN
+      ],
+      "2_2_0/strains/values": [
+        NaN
+      ],
+      "2_2_2/strains/values": [
+        NaN
+      ],
+      "3_1_1/strains/values": [
+        0.00027564340788448465
+      ],
+      "3_3_1/strains/values": [
+        NaN
+      ],
+      "4_0_0/strains/values": [
+        NaN
+      ],
+      "4_2_0/strains/values": [
+        -7.098947772266706e-05
+      ],
+      "4_2_2/strains/values": [
+        NaN
+      ],
+      "results/success": [
+        true
+      ]
+    },
+    "uniform_fit": {
+      "results/success": [
+        true
+      ]
+    }
+  },
+  "13": {
+    "data": {
+      "unconstrained_strain": [
+        -0.0012005601135929998
+      ],
+      "uniform_strain": [
+        0.000328593937766449
+      ],
+      "unconstrained_strain_stdev": [
+        0.0030542362853235856
+      ]
+    },
+    "unconstrained_fit": {
+      "1_1_1/strains/values": [
+        NaN
+      ],
+      "2_0_0/strains/values": [
+        NaN
+      ],
+      "2_2_0/strains/values": [
+        0.001362787478067774
+      ],
+      "2_2_2/strains/values": [
+        -0.006411479468226917
+      ],
+      "3_1_1/strains/values": [
+        0.0003283935408637071
+      ],
+      "3_3_1/strains/values": [
+        NaN
+      ],
+      "4_0_0/strains/values": [
+        -8.194200507656403e-05
+      ],
+      "4_2_0/strains/values": [
+        NaN
+      ],
+      "4_2_2/strains/values": [
+        NaN
+      ],
+      "results/success": [
+        true
+      ]
+    },
+    "uniform_fit": {
+      "results/success": [
+        true
+      ]
+    }
+  },
+  "14": {
+    "data": {
+      "unconstrained_strain": [
+        -1.9389416912041918e-05
+      ],
+      "uniform_strain": [
+        -0.00034085216223737246
+      ],
+      "unconstrained_strain_stdev": [
+        0.00032178033525520703
+      ]
+    },
+    "unconstrained_fit": {
+      "1_1_1/strains/values": [
+        NaN
+      ],
+      "2_0_0/strains/values": [
+        NaN
+      ],
+      "2_2_0/strains/values": [
+        NaN
+      ],
+      "2_2_2/strains/values": [
+        NaN
+      ],
+      "3_1_1/strains/values": [
+        -0.00034116975216724895
+      ],
+      "3_3_1/strains/values": [
+        0.0003023909183431651
+      ],
+      "4_0_0/strains/values": [
+        NaN
+      ],
+      "4_2_0/strains/values": [
+        NaN
+      ],
+      "4_2_2/strains/values": [
+        NaN
+      ],
+      "results/success": [
+        true
+      ]
+    },
+    "uniform_fit": {
+      "results/success": [
+        true
+      ]
+    }
+  },
+  "16": {
+    "data": {
+      "unconstrained_strain": [
+        0.006634229499518945
+      ],
+      "uniform_strain": [
+        -0.00017478493451642384
+      ],
+      "unconstrained_strain_stdev": [
+        0.01128450129612271
+      ]
+    },
+    "unconstrained_fit": {
+      "1_1_1/strains/values": [
+        NaN
+      ],
+      "2_0_0/strains/values": [
+        0.026176530599477207
+      ],
+      "2_2_0/strains/values": [
+        0.0003747988635416183
+      ],
+      "2_2_2/strains/values": [
+        0.0001667913354499112
+      ],
+      "3_1_1/strains/values": [
+        NaN
+      ],
+      "3_3_1/strains/values": [
+        -0.00018120280039295904
+      ],
+      "4_0_0/strains/values": [
+        NaN
+      ],
+      "4_2_0/strains/values": [
+        NaN
+      ],
+      "4_2_2/strains/values": [
+        NaN
+      ],
+      "results/success": [
+        true
+      ]
+    },
+    "uniform_fit": {
+      "results/success": [
+        true
+      ]
+    }
+  },
+  "17": {
+    "data": {
+      "unconstrained_strain": [
+        -0.0004607184357198092
+      ],
+      "uniform_strain": [
+        -0.0008888638092052312
+      ],
+      "unconstrained_strain_stdev": [
+        0.0003212593903274176
+      ]
+    },
+    "unconstrained_fit": {
+      "1_1_1/strains/values": [
+        NaN
+      ],
+      "2_0_0/strains/values": [
+        NaN
+      ],
+      "2_2_0/strains/values": [
+        -0.0008907994677497078
+      ],
+      "2_2_2/strains/values": [
+        -0.0003725011164252907
+      ],
+      "3_1_1/strains/values": [
+        NaN
+      ],
+      "3_3_1/strains/values": [
+        -0.00011885472298442918
+      ],
+      "4_0_0/strains/values": [
+        NaN
+      ],
+      "4_2_0/strains/values": [
+        NaN
+      ],
+      "4_2_2/strains/values": [
+        NaN
+      ],
+      "results/success": [
+        true
+      ]
+    },
+    "uniform_fit": {
+      "results/success": [
+        true
+      ]
+    }
+  },
+  "18": {
+    "data": {
+      "unconstrained_strain": [
+        -0.0015472268720655837
+      ],
+      "uniform_strain": [
+        -0.0029014540327656512
+      ],
+      "unconstrained_strain_stdev": [
+        0.0012963448251570055
+      ]
+    },
+    "unconstrained_fit": {
+      "1_1_1/strains/values": [
+        -0.003064173603778071
+      ],
+      "2_0_0/strains/values": [
+        -0.00292440879434756
+      ],
+      "2_2_0/strains/values": [
+        NaN
+      ],
+      "2_2_2/strains/values": [
+        NaN
+      ],
+      "3_1_1/strains/values": [
+        -0.00023741019263681193
+      ],
+      "3_3_1/strains/values": [
+        NaN
+      ],
+      "4_0_0/strains/values": [
+        -0.00154061214549325
+      ],
+      "4_2_0/strains/values": [
+        3.047037592777553e-05
+      ],
+      "4_2_2/strains/values": [
+        NaN
+      ],
+      "results/success": [
+        true
+      ]
+    },
+    "uniform_fit": {
+      "results/success": [
+        true
+      ]
+    }
+  },
+  "19": {
+    "data": {
+      "unconstrained_strain": [
+        0.0018115398612645161
+      ],
+      "uniform_strain": [
+        9.71240480024621e-05
+      ],
+      "unconstrained_strain_stdev": [
+        0.003813276181374058
+      ]
+    },
+    "unconstrained_fit": {
+      "1_1_1/strains/values": [
+        NaN
+      ],
+      "2_0_0/strains/values": [
+        1.1794372477813917e-05
+      ],
+      "2_2_0/strains/values": [
+        -0.0006631386746232564
+      ],
+      "2_2_2/strains/values": [
+        0.0011581841682138407
+      ],
+      "3_1_1/strains/values": [
+        -2.689643163211537e-05
+      ],
+      "3_3_1/strains/values": [
+        NaN
+      ],
+      "4_0_0/strains/values": [
+        0.010253589085661574
+      ],
+      "4_2_0/strains/values": [
+        0.00013570664748923986
+      ],
+      "4_2_2/strains/values": [
+        NaN
+      ],
+      "results/success": [
+        true
+      ]
+    },
+    "uniform_fit": {
+      "results/success": [
+        true
+      ]
+    }
+  },
+  "21": {
+    "data": {
+      "unconstrained_strain": [
+        -0.00018129128820423043
+      ],
+      "uniform_strain": [
+        0.0001126884714112175
+      ],
+      "unconstrained_strain_stdev": [
+        0.0004760957132354456
+      ]
+    },
+    "unconstrained_fit": {
+      "1_1_1/strains/values": [
+        NaN
+      ],
+      "2_0_0/strains/values": [
+        0.0001126512484857464
+      ],
+      "2_2_0/strains/values": [
+        NaN
+      ],
+      "2_2_2/strains/values": [
+        NaN
+      ],
+      "3_1_1/strains/values": [
+        NaN
+      ],
+      "3_3_1/strains/values": [
+        NaN
+      ],
+      "4_0_0/strains/values": [
+        0.00019633160190562674
+      ],
+      "4_2_0/strains/values": [
+        -0.0008528567150040645
+      ],
+      "4_2_2/strains/values": [
+        NaN
+      ],
+      "results/success": [
+        true
+      ]
+    },
+    "uniform_fit": {
+      "results/success": [
+        true
+      ]
+    }
+  },
+  "22": {
+    "data": {
+      "unconstrained_strain": [
+        -0.0014501751909641314
+      ],
+      "uniform_strain": [
+        -0.002881513058864471
+      ],
+      "unconstrained_strain_stdev": [
+        0.0010643613734172828
+      ]
+    },
+    "unconstrained_fit": {
+      "1_1_1/strains/values": [
+        NaN
+      ],
+      "2_0_0/strains/values": [
+        -0.002908082556075436
+      ],
+      "2_2_0/strains/values": [
+        NaN
+      ],
+      "2_2_2/strains/values": [
+        NaN
+      ],
+      "3_1_1/strains/values": [
+        -0.0003969110307797924
+      ],
+      "3_3_1/strains/values": [
+        NaN
+      ],
+      "4_0_0/strains/values": [
+        -0.001045531986037166
+      ],
+      "4_2_0/strains/values": [
+        NaN
+      ],
+      "4_2_2/strains/values": [
+        NaN
+      ],
+      "results/success": [
+        true
+      ]
+    },
+    "uniform_fit": {
+      "results/success": [
+        true
+      ]
+    }
+  },
+  "strain_rosette": {
+    "e_xx": {
+      "values": [
+        0.00031470300257216535
+      ],
+      "errors": [
+        0.0009058910419681491
+      ]
+    },
+    "e_yy": {
+      "values": [
+        8.148718190574413e-05
+      ],
+      "errors": [
+        0.0013421759838494816
+      ]
+    },
+    "e_xy": {
+      "values": [
+        -0.0006902682726248437
+      ],
+      "errors": [
+        0.0009014103567265971
+      ]
+    },
+    "detector_ids": [
+      0,
+      1,
+      5,
+      8,
+      11,
+      12,
+      13,
+      14,
+      16,
+      17,
+      18,
+      19,
+      21,
+      22
+    ],
+    "detector_angles": [
+      0.0,
+      10.0,
+      50.0,
+      80.0,
+      110.0,
+      120.0,
+      130.0,
+      140.0,
+      160.0,
+      170.0,
+      180.0,
+      190.0,
+      210.0,
+      220.0
+    ]
+  }
+}

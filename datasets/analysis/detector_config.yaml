@@ -1,0 +1,47 @@
+# CHESS ID1A3 Detector Configuration
+# Detector IDs with their omega angles (in degrees) for strain rosette calculations
+# These angles define the orientation of each detector's measurement axis
+
+detectors:
+  0:
+    eta: 0.0
+    description: "Detector 0"
+  1:
+    eta: 15.0
+    description: "Detector 1"
+  5:
+    eta: 30.0
+    description: "Detector 5"
+  8:
+    eta: 45.0
+    description: "Detector 8"
+  11:
+    eta: 60.0
+    description: "Detector 11"
+  12:
+    eta: 75.0
+    description: "Detector 12"
+  13:
+    eta: 90.0
+    description: "Detector 13"
+  14:
+    eta: 105.0
+    description: "Detector 14"
+  16:
+    eta: 120.0
+    description: "Detector 16"
+  17:
+    eta: 135.0
+    description: "Detector 17"
+  18:
+    eta: 150.0
+    description: "Detector 18"
+  19:
+    eta: 165.0
+    description: "Detector 19"
+  21:
+    eta: 180.0
+    description: "Detector 21"
+  22:
+    eta: 195.0
+    description: "Detector 22"
