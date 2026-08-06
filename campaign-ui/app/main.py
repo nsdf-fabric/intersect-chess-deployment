@@ -249,6 +249,7 @@ def _load_preloaded_campaigns() -> dict[str, str]:
 
     campaign_files = set(config.preload_root.rglob("campaign.json"))
     campaign_files.update(config.preload_root.rglob("*.campaign.json"))
+    campaign_files.update(config.preload_root.rglob("*campaign*.json"))
 
     for campaign_file in sorted(campaign_files):
         relative_name = str(campaign_file.relative_to(config.preload_root))
