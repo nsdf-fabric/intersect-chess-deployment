@@ -37,10 +37,10 @@ DEPLOYMENT_DATA_DIR = Path(__file__).parent.parent.parent / "intersect-chess-dep
 
 # Neutron files (both sources have same names)
 NEUTRON_FILES = {
-    "A2": ANALYSIS_NEUTRON_DIR / "A2_full.json",
-    "D1": ANALYSIS_NEUTRON_DIR / "D1_full.json",
-    "D2": ANALYSIS_NEUTRON_DIR / "D2_full.json",
-    "D4": ANALYSIS_NEUTRON_DIR / "D4_full.json",
+    "A2": ANALYSIS_NEUTRON_DIR / "A2_VULCAN.json",
+    "D1": ANALYSIS_NEUTRON_DIR / "D1_VULCAN.json",
+    "D2": ANALYSIS_NEUTRON_DIR / "D2_VULCAN.json",
+    "D4": ANALYSIS_NEUTRON_DIR / "D4_VULCAN.json",
 }
 
 # New extracted XRay files (multi-detector)
@@ -56,6 +56,7 @@ DEPLOYMENT_NEUTRON_FILES = {
     "D2": DEPLOYMENT_DATA_DIR / "D2_2p3_30layers_VDriveSPF_LD.json",
     "D4": DEPLOYMENT_DATA_DIR / "D4_4p4_30layers_VDriveSPF_LD.json",
 }
+
 DEPLOYMENT_XRAY_FILE = DEPLOYMENT_DATA_DIR / "strain_map_xray_ammdf_d2_smb.reduced.json"
 
 # Global flag for interactive display
@@ -118,8 +119,8 @@ def plot_neutron_data(files_dict, label_prefix="", vmin=None, vmax=None):
         
         x = np.array(data["labx"])
         z = np.array(data["labz"])
-        strains = np.array(data["0/unconstrained_fit/3_1_1/strains/values"])
-        
+        strains = np.array(data["0"]["strain_rosette"]["e_xx"]["value"]) * 1e6
+
         ax = axes[idx]
         # Use provided vmin/vmax if autoscaling enabled, otherwise None (individual plot range)
         scatter_vmin = vmin if AUTO_SCALE_PLOTS or vmin is not None else None
