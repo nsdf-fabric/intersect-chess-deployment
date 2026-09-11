@@ -573,12 +573,11 @@ def plot_sample_comparison():
         plt.colorbar(scatter, ax=axes[row, 0])
         
         scatter = axes[row, 1].scatter(x_x, z_x, c=strain_x, cmap="RdYlBu_r", s=30, alpha=0.6, edgecolors='k', linewidth=0.3, vmin=vmin_plotx, vmax=vmax_plotx)
-        axes[row, 1].set_title(f"{key} Neutron")
+        axes[row, 1].set_title(f"{key} Xray")
         axes[row, 1].set_xlabel("Lab X (mm)")
         axes[row, 1].set_ylabel("Lab Z (mm)")
         axes[row, 1].grid(True, alpha=0.3)
         plt.colorbar(scatter, ax=axes[row, 1])
-
 
     # Load all data first
     neutron_loads ={'D1': load_json(NEUTRON_FILES["D1"])}
