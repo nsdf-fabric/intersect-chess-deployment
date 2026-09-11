@@ -45,8 +45,10 @@ NEUTRON_FILES = {
 
 # New extracted XRay files (multi-detector)
 XRAY_MULTIDET_FILES = {
-    "D1_full": ANALYSIS_XRAY_DIR / "D1_full.json",
-    "D2_full": ANALYSIS_XRAY_DIR / "D2_full.json",
+    "A2": ANALYSIS_XRAY_DIR / "a2-1.json",
+    "D1": ANALYSIS_XRAY_DIR / "d1-2.json",
+    "D2": ANALYSIS_XRAY_DIR / "d2-2.json",
+    "D4": ANALYSIS_XRAY_DIR / "d4-2.json",
 }
 
 # Legacy deployment files
@@ -119,7 +121,7 @@ def plot_neutron_data(files_dict, label_prefix="", vmin=None, vmax=None):
         
         x = np.array(data["labx"])
         z = np.array(data["labz"])
-        strains = np.array(data["0"]["strain_rosette"]["e_xx"]["value"]) * 1e6
+        strains = np.array(data["0/strain_rosette/e_xx/value"]) * 1e6
 
         ax = axes[idx]
         # Use provided vmin/vmax if autoscaling enabled, otherwise None (individual plot range)
@@ -526,6 +528,8 @@ def get_detector_strains(detector_dict, det_id, use_hkl=None):
     return []
 
 
+# def _plots():
+
 def plot_sample_comparison():
     """Plot D1 and D2 neutron vs xray comparison (multi-detector average).
     
@@ -535,36 +539,66 @@ def plot_sample_comparison():
       - False: individual scales per plot to maximize detail visibility
     """
     global XRAY_HKL, AUTO_SCALE_PLOTS
-    
+
+
+    def _plotter(key, row):
+        def _get_min_max(vmin_plot, vmax_plot):
+            margin = (vmax_plot - vmin_plot) * 0.05 if (vmax_plot - vmin_plot) != 0 else 0.01
+            vmin_plot -= margin
+            vmax_plot += margin
+            return vmin_plot, vmax_plot
+
+        x_n = np.array(neutron_loads[key]["labx"])
+        z_n = np.array(neutron_loads[key]["labz"])
+        strain_n = np.array(neutron_loads[key]["0/strain_rosette/e_xx/value"])
+
+        x_x = np.array(x_ray_data[key]["labx"])
+        z_x = np.array(x_ray_data[key]["labz"])
+        strain_x = np.array(x_ray_data[key]["strain_rosette/e_xx/values"])
+
+        if AUTO_SCALE_PLOTS:
+            vmin_plot, vmax_plot = vmin_global, vmax_global
+            vmin_plotx, vmax_plotx = vmin_global, vmax_global
+        else:
+            vmin_plot, vmax_plot = _get_min_max(np.min(strain_n),
+                                                np.max(strain_n))
+            vmin_plotx, vmax_plotx = _get_min_max(strain_x.min(),
+                                                  strain_x.max())
+        
+        scatter = axes[row, 0].scatter(x_n, z_n, c=strain_n, cmap="RdYlBu_r", s=30, alpha=0.6, edgecolors='k', linewidth=0.3, vmin=vmin_plot, vmax=vmax_plot)
+        axes[row, 0].set_title(f"{key} Neutron")
+        axes[row, 0].set_xlabel("Lab X (mm)")
+        axes[row, 0].set_ylabel("Lab Z (mm)")
+        axes[row, 0].grid(True, alpha=0.3)
+        plt.colorbar(scatter, ax=axes[row, 0])
+        
+        scatter = axes[row, 1].scatter(x_x, z_x, c=strain_x, cmap="RdYlBu_r", s=30, alpha=0.6, edgecolors='k', linewidth=0.3, vmin=vmin_plotx, vmax=vmax_plotx)
+        axes[row, 1].set_title(f"{key} Xray")
+        axes[row, 1].set_xlabel("Lab X (mm)")
+        axes[row, 1].set_ylabel("Lab Z (mm)")
+        axes[row, 1].grid(True, alpha=0.3)
+        plt.colorbar(scatter, ax=axes[row, 1])
+
     # Load all data first
-    neutron_d1 = load_json(NEUTRON_FILES["D1"])
-    neutron_d2 = load_json(NEUTRON_FILES["D2"])
-    xray_d1 = load_json(XRAY_MULTIDET_FILES["D1_full"]) if Path(XRAY_MULTIDET_FILES["D1_full"]).exists() else None
-    xray_d2 = load_json(XRAY_MULTIDET_FILES["D2_full"]) if Path(XRAY_MULTIDET_FILES["D2_full"]).exists() else None
-    
+    neutron_loads ={'D1': load_json(NEUTRON_FILES["D1"])}
+    neutron_loads['D2'] = load_json(NEUTRON_FILES["D2"])
+    neutron_loads['D4'] = load_json(NEUTRON_FILES["D4"])
+    neutron_loads['A2'] = load_json(NEUTRON_FILES["A2"])
+
+    x_ray_data ={'D1': load_json(XRAY_MULTIDET_FILES["D1"])}
+    x_ray_data['D2'] = load_json(XRAY_MULTIDET_FILES["D2"])
+    x_ray_data['D4'] = load_json(XRAY_MULTIDET_FILES["D4"])
+    x_ray_data['A2'] = load_json(XRAY_MULTIDET_FILES["A2"])
+
+
     # Determine scale mode
     if AUTO_SCALE_PLOTS:
         # GLOBAL SCALE: Collect all strain data across all plots
         all_strains = []
-        
-        if neutron_d1:
-            all_strains.extend(np.array(neutron_d1.get("0/unconstrained_fit/3_1_1/strains/values", [])).flatten())
-        if neutron_d2:
-            all_strains.extend(np.array(neutron_d2.get("0/unconstrained_fit/3_1_1/strains/values", [])).flatten())
-        
-        if xray_d1:
-            det_ids = sorted([int(k) for k in xray_d1.keys() if k.isdigit()])
-            for det_id in det_ids:
-                strain_data = get_detector_strains(xray_d1, det_id, use_hkl=XRAY_HKL)
-                if strain_data:
-                    all_strains.extend(strain_data)
-        
-        if xray_d2:
-            det_ids = sorted([int(k) for k in xray_d2.keys() if k.isdigit()])
-            for det_id in det_ids:
-                strain_data = get_detector_strains(xray_d2, det_id, use_hkl=XRAY_HKL)
-                if strain_data:
-                    all_strains.extend(strain_data)
+        for entry in neutron_loads:
+            all_strains.extend(np.array(neutron_loads[entry].get("0/strain_rosette/e_xx/value", [])).flatten())
+        for entry in x_ray_data:
+            all_strains.extend(np.array(x_ray_data[entry].get("0/strain_rosette/e_xx/value", [])).flatten())
         
         if all_strains:
             global_min = np.min(all_strains)
@@ -573,153 +607,24 @@ def plot_sample_comparison():
             vmin_global = global_min - margin
             vmax_global = global_max + margin
         else:
-            vmin_global, vmax_global = -0.01, 0.01
+            vmin_global, vmax_global = -0.001, 0.001
         
-        scale_info = f"Global Scale: [{global_min:.4f}, {global_max:.4f}]"
+        scale_info = f"Global Scale: [{vmax_global:.4f}, {vmax_global:.4f}]"
     else:
         # INDIVIDUAL SCALES: Will compute per plot
         vmin_global, vmax_global = None, None
         scale_info = "Individual Scales"
     
-    fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+    fig, axes = plt.subplots(4, 2, figsize=(14, 10))
     hkl_formatted = format_hkl(XRAY_HKL)
     fig.suptitle(f"Sample Comparison: Neutron (3,1,1) vs XRay Multi-Detector Avg ({hkl_formatted})\n{scale_info}", 
                  fontsize=14, fontweight='bold')
-    
-    # D1 Neutron
-    if neutron_d1:
-        x_n = np.array(neutron_d1["labx"])
-        z_n = np.array(neutron_d1["labz"])
-        strain_n = np.array(neutron_d1["0/unconstrained_fit/3_1_1/strains/values"])
-        
-        if AUTO_SCALE_PLOTS:
-            vmin_plot, vmax_plot = vmin_global, vmax_global
-        else:
-            vmin_plot = np.min(strain_n)
-            vmax_plot = np.max(strain_n)
-            margin = (vmax_plot - vmin_plot) * 0.05 if (vmax_plot - vmin_plot) != 0 else 0.01
-            vmin_plot -= margin
-            vmax_plot += margin
-        
-        scatter = axes[0, 0].scatter(x_n, z_n, c=strain_n, cmap="RdYlBu_r", s=30, alpha=0.6, edgecolors='k', linewidth=0.3, vmin=vmin_plot, vmax=vmax_plot)
-        axes[0, 0].set_title("D1 Neutron (3,1,1, 273 pts)")
-        axes[0, 0].set_xlabel("Lab X (mm)")
-        axes[0, 0].set_ylabel("Lab Z (mm)")
-        axes[0, 0].grid(True, alpha=0.3)
-        plt.colorbar(scatter, ax=axes[0, 0])
-    
-    # D1 XRay multi-detector average
-    if xray_d1:
-        x_x = np.array(xray_d1["labx"])
-        z_x = np.array(xray_d1["labz"])
-        
-        # Get detector data
-        det_ids = sorted([int(k) for k in xray_d1.keys() if k.isdigit()])
-        strain_list = []
-        for det_id in det_ids:
-            strain_data = get_detector_strains(xray_d1, det_id, use_hkl=XRAY_HKL)
-            if strain_data:
-                strain_list.append(strain_data)
-        
-        if strain_list:
-            # Pad to same length if needed
-            max_len = max(len(s) for s in strain_list)
-            strain_array = np.full((len(strain_list), max_len), np.nan)
-            for i, s in enumerate(strain_list):
-                strain_array[i, :len(s)] = s
-            
-            # Average, ignoring NaN
-            strain_x = np.nanmean(strain_array, axis=0)
-            
-            # Use only valid points
-            valid_mask = ~np.isnan(strain_x)
-            x_plot = x_x[:len(strain_x)][valid_mask]
-            z_plot = z_x[:len(strain_x)][valid_mask]
-            strain_plot = strain_x[valid_mask]
-            
-            if AUTO_SCALE_PLOTS:
-                vmin_plot, vmax_plot = vmin_global, vmax_global
-            else:
-                vmin_plot = np.min(strain_plot)
-                vmax_plot = np.max(strain_plot)
-                margin = (vmax_plot - vmin_plot) * 0.05 if (vmax_plot - vmin_plot) != 0 else 0.01
-                vmin_plot -= margin
-                vmax_plot += margin
-            
-            scatter = axes[0, 1].scatter(x_plot, z_plot, c=strain_plot, cmap="RdYlBu_r", s=50, alpha=0.6, edgecolors='k', linewidth=0.3, vmin=vmin_plot, vmax=vmax_plot)
-            axes[0, 1].set_title(f"D1 XRay (multi-det avg {format_hkl(XRAY_HKL)}, {len(strain_plot)} pts)")
-            axes[0, 1].set_xlabel("Lab X (mm)")
-            axes[0, 1].set_ylabel("Lab Z (mm)")
-            axes[0, 1].grid(True, alpha=0.3)
-            plt.colorbar(scatter, ax=axes[0, 1])
-    
-    # D2 Neutron
-    if neutron_d2:
-        x_n = np.array(neutron_d2["labx"])
-        z_n = np.array(neutron_d2["labz"])
-        strain_n = np.array(neutron_d2["0/unconstrained_fit/3_1_1/strains/values"])
-        
-        if AUTO_SCALE_PLOTS:
-            vmin_plot, vmax_plot = vmin_global, vmax_global
-        else:
-            vmin_plot = np.min(strain_n)
-            vmax_plot = np.max(strain_n)
-            margin = (vmax_plot - vmin_plot) * 0.05 if (vmax_plot - vmin_plot) != 0 else 0.01
-            vmin_plot -= margin
-            vmax_plot += margin
-        
-        scatter = axes[1, 0].scatter(x_n, z_n, c=strain_n, cmap="RdYlBu_r", s=30, alpha=0.6, edgecolors='k', linewidth=0.3, vmin=vmin_plot, vmax=vmax_plot)
-        axes[1, 0].set_title("D2 Neutron (3,1,1, 273 pts)")
-        axes[1, 0].set_xlabel("Lab X (mm)")
-        axes[1, 0].set_ylabel("Lab Z (mm)")
-        axes[1, 0].grid(True, alpha=0.3)
-        plt.colorbar(scatter, ax=axes[1, 0])
-    
-    # D2 XRay multi-detector average
-    if xray_d2:
-        x_x = np.array(xray_d2["labx"])
-        z_x = np.array(xray_d2["labz"])
-        
-        # Get detector data
-        det_ids = sorted([int(k) for k in xray_d2.keys() if k.isdigit()])
-        strain_list = []
-        for det_id in det_ids:
-            strain_data = get_detector_strains(xray_d2, det_id, use_hkl=XRAY_HKL)
-            if strain_data:
-                strain_list.append(strain_data)
-        
-        if strain_list:
-            # Pad to same length if needed
-            max_len = max(len(s) for s in strain_list)
-            strain_array = np.full((len(strain_list), max_len), np.nan)
-            for i, s in enumerate(strain_list):
-                strain_array[i, :len(s)] = s
-            
-            # Average, ignoring NaN
-            strain_x = np.nanmean(strain_array, axis=0)
-            
-            # Use only valid points
-            valid_mask = ~np.isnan(strain_x)
-            x_plot = x_x[:len(strain_x)][valid_mask]
-            z_plot = z_x[:len(strain_x)][valid_mask]
-            strain_plot = strain_x[valid_mask]
-            
-            if AUTO_SCALE_PLOTS:
-                vmin_plot, vmax_plot = vmin_global, vmax_global
-            else:
-                vmin_plot = np.min(strain_plot)
-                vmax_plot = np.max(strain_plot)
-                margin = (vmax_plot - vmin_plot) * 0.05 if (vmax_plot - vmin_plot) != 0 else 0.01
-                vmin_plot -= margin
-                vmax_plot += margin
-            
-            scatter = axes[1, 1].scatter(x_plot, z_plot, c=strain_plot, cmap="RdYlBu_r", s=50, alpha=0.6, edgecolors='k', linewidth=0.3, vmin=vmin_plot, vmax=vmax_plot)
-            axes[1, 1].set_title(f"D2 XRay (multi-det avg {format_hkl(XRAY_HKL)}, {len(strain_plot)} pts)")
-            axes[1, 1].set_xlabel("Lab X (mm)")
-            axes[1, 1].set_ylabel("Lab Z (mm)")
-            axes[1, 1].grid(True, alpha=0.3)
-            plt.colorbar(scatter, ax=axes[1, 1])
-    
+
+    _plotter('A2', 0)
+    _plotter('D1', 1)
+    _plotter('D2', 2)
+    _plotter('D4', 3)
+
     plt.tight_layout()
     if INTERACTIVE_PLOT:
         plt.show()
@@ -783,10 +688,11 @@ def main(interactive=False, mode="auto", hkl="3_1_1", autoscale_plot=True):
                     # Collect rosette strains
                     for filepath in XRAY_MULTIDET_FILES.values():
                         data = load_json(filepath)
+                        print(filepath)
                         if data and "strain_rosette" in data:
                             for comp_name in ["e_xx", "e_yy", "e_xy"]:
                                 all_strain_data.extend(data["strain_rosette"].get(comp_name, {}).get("values", []))
-                    
+
                     if all_strain_data:
                         vmin_nr = np.min(all_strain_data)
                         vmax_nr = np.max(all_strain_data)
@@ -797,9 +703,10 @@ def main(interactive=False, mode="auto", hkl="3_1_1", autoscale_plot=True):
                 print("\nXRay Data (Multi-Detector):")
                 for name, filepath in XRAY_MULTIDET_FILES.items():
                     if filepath.exists():
-                        plot_xray_multidetector(name, filepath, name)
+                        # plot_xray_multidetector(name, filepath, name)
                         plot_xray_rosette(name, filepath, name, vmin=vmin_nr, vmax=vmax_nr)
-                
+
+                print(name, filepath)
                 print("\nComparison (Multi-Detector Average):")
                 plot_sample_comparison()
             elif available["neutron_legacy"]:
@@ -877,7 +784,7 @@ def main(interactive=False, mode="auto", hkl="3_1_1", autoscale_plot=True):
             print("\n✓ All plots generated successfully!")
         
     except Exception as e:
-        print(f"✗ Error during plotting: {e}")
+        print(f"✗ Error during pl m,otting: {e}")
         import traceback
         traceback.print_exc()
         return 1
@@ -914,7 +821,7 @@ Examples:
     )
     parser.add_argument(
         "--hkl",
-        default="3_1_1",
+        default=None,
         help="Miller indices for XRay strain data (e.g., 3_1_1, 2_2_2, 1_1_1). Default: 3_1_1 (matches neutron)",
     )
     parser.add_argument(

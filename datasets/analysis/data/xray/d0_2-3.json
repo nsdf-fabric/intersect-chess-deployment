@@ -1,0 +1,710 @@
+{
+  "labx": [
+    -16.801795,
+    -21.001939
+  ],
+  "labz": [
+    0.0,
+    0.0
+  ],
+  "0/data/unconstrained_strain": [
+    0.0008770554109793199,
+    0.0005864315384534483
+  ],
+  "0/data/unconstrained_strain_stdev": [
+    0.0003673885337663588,
+    3.122683614983777e-11
+  ],
+  "0/data/uniform_strain": [
+    0.0011317347021950698,
+    0.0005864315163726666
+  ],
+  "0/unconstrained_fit/1_1_1/strains/values": [
+    NaN,
+    NaN
+  ],
+  "0/unconstrained_fit/2_0_0/strains/values": [
+    0.0011316951744930273,
+    0.0005864315163727407
+  ],
+  "0/unconstrained_fit/2_2_0/strains/values": [
+    NaN,
+    NaN
+  ],
+  "0/unconstrained_fit/2_2_2/strains/values": [
+    NaN,
+    NaN
+  ],
+  "0/unconstrained_fit/3_1_1/strains/values": [
+    0.0003575232840760979,
+    0.0005864315826148635
+  ],
+  "0/unconstrained_fit/3_3_1/strains/values": [
+    NaN,
+    NaN
+  ],
+  "0/unconstrained_fit/4_0_0/strains/values": [
+    0.0011419477743688344,
+    0.0005864315163727407
+  ],
+  "0/unconstrained_fit/4_2_0/strains/values": [
+    NaN,
+    NaN
+  ],
+  "0/unconstrained_fit/4_2_2/strains/values": [
+    NaN,
+    NaN
+  ],
+  "1/data/unconstrained_strain": [
+    0.0001687508327617847,
+    0.0010522255925776813
+  ],
+  "1/data/unconstrained_strain_stdev": [
+    3.3078632546425386e-05,
+    0.0005061354883414581
+  ],
+  "1/data/uniform_strain": [
+    0.00016556578241698329,
+    0.0008280980734561991
+  ],
+  "1/unconstrained_fit/1_1_1/strains/values": [
+    NaN,
+    NaN
+  ],
+  "1/unconstrained_fit/2_0_0/strains/values": [
+    0.00011586515368040231,
+    0.0008247906935617053
+  ],
+  "1/unconstrained_fit/2_2_0/strains/values": [
+    NaN,
+    NaN
+  ],
+  "1/unconstrained_fit/2_2_2/strains/values": [
+    0.00021957036951907136,
+    0.0008280980734562878
+  ],
+  "1/unconstrained_fit/3_1_1/strains/values": [
+    0.0001771870757754389,
+    0.0020428455981880275
+  ],
+  "1/unconstrained_fit/3_3_1/strains/values": [
+    0.00016556578241711648,
+    0.0009443853077924761
+  ],
+  "1/unconstrained_fit/4_0_0/strains/values": [
+    0.0001655657824168945,
+    0.0006210082898899096
+  ],
+  "1/unconstrained_fit/4_2_0/strains/values": [
+    NaN,
+    NaN
+  ],
+  "1/unconstrained_fit/4_2_2/strains/values": [
+    NaN,
+    NaN
+  ],
+  "5/data/unconstrained_strain": [
+    0.0003346143154192412,
+    0.000681049550054284
+  ],
+  "5/data/unconstrained_strain_stdev": [
+    0.0004278547482974134,
+    0.001030984962191029
+  ],
+  "5/data/uniform_strain": [
+    3.73057344176032e-05,
+    -2.51999866751671e-06
+  ],
+  "5/unconstrained_fit/1_1_1/strains/values": [
+    NaN,
+    NaN
+  ],
+  "5/unconstrained_fit/2_0_0/strains/values": [
+    NaN,
+    NaN
+  ],
+  "5/unconstrained_fit/2_2_0/strains/values": [
+    3.73057344176476e-05,
+    -2.861936187648355e-06
+  ],
+  "5/unconstrained_fit/2_2_2/strains/values": [
+    3.73057344176476e-05,
+    -2.5199986674723013e-06
+  ],
+  "5/unconstrained_fit/3_1_1/strains/values": [
+    0.001054975172021983,
+    0.0026576206178744316
+  ],
+  "5/unconstrained_fit/3_3_1/strains/values": [
+    0.0005970793254209719,
+    -2.5199986674723013e-06
+  ],
+  "5/unconstrained_fit/4_0_0/strains/values": [
+    NaN,
+    NaN
+  ],
+  "5/unconstrained_fit/4_2_0/strains/values": [
+    -5.359438918204434e-05,
+    0.0007555290659195818
+  ],
+  "5/unconstrained_fit/4_2_2/strains/values": [
+    NaN,
+    NaN
+  ],
+  "8/data/unconstrained_strain": [
+    -0.0017639226620722063,
+    0.003444255972180957
+  ],
+  "8/data/unconstrained_strain_stdev": [
+    0.0007218486807839929,
+    0.004966628806228772
+  ],
+  "8/data/uniform_strain": [
+    -0.0019628459691805383,
+    0.0006413669125467456
+  ],
+  "8/unconstrained_fit/1_1_1/strains/values": [
+    NaN,
+    NaN
+  ],
+  "8/unconstrained_fit/2_0_0/strains/values": [
+    -0.0015745176960230754,
+    0.0006413669125467456
+  ],
+  "8/unconstrained_fit/2_2_0/strains/values": [
+    -0.0019207925468091877,
+    0.0003817533183559397
+  ],
+  "8/unconstrained_fit/2_2_2/strains/values": [
+    NaN,
+    NaN
+  ],
+  "8/unconstrained_fit/3_1_1/strains/values": [
+    -0.002785986008083151,
+    0.0007098058437613794
+  ],
+  "8/unconstrained_fit/3_3_1/strains/values": [
+    NaN,
+    NaN
+  ],
+  "8/unconstrained_fit/4_0_0/strains/values": [
+    -0.0007743943973734115,
+    0.012044097814059764
+  ],
+  "8/unconstrained_fit/4_2_0/strains/values": [
+    NaN,
+    NaN
+  ],
+  "8/unconstrained_fit/4_2_2/strains/values": [
+    NaN,
+    NaN
+  ],
+  "11/data/unconstrained_strain": [
+    0.0006725141947498422,
+    0.00010591738361023725
+  ],
+  "11/data/unconstrained_strain_stdev": [
+    0.0007188976573594006,
+    0.000649307658523398
+  ],
+  "11/data/uniform_strain": [
+    0.00026202456976604736,
+    -0.00031368099164216177
+  ],
+  "11/unconstrained_fit/1_1_1/strains/values": [
+    NaN,
+    NaN
+  ],
+  "11/unconstrained_fit/2_0_0/strains/values": [
+    0.00024392260033046537,
+    -0.0003136809916421617
+  ],
+  "11/unconstrained_fit/2_2_0/strains/values": [
+    0.002122646768099827,
+    0.0014481745454646598
+  ],
+  "11/unconstrained_fit/2_2_2/strains/values": [
+    0.0001826422387448817,
+    -0.00031368099164205064
+  ],
+  "11/unconstrained_fit/3_1_1/strains/values": [
+    0.00046169412279598824,
+    -0.0003138249422421231
+  ],
+  "11/unconstrained_fit/3_3_1/strains/values": [
+    0.001001178747332869,
+    0.0003774421200768059
+  ],
+  "11/unconstrained_fit/4_0_0/strains/values": [
+    NaN,
+    NaN
+  ],
+  "11/unconstrained_fit/4_2_0/strains/values": [
+    2.3000691195022716e-05,
+    -0.0002489254383537067
+  ],
+  "11/unconstrained_fit/4_2_2/strains/values": [
+    NaN,
+    NaN
+  ],
+  "12/data/unconstrained_strain": [
+    0.0004466712273116461,
+    0.0003213898926481303
+  ],
+  "12/data/unconstrained_strain_stdev": [
+    0.000241108074869935,
+    8.680922631613735e-05
+  ],
+  "12/data/uniform_strain": [
+    0.0005662632602164687,
+    0.000359961012268008
+  ],
+  "12/unconstrained_fit/1_1_1/strains/values": [
+    NaN,
+    NaN
+  ],
+  "12/unconstrained_fit/2_0_0/strains/values": [
+    0.0005662632602164687,
+    0.000363095047470783
+  ],
+  "12/unconstrained_fit/2_2_0/strains/values": [
+    0.0006905388536529429,
+    0.00035996101226789704
+  ],
+  "12/unconstrained_fit/2_2_2/strains/values": [
+    NaN,
+    NaN
+  ],
+  "12/unconstrained_fit/3_1_1/strains/values": [
+    0.0006321746735824361,
+    0.00012730680282980512
+  ],
+  "12/unconstrained_fit/3_3_1/strains/values": [
+    7.478927254821608e-05,
+    0.00035996101226811903
+  ],
+  "12/unconstrained_fit/4_0_0/strains/values": [
+    0.0005662632602164687,
+    0.0003580544687840587
+  ],
+  "12/unconstrained_fit/4_2_0/strains/values": [
+    0.00014999804365334392,
+    0.00035996101226811903
+  ],
+  "12/unconstrained_fit/4_2_2/strains/values": [
+    NaN,
+    NaN
+  ],
+  "13/data/unconstrained_strain": [
+    -0.0005947820170510891,
+    0.00027805417864469975
+  ],
+  "13/data/unconstrained_strain_stdev": [
+    0.0057856013557404246,
+    0.0005930035177421392
+  ],
+  "13/data/uniform_strain": [
+    0.00072208946798774,
+    0.00018451903073677493
+  ],
+  "13/unconstrained_fit/1_1_1/strains/values": [
+    NaN,
+    NaN
+  ],
+  "13/unconstrained_fit/2_0_0/strains/values": [
+    0.0007220894679877399,
+    -0.00030631200246339645
+  ],
+  "13/unconstrained_fit/2_2_0/strains/values": [
+    -0.01270141095142299,
+    0.0015370974606131438
+  ],
+  "13/unconstrained_fit/2_2_2/strains/values": [
+    0.0007220894679877399,
+    0.0001873314197117235
+  ],
+  "13/unconstrained_fit/3_1_1/strains/values": [
+    0.0009976477293532776,
+    0.00018451903073677493
+  ],
+  "13/unconstrained_fit/3_3_1/strains/values": [
+    0.0062791899045172295,
+    -0.00011882986746682221
+  ],
+  "13/unconstrained_fit/4_0_0/strains/values": [
+    NaN,
+    NaN
+  ],
+  "13/unconstrained_fit/4_2_0/strains/values": [
+    0.0004117022792704693,
+    0.00018451903073677493
+  ],
+  "13/unconstrained_fit/4_2_2/strains/values": [
+    NaN,
+    NaN
+  ],
+  "14/data/unconstrained_strain": [
+    0.0010715362558288966,
+    -8.125946429166626e-05
+  ],
+  "14/data/unconstrained_strain_stdev": [
+    0.0005324297952977074,
+    0.002489212233650634
+  ],
+  "14/data/uniform_strain": [
+    0.0013151870839573799,
+    0.0009584814550618614
+  ],
+  "14/unconstrained_fit/1_1_1/strains/values": [
+    NaN,
+    NaN
+  ],
+  "14/unconstrained_fit/2_0_0/strains/values": [
+    0.0013782795672223765,
+    -0.006143451094591653
+  ],
+  "14/unconstrained_fit/2_2_0/strains/values": [
+    -0.00020798014216836947,
+    0.0009584814550618296
+  ],
+  "14/unconstrained_fit/2_2_2/strains/values": [
+    0.0013587345390053086,
+    0.0014856303675701622
+  ],
+  "14/unconstrained_fit/3_1_1/strains/values": [
+    0.0010436958428821394,
+    0.0007745390006702839
+  ],
+  "14/unconstrained_fit/3_3_1/strains/values": [
+    0.0013151870839573799,
+    0.0008669547283048654
+  ],
+  "14/unconstrained_fit/4_0_0/strains/values": [
+    0.0012976498159460621,
+    0.0009584814550618296
+  ],
+  "14/unconstrained_fit/4_2_0/strains/values": [
+    0.0013151870839573799,
+    0.000530547837881019
+  ],
+  "14/unconstrained_fit/4_2_2/strains/values": [
+    NaN,
+    NaN
+  ],
+  "16/data/unconstrained_strain": [
+    0.0046561573930113285,
+    0.000991180261397839
+  ],
+  "16/data/unconstrained_strain_stdev": [
+    0.00890355130320359,
+    0.0003703701539593479
+  ],
+  "16/data/uniform_strain": [
+    0.00018171759707857814,
+    0.0007307836993460861
+  ],
+  "16/unconstrained_fit/1_1_1/strains/values": [
+    NaN,
+    NaN
+  ],
+  "16/unconstrained_fit/2_0_0/strains/values": [
+    0.026154428903703203,
+    0.001392863894959839
+  ],
+  "16/unconstrained_fit/2_2_0/strains/values": [
+    0.0001817175970786733,
+    0.0006344064463527283
+  ],
+  "16/unconstrained_fit/2_2_2/strains/values": [
+    0.00464357189562474,
+    0.0016665677397925775
+  ],
+  "16/unconstrained_fit/3_1_1/strains/values": [
+    0.0006278354848557832,
+    0.0010645164725771351
+  ],
+  "16/unconstrained_fit/3_3_1/strains/values": [
+    7.713601777401238e-05,
+    0.0007183398774104221
+  ],
+  "16/unconstrained_fit/4_0_0/strains/values": [
+    NaN,
+    NaN
+  ],
+  "16/unconstrained_fit/4_2_0/strains/values": [
+    0.0007771040673673813,
+    0.0007307836993460862
+  ],
+  "16/unconstrained_fit/4_2_2/strains/values": [
+    0.00013130778467551268,
+    0.0007307836993460862
+  ],
+  "17/data/unconstrained_strain": [
+    0.001154347757045463,
+    0.0005654816808587109
+  ],
+  "17/data/unconstrained_strain_stdev": [
+    0.0003647546010161662,
+    0.0003786722807621649
+  ],
+  "17/data/uniform_strain": [
+    0.0008963716709049444,
+    0.0005542040784022912
+  ],
+  "17/unconstrained_fit/1_1_1/strains/values": [
+    NaN,
+    NaN
+  ],
+  "17/unconstrained_fit/2_0_0/strains/values": [
+    NaN,
+    NaN
+  ],
+  "17/unconstrained_fit/2_2_0/strains/values": [
+    0.0008963716709048705,
+    0.0005413260897509474
+  ],
+  "17/unconstrained_fit/2_2_2/strains/values": [
+    NaN,
+    NaN
+  ],
+  "17/unconstrained_fit/3_1_1/strains/values": [
+    0.0016701886567400577,
+    0.0001142545823200462
+  ],
+  "17/unconstrained_fit/3_3_1/strains/values": [
+    0.0008964829434914605,
+    0.001040864370505139
+  ],
+  "17/unconstrained_fit/4_0_0/strains/values": [
+    NaN,
+    NaN
+  ],
+  "17/unconstrained_fit/4_2_0/strains/values": [
+    NaN,
+    NaN
+  ],
+  "17/unconstrained_fit/4_2_2/strains/values": [
+    NaN,
+    NaN
+  ],
+  "18/data/unconstrained_strain": [
+    5.8543948937383206e-05,
+    0.0004724418920655913
+  ],
+  "18/data/unconstrained_strain_stdev": [
+    0.00026497128327040883,
+    0.00039857872791918735
+  ],
+  "18/data/uniform_strain": [
+    1.0023055855228873e-05,
+    0.0006795419979285973
+  ],
+  "18/unconstrained_fit/1_1_1/strains/values": [
+    NaN,
+    NaN
+  ],
+  "18/unconstrained_fit/2_0_0/strains/values": [
+    0.0006317822788417956,
+    0.0006795419979284388
+  ],
+  "18/unconstrained_fit/2_2_0/strains/values": [
+    7.137598785581587e-05,
+    4.369722742479501e-05
+  ],
+  "18/unconstrained_fit/2_2_2/strains/values": [
+    1.0023055855228873e-05,
+    0.00026238513983659295
+  ],
+  "18/unconstrained_fit/3_1_1/strains/values": [
+    1.0023055855228873e-05,
+    0.0011731560743619264
+  ],
+  "18/unconstrained_fit/3_3_1/strains/values": [
+    9.484845784173449e-06,
+    0.000545822502562778
+  ],
+  "18/unconstrained_fit/4_0_0/strains/values": [
+    1.0023055855228873e-05,
+    0.0006795419979284388
+  ],
+  "18/unconstrained_fit/4_2_0/strains/values": [
+    -0.00033290463748578917,
+    -7.705169558383046e-05
+  ],
+  "18/unconstrained_fit/4_2_2/strains/values": [
+    NaN,
+    NaN
+  ],
+  "19/data/unconstrained_strain": [
+    0.0006089190397517073,
+    0.0007714961479387362
+  ],
+  "19/data/unconstrained_strain_stdev": [
+    0.0003347156728164602,
+    0.0003308999844317916
+  ],
+  "19/data/uniform_strain": [
+    0.0006200333391351721,
+    0.0006323000037462603
+  ],
+  "19/unconstrained_fit/1_1_1/strains/values": [
+    NaN,
+    NaN
+  ],
+  "19/unconstrained_fit/2_0_0/strains/values": [
+    -5.6973337736031583e-05,
+    0.0015105737950475836
+  ],
+  "19/unconstrained_fit/2_2_0/strains/values": [
+    0.001039769655434862,
+    0.0006323000037462603
+  ],
+  "19/unconstrained_fit/2_2_2/strains/values": [
+    NaN,
+    NaN
+  ],
+  "19/unconstrained_fit/3_1_1/strains/values": [
+    0.000620033339135283,
+    0.0006323000037462603
+  ],
+  "19/unconstrained_fit/3_3_1/strains/values": [
+    0.0008160003496297673,
+    0.0005892030775997923
+  ],
+  "19/unconstrained_fit/4_0_0/strains/values": [
+    0.0006200333391350612,
+    0.0006323000037462603
+  ],
+  "19/unconstrained_fit/4_2_0/strains/values": [
+    0.0006146508929113022,
+    0.0006323000037462603
+  ],
+  "19/unconstrained_fit/4_2_2/strains/values": [
+    NaN,
+    NaN
+  ],
+  "21/data/unconstrained_strain": [
+    -0.0010408143283993834,
+    0.00016070008781005727
+  ],
+  "21/data/unconstrained_strain_stdev": [
+    0.0012095561372352276,
+    0.000237424972343151
+  ],
+  "21/data/uniform_strain": [
+    -0.0021555543621327414,
+    3.947721794833405e-05
+  ],
+  "21/unconstrained_fit/1_1_1/strains/values": [
+    NaN,
+    NaN
+  ],
+  "21/unconstrained_fit/2_0_0/strains/values": [
+    -0.0021889228766687856,
+    3.855602491843579e-05
+  ],
+  "21/unconstrained_fit/2_2_0/strains/values": [
+    NaN,
+    NaN
+  ],
+  "21/unconstrained_fit/2_2_2/strains/values": [
+    -0.002155554362132686,
+    -5.934483501266817e-06
+  ],
+  "21/unconstrained_fit/3_1_1/strains/values": [
+    0.0006952022891083495,
+    3.947721794833405e-05
+  ],
+  "21/unconstrained_fit/3_3_1/strains/values": [
+    NaN,
+    NaN
+  ],
+  "21/unconstrained_fit/4_0_0/strains/values": [
+    -0.0005139823639044119,
+    0.000570701591874726
+  ],
+  "21/unconstrained_fit/4_2_0/strains/values": [
+    NaN,
+    NaN
+  ],
+  "21/unconstrained_fit/4_2_2/strains/values": [
+    NaN,
+    NaN
+  ],
+  "22/data/unconstrained_strain": [
+    -0.0010284110181784096,
+    0.0006099263908195766
+  ],
+  "22/data/unconstrained_strain_stdev": [
+    0.00041633449983149464,
+    0.00024975407071983443
+  ],
+  "22/data/uniform_strain": [
+    -0.0012667051122396572,
+    0.0007533530550043453
+  ],
+  "22/unconstrained_fit/1_1_1/strains/values": [
+    NaN,
+    NaN
+  ],
+  "22/unconstrained_fit/2_0_0/strains/values": [
+    -0.001272921937524059,
+    0.0007565244369826126
+  ],
+  "22/unconstrained_fit/2_2_0/strains/values": [
+    NaN,
+    NaN
+  ],
+  "22/unconstrained_fit/2_2_2/strains/values": [
+    -0.0012667051122397127,
+    0.00018804411381459518
+  ],
+  "22/unconstrained_fit/3_1_1/strains/values": [
+    -0.0012667051122397127,
+    0.0006696517663842642
+  ],
+  "22/unconstrained_fit/3_3_1/strains/values": [
+    NaN,
+    NaN
+  ],
+  "22/unconstrained_fit/4_0_0/strains/values": [
+    -0.00030731191071015437,
+    0.0008254852460968343
+  ],
+  "22/unconstrained_fit/4_2_0/strains/values": [
+    NaN,
+    NaN
+  ],
+  "22/unconstrained_fit/4_2_2/strains/values": [
+    NaN,
+    NaN
+  ],
+  "strain_rosette/e_xx/values": [
+    -7.3932599500762234e-06,
+    0.0008031528518628232
+  ],
+  "strain_rosette/e_yy/values": [
+    0.0010312179094159263,
+    0.0005578030348734468
+  ],
+  "strain_rosette/e_xy/values": [
+    -0.001153109607891234,
+    0.0004073708012499482
+  ],
+  "strain_rosette/e_xx/errors": [
+    0.000541560734517057,
+    0.00035921906452314174
+  ],
+  "strain_rosette/e_yy/errors": [
+    0.0006422885398661418,
+    0.0004260321580554709
+  ],
+  "strain_rosette/e_xy/errors": [
+    0.0005229918250417119,
+    0.0003469022441441817
+  ],
+  "strain_rosette/fit_success": [
+    true,
+    true
+  ]
+}
